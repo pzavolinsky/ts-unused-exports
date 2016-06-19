@@ -77,7 +77,7 @@ cd ts-unused-exports
 
 The output should be:
 ```
-1 module with usused exports
+1 module with unused exports
 math: add1
 ```
 

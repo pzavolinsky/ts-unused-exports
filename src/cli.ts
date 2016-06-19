@@ -14,7 +14,7 @@ const files = Object.keys(analysis);
 
 console.log(`${files.length} module${
   files.length == 1 ? '' : 's'
-} with usused exports`);
+} with unused exports`);
 
 files.forEach(path => console.log(`${path}: ${analysis[path].join(', ')}`));
 
