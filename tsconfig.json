@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "commonjs",
+    "outDir": "./lib",
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "filesGlob": [
+    "./typings/index.d.ts",
+    "./src/**/*.ts"
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  },
+  "files": [
+    "./typings/index.d.ts",
+    "./src/analyzer.ts",
+    "./src/app.ts",
+    "./src/cli.ts",
+    "./src/parser.ts",
+    "./src/types.ts"
+  ]
+}

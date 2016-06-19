@@ -1,0 +1,12 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/donnut/typescript-ramda/21164bfa6e9a9fde3111c0a96c691ff326d72fad/typings.json",
+    "raw": "registry:npm/ramda#0.21.0+20160531162943",
+    "main": "ramda.d.ts",
+    "version": "0.21.0",
+    "global": false,
+    "name": "ramda",
+    "type": "typings"
+  }
+}

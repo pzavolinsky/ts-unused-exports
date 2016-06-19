@@ -1,0 +1,39 @@
+{
+  "name": "ts-unused-exports",
+  "version": "1.0.0",
+  "description": "ts-unused-exports finds unused exported symbols in your Typescript project",
+  "main": "lib/app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pzavolinsky/ts-unused-exports.git"
+  },
+  "keywords": [
+    "typescript",
+    "tslint",
+    "unused exports",
+    "dead code"
+  ],
+  "author": "Patricio Zavolinsky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pzavolinsky/ts-unused-exports/issues"
+  },
+  "homepage": "https://github.com/pzavolinsky/ts-unused-exports",
+  "scripts": {
+    "build": "node_modules/.bin/tsc -p .",
+    "test": "node_modules/.bin/jasmine",
+    "exec": "bin/ts-unused-exports"
+  },
+  "bin": {
+    "ts-unused-exports": "bin/ts-unused-exports"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "tslint": "^3.11.0",
+    "typings": "^1.3.0"
+  },
+  "dependencies": {
+    "typescript": "^1.8.10"
+  }
+}
