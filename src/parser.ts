@@ -67,7 +67,7 @@ const extractExportFromImport = (decl:ts.ExportDeclaration) : FromWhat => {
   };
 };
 
-const extractExport = (node:ts.Node):string => {
+const extractExport = (path:string, node:ts.Node):string => {
   switch (node.kind) {
     case ts.SyntaxKind.VariableStatement:
       return (node as ts.VariableStatement)
@@ -75,8 +75,13 @@ const extractExport = (node:ts.Node):string => {
         .declarations[0]
         .name
         .getText();
+    case ts.SyntaxKind.FunctionDeclaration:
+      const { name } = (node as ts.FunctionDeclaration);
+      return name
+        ? name.text
+        : 'default';
     default: {
-      console.warn(`WARN: unknown export node (kind:${node.kind})`);
+      console.warn(`WARN: ${path}: unknown export node (kind:${node.kind})`);
       break;
     }
   }
@@ -127,7 +132,7 @@ const mapFile = (rootDir:string, path:string, file:ts.SourceFile) : File => {
           const decl = (node as ts.DeclarationStatement);
           const name = decl.name
             ? decl.name.text
-            : extractExport(node);
+            : extractExport(path, node);
           if (name) exports.push(name);
         }
         break;

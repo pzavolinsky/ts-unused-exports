@@ -28,7 +28,7 @@ describe('analyze', () => {
     expect(result['import-export-star']).toEqual([ 'a', 'b', 'c', 'd' ]);
   });
 
-  describe('for indexed modules', () => {
+  describe('indexed modules', () => {
     const testIndex = (paths, expected) => expect(
         testWith(['./has-index/index.ts'].concat(paths))['has-index']
       ).toEqual(
@@ -47,4 +47,21 @@ describe('analyze', () => {
     it('handles explicit index imports in the same directory', () =>
       testIndex(['./has-index/import-same-index.ts'], undefined));
   });
+
+  describe('exported default function', () => {
+    const testDefault = (paths, expected) => expect(
+        testWith(
+          ['./export-default-function.ts'].concat(paths)
+        )['export-default-function']
+      ).toEqual(
+        expected
+      );
+
+    it('handles missing import', () =>
+      testDefault([], ['default']));
+
+    it('handles import', () =>
+      testDefault(['./import-default-function.ts'], undefined));
+  });
+
 });
