@@ -27,7 +27,6 @@
   "bin": {
     "ts-unused-exports": "bin/ts-unused-exports"
   },
-  "license": "MIT",
   "devDependencies": {
     "jasmine": "^2.4.1",
     "tslint": "^3.11.0",

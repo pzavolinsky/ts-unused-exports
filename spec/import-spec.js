@@ -1,10 +1,10 @@
 const parseFiles = require('../lib/parser').default;
 const analyzeFiles = require('../lib/analyzer').default;
 
-const test = (paths) =>
-  analyzeFiles(parseFiles('./spec/data', ['./exports.ts'].concat(paths)));
+const testWith = (paths) => analyzeFiles(parseFiles('./spec/data', paths));
+const testExports = (paths) => testWith(['./exports.ts'].concat(paths));
 const test1 = (paths, expected) => expect(
-    test(paths)['exports']
+    testExports(paths)['exports']
   ).toEqual(
     expected
   );
@@ -22,9 +22,29 @@ describe('analyze', () => {
   itIs('all'    , ['./import-star.ts'
                   ,'./import-default.ts'], undefined);
   it('handles export * from', () => {
-    const result = test(['./import-export-star.ts']);
+    const result = testExports(['./import-export-star.ts']);
 
     expect(result['exports']).toEqual(['default']);
     expect(result['import-export-star']).toEqual([ 'a', 'b', 'c', 'd' ]);
+  });
+
+  describe('for indexed modules', () => {
+    const testIndex = (paths, expected) => expect(
+        testWith(['./has-index/index.ts'].concat(paths))['has-index']
+      ).toEqual(
+        expected
+      );
+
+    it('handles missing index imports', () =>
+      testIndex([], ['default']));
+
+    it('handles implicit index imports', () =>
+      testIndex(['./import-index-implicit.ts'], undefined));
+
+    it('handles explicit index imports', () =>
+      testIndex(['./import-index-explicit.ts'], undefined));
+
+    it('handles explicit index imports in the same directory', () =>
+      testIndex(['./has-index/import-same-index.ts'], undefined));
   });
 });

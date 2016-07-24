@@ -13,7 +13,10 @@ interface FromWhat {
 const star = ['*'];
 
 const getFrom = (moduleSpecifier:ts.Expression) =>
-  moduleSpecifier.getText().replace(TRIM_QUOTES, '$1');
+  moduleSpecifier
+  .getText()
+  .replace(TRIM_QUOTES, '$1')
+  .replace(/\/index$/, '');
 
 const extractImport = (decl:ts.ImportDeclaration) : FromWhat => {
   const from = getFrom(decl.moduleSpecifier);
@@ -140,16 +143,16 @@ const mapFile = (rootDir:string, path:string, file:ts.SourceFile) : File => {
 };
 
 const parseFile = (rootDir:string, path:string) : File =>
-mapFile(
-  rootDir,
-  path,
-  ts.createSourceFile(
+  mapFile(
+    rootDir,
     path,
-    readFileSync(path, { encoding: 'utf8' }),
-    ts.ScriptTarget.ES6,
-    /*setParentNodes */ true
-  )
-);
+    ts.createSourceFile(
+      path,
+      readFileSync(path, { encoding: 'utf8' }),
+      ts.ScriptTarget.ES6,
+      /*setParentNodes */ true
+    )
+  );
 
 export default (rootDir:string, paths:string[]):File[] =>
   paths
