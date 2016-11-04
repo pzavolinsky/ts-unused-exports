@@ -20,23 +20,26 @@ Usage
 -----
 
 ```shell
-./node_modules/.bin/ts-unused-exports path/to/tsconfig.json
+./node_modules/.bin/ts-unused-exports path/to/tsconfig.json [file1.ts ...]
 ```
 
 or, if installed globally:
 
 ```shell
-ts-unused-exports path/to/tsconfig.json
+ts-unused-exports path/to/tsconfig.json [file1.ts ...]
 ```
 
 or:
 ```ts
 import analyzeTsConfig from 'ts-unused-exports';
 const result = analyzeTsConfig('path/to/tsconfig.json');
+// or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts']);
 
 // result : { [index:string] : string[] }
 // where the keys are file paths and the values are unused symbols
 ```
+
+Note that if `ts-unused-exports` is called without files, the files will be read from the tsconfig's `files` key which must be present. If called with files, then those file paths should be relative to the `tsconfig.json`, just like you would specifie them in your tsconfig's `files` key.
 
 Why should I use this?
 ----------------------
@@ -86,4 +89,16 @@ Also note the exit status (which equals the number of offending modules):
 echo $?
 # or: echo %ERRORLEVEL%
 1
+```
+
+If not using `files` inside your `tsconfig` (e.g. using `webpack` with `ts-loader`), you can explicitly specify the files to check in the command line:
+
+```shell
+./bin/ts-unused-exports example/tsconfig.json app.ts math.ts
+```
+
+or, in a more generic way:
+
+```shell
+./bin/ts-unused-exports example/tsconfig.json $(cd example; find -name '*.ts')
 ```
