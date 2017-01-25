@@ -3,10 +3,20 @@ import { dirname } from 'path';
 import parseFiles from './parser';
 import analyze from './analyzer';
 
-const loadTsConfig = (tsconfigPath:string):string[] => {
-  const files:(string[]|undefined) = JSON.parse(
+interface TsConfig {
+  compilerOptions?: {
+    baseUrl?: string
+  }
+  files?: string[]
+}
+
+const loadTsConfig = (tsconfigPath:string) => {
+  const tsConfig:TsConfig = JSON.parse(
     readFileSync(tsconfigPath, { encoding: 'utf8' })
-  ).files;
+  );
+
+  const { files, compilerOptions } = tsConfig;
+
   if (!files) throw `
     The tsconfig does not contain a "files" key:
 
@@ -15,13 +25,18 @@ const loadTsConfig = (tsconfigPath:string):string[] => {
     Consider either passing an explicit list of files or adding the "files" key.
   `;
 
-  return files;
+  const baseUrl = compilerOptions && compilerOptions.baseUrl;
+
+  return { baseUrl, files} ;
 };
 
-export default (tsconfigPath:string, files?:string[]) =>
-  analyze(
+export default (tsconfigPath:string, files?:string[]) => {
+  const tsConfig = loadTsConfig(tsconfigPath);
+  return analyze(
     parseFiles(
       dirname(tsconfigPath),
-      files || loadTsConfig(tsconfigPath)
+      files || tsConfig.files,
+      tsConfig.baseUrl
     )
   );
+};
