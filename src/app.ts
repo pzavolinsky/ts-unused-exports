@@ -10,10 +10,17 @@ interface TsConfig {
   files?: string[]
 }
 
-const loadTsConfig = (tsconfigPath:string) => {
-  const tsConfig:TsConfig = JSON.parse(
+const loadTsConfig = (
+  tsconfigPath:string,
+  explicitFiles:string[]|undefined
+) => {
+  const rawTsConfig:TsConfig = JSON.parse(
     readFileSync(tsconfigPath, { encoding: 'utf8' })
   );
+
+  const tsConfig = explicitFiles
+    ? { ...rawTsConfig, files: explicitFiles }
+    : rawTsConfig;
 
   const { files, compilerOptions } = tsConfig;
 
@@ -31,11 +38,11 @@ const loadTsConfig = (tsconfigPath:string) => {
 };
 
 export default (tsconfigPath:string, files?:string[]) => {
-  const tsConfig = loadTsConfig(tsconfigPath);
+  const tsConfig = loadTsConfig(tsconfigPath, files);
   return analyze(
     parseFiles(
       dirname(tsconfigPath),
-      files || tsConfig.files,
+      tsConfig.files,
       tsConfig.baseUrl
     )
   );
