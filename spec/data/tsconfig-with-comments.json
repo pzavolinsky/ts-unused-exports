@@ -1,0 +1,7 @@
+{
+  // This is a comment
+  "files": [
+    "./exports.ts",
+    "./import-a.ts"
+  ]
+}

@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { dirname } from 'path';
+import stripJsonComments = require('strip-json-comments');
 import parseFiles from './parser';
 import analyze from './analyzer';
 
@@ -15,7 +16,9 @@ const loadTsConfig = (
   explicitFiles:string[]|undefined
 ) => {
   const rawTsConfig:TsConfig = JSON.parse(
-    readFileSync(tsconfigPath, { encoding: 'utf8' })
+    stripJsonComments(
+      readFileSync(tsconfigPath, { encoding: 'utf8' })
+    )
   );
 
   const tsConfig = explicitFiles
