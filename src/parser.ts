@@ -126,7 +126,7 @@ const mapFile = (
   };
 
   ts.forEachChild(file, (node:ts.Node) => {
-    const { kind, modifiers } = node;
+    const { kind } = node;
 
     if (kind === ts.SyntaxKind.ImportDeclaration) {
       addImport(extractImport(node as ts.ImportDeclaration));
@@ -180,7 +180,30 @@ const parseFile = (rootDir:string, path:string, baseUrl?:string) : File =>
     baseUrl
   );
 
+const parsePaths = (
+  rootDir:string,
+  paths:string[],
+  baseUrl:string|undefined,
+  otherFiles:File[]
+):File[] => {
+  const files = otherFiles.concat(
+    paths
+    .filter(p => p.indexOf('.d.') == -1)
+    .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl))
+  );
+
+  const found:{ [path:string]:File } = {};
+  files.forEach(f => found[f.path] = f);
+
+  const missingImports = ([] as string[])
+    .concat(...files.map(f => Object.keys(f.imports)))
+    .filter(i => !found[i])
+    .map(i => `${i}.ts`);
+
+  return missingImports.length
+    ? parsePaths(rootDir, missingImports, baseUrl, files)
+    : files;
+};
+
 export default (rootDir:string, paths:string[], baseUrl?:string):File[] =>
-  paths
-  .filter(p => p.indexOf('.d.') == -1)
-  .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl));
+  parsePaths(rootDir, paths, baseUrl, []);

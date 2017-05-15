@@ -2,8 +2,13 @@ const { join } = require('path');
 const app = require('../lib/app').default;
 
 describe('app', () => {
-  it('support comments in tsconfig', () => {
+  it('supports comments in tsconfig', () => {
     // should not throw
     app(join(__dirname, 'data/tsconfig-with-comments.json'));
+  });
+
+  it('recurses into imports', () => {
+    const analysis = app(join(__dirname, 'data/tsconfig-single-file.json'));
+    expect(analysis.exports).toEqual([ 'b', 'c', 'd', 'default' ]);
   });
 });

@@ -1,6 +1,7 @@
 {
   "extends": "tslint:recommended",
   "rules": {
+    "arrow-parens": false,
     "curly": false,
     "interface-name": [true, "never-prefix"],
     "max-line-length": [true, 80],
@@ -16,6 +17,7 @@
         "check-open-brace",
         "check-whitespace"
     ],
+    "ordered-imports": false,
     "quotemark": [true, "single", "avoid-escape", "jsx-double"],
     "radix": false,
     "semicolon": [true, "always", "ignore-interfaces"],
