@@ -180,6 +180,28 @@ const parseFile = (rootDir:string, path:string, baseUrl?:string) : File =>
     baseUrl
   );
 
+const resolvePath = (rootDir:string) => (path:string):string => {
+  const tsPath = `${path}.ts`;
+  if (existsSync(resolve(rootDir, tsPath))) return tsPath;
+
+  const tsxPath = `${path}.tsx`;
+  if (existsSync(resolve(rootDir, tsxPath))) return tsxPath;
+
+  const tsIndexPath = `${path}/index.ts`;
+  if (existsSync(resolve(rootDir, tsIndexPath))) return tsIndexPath;
+
+  const tsxIndexPath = `${path}/index.tsx`;
+  if (existsSync(resolve(rootDir, tsxIndexPath))) return tsxIndexPath;
+
+  throw `Cannot find module '${path}'.
+  I've tried the following paths and none of them works:
+  - ${tsPath}
+  - ${tsxPath}
+  - ${tsIndexPath}
+  - ${tsxIndexPath}
+  `;
+};
+
 const parsePaths = (
   rootDir:string,
   paths:string[],
@@ -198,7 +220,7 @@ const parsePaths = (
   const missingImports = ([] as string[])
     .concat(...files.map(f => Object.keys(f.imports)))
     .filter(i => !found[i])
-    .map(i => `${i}.ts`);
+    .map(resolvePath(rootDir));
 
   return missingImports.length
     ? parsePaths(rootDir, missingImports, baseUrl, files)

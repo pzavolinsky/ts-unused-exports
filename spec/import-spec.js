@@ -31,6 +31,11 @@ describe('analyze', () => {
     expect(result['import-export-star']).toEqual([ 'a', 'b', 'c', 'd' ]);
   });
 
+  it('handles import from directory index', () => {
+    const result = testWith(['./index-dir/index.ts']);
+    expect(result).toEqual({});
+  });
+
   describe('indexed modules', () => {
     const testIndex = (paths, expected) => expect(
         testWith(['./has-index/index.ts'].concat(paths))['has-index']
