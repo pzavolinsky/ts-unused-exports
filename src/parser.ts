@@ -92,8 +92,10 @@ const relativeTo = (rootDir:string, file:string, path:string) : string =>
   relative(rootDir, resolve(dirname(file), path));
 
 const isRelativeToBaseDir = (baseDir:string, from:string) =>
-  existsSync(resolve(baseDir, `${from}.ts`))
+  existsSync(resolve(baseDir, `${from}.js`))
+  || existsSync(resolve(baseDir, `${from}.ts`))
   || existsSync(resolve(baseDir, `${from}.tsx`))
+  || existsSync(resolve(baseDir, from, 'index.js'))
   || existsSync(resolve(baseDir, from, 'index.ts'))
   || existsSync(resolve(baseDir, from, 'index.tsx'))
   ;
@@ -181,11 +183,17 @@ const parseFile = (rootDir:string, path:string, baseUrl?:string) : File =>
   );
 
 const resolvePath = (rootDir:string) => (path:string):string => {
+  const jsPath = `${path}.js`;
+  if (existsSync(resolve(rootDir, jsPath))) return jsPath;
+
   const tsPath = `${path}.ts`;
   if (existsSync(resolve(rootDir, tsPath))) return tsPath;
 
   const tsxPath = `${path}.tsx`;
   if (existsSync(resolve(rootDir, tsxPath))) return tsxPath;
+
+  const jsIndexPath = `${path}/index.js`;
+  if (existsSync(resolve(rootDir, jsIndexPath))) return jsIndexPath;
 
   const tsIndexPath = `${path}/index.ts`;
   if (existsSync(resolve(rootDir, tsIndexPath))) return tsIndexPath;
