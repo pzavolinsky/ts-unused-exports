@@ -24,6 +24,8 @@ describe('analyze', () => {
   itIs('*'      , ['./import-star.ts']     , [ 'default' ]);
   itIs('all'    , ['./import-star.ts'
                   ,'./import-default.ts'], undefined);
+  itIs('non-ts' , ['./import-other.ts']    , [ 'b', 'c', 'd', 'default' ]);
+
   it('handles export * from', () => {
     const result = testExports(['./import-export-star.ts']);
 
@@ -96,5 +98,4 @@ describe('analyze', () => {
       ['a', 'b', 'c', 'd']
     );
   });
-
 });

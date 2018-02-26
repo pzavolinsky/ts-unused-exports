@@ -182,10 +182,7 @@ const parseFile = (rootDir:string, path:string, baseUrl?:string) : File =>
     baseUrl
   );
 
-const resolvePath = (rootDir:string) => (path:string):string => {
-  const jsPath = `${path}.js`;
-  if (existsSync(resolve(rootDir, jsPath))) return jsPath;
-
+const resolvePath = (rootDir:string) => (path:string):string|null => {
   const tsPath = `${path}.ts`;
   if (existsSync(resolve(rootDir, tsPath))) return tsPath;
 
@@ -201,14 +198,25 @@ const resolvePath = (rootDir:string) => (path:string):string => {
   const tsxIndexPath = `${path}/index.tsx`;
   if (existsSync(resolve(rootDir, tsxIndexPath))) return tsxIndexPath;
 
+  const jsPath = `${path}.js`;
+  if (existsSync(resolve(rootDir, jsPath))) return jsPath;
+
+  if (existsSync(resolve(rootDir, path))) {
+    return null; // we have an explicit path that is *not* a TS (e.g. `.sass`).
+  }
+
   throw `Cannot find module '${path}'.
   I've tried the following paths and none of them works:
   - ${tsPath}
   - ${tsxPath}
   - ${tsIndexPath}
   - ${tsxIndexPath}
+  - ${jsPath}
+  - ${path} (only to skip it later)
   `;
 };
+
+const notNull = <T>(v:T | null): v is T => v !== null;
 
 const parsePaths = (
   rootDir:string,
@@ -228,7 +236,8 @@ const parsePaths = (
   const missingImports = ([] as string[])
     .concat(...files.map(f => Object.keys(f.imports)))
     .filter(i => !found[i])
-    .map(resolvePath(rootDir));
+    .map(resolvePath(rootDir))
+    .filter(notNull);
 
   return missingImports.length
     ? parsePaths(rootDir, missingImports, baseUrl, files)
