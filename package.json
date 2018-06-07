@@ -20,9 +20,9 @@
   },
   "homepage": "https://github.com/pzavolinsky/ts-unused-exports",
   "scripts": {
-    "build": "node_modules/.bin/tsc",
-    "watch": "node_modules/.bin/tsc -w",
-    "test": "npm run build && node_modules/.bin/jasmine",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "npm run build && jasmine",
     "exec": "bin/ts-unused-exports"
   },
   "bin": {
