@@ -10,14 +10,12 @@
     "node_modules"
   ],
   "filesGlob": [
-    "./typings/index.d.ts",
     "./src/**/*.ts"
   ],
   "atom": {
     "rewriteTsconfig": true
   },
   "files": [
-    "./typings/index.d.ts",
     "./src/analyzer.ts",
     "./src/app.ts",
     "./src/cli.ts",
