@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { dirname } from 'path';
 import stripJsonComments = require('strip-json-comments');
 import parseFiles from './parser';
-import analyze from './analyzer';
+import analyze, { Analysis } from './analyzer';
 
 interface TsConfig {
   compilerOptions?: {
@@ -40,7 +40,7 @@ const loadTsConfig = (
   return { baseUrl, files} ;
 };
 
-export default (tsconfigPath:string, files?:string[]) => {
+export default (tsconfigPath:string, files?:string[]): Analysis => {
   const tsConfig = loadTsConfig(tsconfigPath, files);
   return analyze(
     parseFiles(
