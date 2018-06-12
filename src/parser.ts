@@ -118,7 +118,7 @@ const mapFile = (
     const { from, what } = fw;
     const key = from[0] == '.'
       ? relativeTo(rootDir, path, from)
-      : baseDir && isRelativeToBaseDir(baseDir, from)
+      : baseDir && baseUrl && isRelativeToBaseDir(baseDir, from)
         ? join(baseUrl, from)
         : undefined;
     if (!key) return undefined;
