@@ -15,22 +15,23 @@ describe('analyze', () => {
   const itIs = (what, paths, expected) =>
     it(`handles import ${what}`, () => { test1(paths, expected); });
 
-  itIs('nothing', []                       , [ 'a', 'b', 'c', 'd', 'default' ]);
-  itIs('default', ['./import-default.ts']  , [ 'a', 'b', 'c', 'd' ]);
-  itIs('a'      , ['./import-a.ts']        , [ 'b', 'c', 'd', 'default' ]);
-  itIs('b'      , ['./import-b.ts']        , [ 'a', 'c', 'd', 'default' ]);
-  itIs('c'      , ['./import-c.ts']        , [ 'a', 'b', 'd', 'default' ]);
-  itIs('d'      , ['./import-d.ts']        , [ 'a', 'b', 'c', 'default' ]);
+  itIs('nothing', []                       , [ 'a', 'b', 'c', 'd', 'e', 'default' ]);
+  itIs('default', ['./import-default.ts']  , [ 'a', 'b', 'c', 'd', 'e' ]);
+  itIs('a'      , ['./import-a.ts']        , [ 'b', 'c', 'd', 'e', 'default' ]);
+  itIs('b'      , ['./import-b.ts']        , [ 'a', 'c', 'd', 'e', 'default' ]);
+  itIs('c'      , ['./import-c.ts']        , [ 'a', 'b', 'd', 'e', 'default' ]);
+  itIs('d'      , ['./import-d.ts']        , [ 'a', 'b', 'c', 'e', 'default' ]);
+  itIs('e'      , ['./import-e.ts']        , [ 'a', 'b', 'c', 'd', 'default' ]);
   itIs('*'      , ['./import-star.ts']     , [ 'default' ]);
   itIs('all'    , ['./import-star.ts'
                   ,'./import-default.ts'], undefined);
-  itIs('non-ts' , ['./import-other.ts']    , [ 'b', 'c', 'd', 'default' ]);
+  itIs('non-ts' , ['./import-other.ts']    , [ 'b', 'c', 'd', 'e', 'default' ]);
 
   it('handles export * from', () => {
     const result = testExports(['./import-export-star.ts']);
 
     expect(result['exports']).toEqual(['default']);
-    expect(result['import-export-star']).toEqual([ 'a', 'b', 'c', 'd' ]);
+    expect(result['import-export-star']).toEqual([ 'a', 'b', 'c', 'd', 'e' ]);
   });
 
   it('handles import from directory index', () => {
@@ -91,11 +92,11 @@ describe('analyze', () => {
 
     itIs('value',
       ['./import-a-with-base-url.ts'],
-      ['b', 'c', 'd', 'default']
+      ['b', 'c', 'd', 'e', 'default']
     );
     itIs('default',
       ['./import-default-with-base-url.ts'],
-      ['a', 'b', 'c', 'd']
+      ['a', 'b', 'c', 'd', 'e']
     );
   });
 });

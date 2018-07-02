@@ -9,6 +9,6 @@ describe('app', () => {
 
   it('recurses into imports', () => {
     const analysis = app(join(__dirname, 'data/tsconfig-single-file.json'));
-    expect(analysis.exports).toEqual([ 'b', 'c', 'd', 'default' ]);
+    expect(analysis.exports).toEqual([ 'b', 'c', 'd', 'e', 'default' ]);
   });
 });

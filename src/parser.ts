@@ -49,6 +49,13 @@ const extractImport = (decl:ts.ImportDeclaration) : FromWhat => {
   };
 };
 
+const extractExportStatement = (decl:ts.ExportDeclaration): string[] => {
+  return decl.exportClause
+    ? decl.exportClause.elements
+      .map(e => (e.propertyName || e.name).text)
+    : [];
+};
+
 const extractExportFromImport = (decl:ts.ExportDeclaration) : FromWhat => {
   const { moduleSpecifier, exportClause } = decl;
   if (!moduleSpecifier) return {
@@ -140,17 +147,22 @@ const mapFile = (
       return;
     }
     if (kind === ts.SyntaxKind.ExportDeclaration) {
-      const fw = extractExportFromImport(node as ts.ExportDeclaration);
-      const key = addImport(fw);
-      if (key) {
-        const { what } = fw;
-        if (what == star) {
-          exports.push(`*:${key}`);
-        } else {
-          exports = exports.concat(what);
+      if ((node as ts.ExportDeclaration).moduleSpecifier === undefined) {
+        exports.push(...extractExportStatement(node as ts.ExportDeclaration));
+        return;
+      } else {
+        const fw = extractExportFromImport(node as ts.ExportDeclaration);
+        const key = addImport(fw);
+        if (key) {
+          const { what } = fw;
+          if (what == star) {
+            exports.push(`*:${key}`);
+          } else {
+            exports = exports.concat(what);
+          }
         }
+        return;
       }
-      return;
     }
 
     if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
