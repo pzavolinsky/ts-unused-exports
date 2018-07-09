@@ -74,6 +74,22 @@ describe('analyze', () => {
       testDefault(['./import-default-function.ts'], undefined));
   });
 
+  describe('exported default named function', () => {
+    const testDefault = (paths, expected) => expect(
+        testWith(
+          ['./export-default-named-function.ts'].concat(paths)
+        )['export-default-named-function']
+      ).toEqual(
+        expected
+      );
+
+    it('handles missing import', () =>
+      testDefault([], ['default']));
+
+    it('handles import', () =>
+      testDefault(['./import-default-named-function.ts'], undefined));
+  });
+
   describe('baseUrl', () => {
     const testBaseUrl = (paths, expected, ext) => () => expect(
         testWith(

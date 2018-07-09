@@ -154,10 +154,15 @@ const mapFile = (
     }
 
     if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
+      if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
+        exports.push('default');
+        return;
+      }
       const decl = (node as ts.DeclarationStatement);
       const name = decl.name
         ? decl.name.text
         : extractExport(path, node);
+
       if (name) exports.push(name);
     }
   });
