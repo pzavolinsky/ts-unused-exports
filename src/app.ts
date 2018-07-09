@@ -1,43 +1,49 @@
 import { readFileSync } from 'fs';
-import { dirname } from 'path';
-import stripJsonComments = require('strip-json-comments');
+import * as ts from 'typescript';
+import { dirname, resolve } from 'path';
 import parseFiles from './parser';
 import analyze from './analyzer';
 
-interface TsConfig {
-  compilerOptions?: {
-    baseUrl?: string
+const parseTsConfig = (tsconfigPath:string) => {
+  const basePath = resolve(dirname(tsconfigPath));
+
+  try {
+    const parseJsonResult = ts.parseConfigFileTextToJson(
+      tsconfigPath,
+      readFileSync(tsconfigPath, { encoding: 'utf8' }),
+    );
+
+    if (parseJsonResult.error) throw parseJsonResult.error;
+
+    const result = ts.parseJsonConfigFileContent(
+      parseJsonResult.config,
+      ts.sys,
+      basePath,
+    );
+    if (result.errors.length) throw result.errors;
+
+    return {
+      baseUrl: result.raw
+        && result.raw.compilerOptions
+        && result.raw.compilerOptions.baseUrl,
+      files: result.fileNames,
+    };
+  } catch (e) {
+    throw `
+    Cannot parse '${tsconfigPath}'.
+
+    ${JSON.stringify(e)}
+  `;
   }
-  files?: string[]
-}
+};
 
 const loadTsConfig = (
   tsconfigPath:string,
   explicitFiles:string[]|undefined
 ) => {
-  const rawTsConfig:TsConfig = JSON.parse(
-    stripJsonComments(
-      readFileSync(tsconfigPath, { encoding: 'utf8' })
-    )
-  );
+  const { baseUrl, files } = parseTsConfig(tsconfigPath);
 
-  const tsConfig = explicitFiles
-    ? { ...rawTsConfig, files: explicitFiles }
-    : rawTsConfig;
-
-  const { files, compilerOptions } = tsConfig;
-
-  if (!files) throw `
-    The tsconfig does not contain a "files" key:
-
-      ${tsconfigPath}
-
-    Consider either passing an explicit list of files or adding the "files" key.
-  `;
-
-  const baseUrl = compilerOptions && compilerOptions.baseUrl;
-
-  return { baseUrl, files} ;
+  return { baseUrl, files: explicitFiles || files };
 };
 
 export default (tsconfigPath:string, files?:string[]) => {

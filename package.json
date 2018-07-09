@@ -1,6 +1,6 @@
 {
   "name": "ts-unused-exports",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "ts-unused-exports finds unused exported symbols in your Typescript project",
   "main": "lib/app.js",
   "repository": {
@@ -29,13 +29,13 @@
     "ts-unused-exports": "bin/ts-unused-exports"
   },
   "devDependencies": {
-    "@types/node": "^10.3.1",
+    "@types/node": "^10.5.2",
     "@types/strip-json-comments": "0.0.28",
-    "jasmine": "^2.4.1",
+    "jasmine": "^2.99.0",
     "tslint": "^4.5.1"
   },
   "dependencies": {
     "strip-json-comments": "^2.0.1",
-    "typescript": "^2.7.2"
+    "typescript": "^2.9.2"
   }
 }

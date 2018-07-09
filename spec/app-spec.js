@@ -11,4 +11,10 @@ describe('app', () => {
     const analysis = app(join(__dirname, 'data/tsconfig-single-file.json'));
     expect(analysis.exports).toEqual([ 'b', 'c', 'd', 'default' ]);
   });
+
+  it('understands tsconfig include', () => {
+    const analysis = app(join(__dirname, 'data/tsconfig-include.json'));
+    expect(analysis.exports).toEqual([ 'b', 'c', 'd', 'default' ]);
+  });
+
 });
