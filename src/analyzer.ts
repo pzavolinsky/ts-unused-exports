@@ -1,4 +1,5 @@
 import { File, Imports, Analysis } from './types';
+export { Analysis } from './types'
 
 interface FileExports {
   [index:string]:number

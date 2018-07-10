@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import * as ts from 'typescript';
 import { dirname, resolve } from 'path';
 import parseFiles from './parser';
-import analyze from './analyzer';
+import analyze, { Analysis } from './analyzer';
 
 const parseTsConfig = (tsconfigPath:string) => {
   const basePath = resolve(dirname(tsconfigPath));
@@ -46,7 +46,7 @@ const loadTsConfig = (
   return { baseUrl, files: explicitFiles || files };
 };
 
-export default (tsconfigPath:string, files?:string[]) => {
+export default (tsconfigPath:string, files?:string[]): Analysis => {
   const tsConfig = loadTsConfig(tsconfigPath, files);
   return analyze(
     parseFiles(
