@@ -40,7 +40,7 @@ try {
 
   files.forEach(path => console.log(`${path}: ${analysis[path].join(', ')}`));
 
-  process.exit(files.length);
+  process.exit(Math.min(255, files.length));
 } catch (e) {
   console.error(e);
   process.exit(-1);
