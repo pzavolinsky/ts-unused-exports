@@ -5,27 +5,33 @@ interface FileExports {
   [index:string]:number
 }
 
-interface ExportMap {
-  [index:string]:FileExports
+interface ExportItem {
+  exports: FileExports,
+  path: string;
 }
 
-const getFileExports = (exports:string[]) : FileExports => {
-  const ex:FileExports = {};
-  exports.forEach(e => ex[e] = 0);
-  return ex;
+interface ExportMap {
+  [index:string]:ExportItem;
+}
+
+const getFileExports = (file:File) : ExportItem => {
+  const exports:FileExports = {};
+  file.exports.forEach(e => exports[e] = 0);
+
+  return { exports, path: file.fullPath };
 };
 
 const getExportMap = (files:File[]) : ExportMap => {
   const map:ExportMap = {};
   files.forEach(file => {
-    map[file.path] = getFileExports(file.exports);
+    map[file.path] = getFileExports(file);
   });
   return map;
 };
 
 const processImports = (imports:Imports, exportMap:ExportMap) => {
   Object.keys(imports).forEach(key => {
-    const ex = exportMap[key];
+    const ex = exportMap[key] && exportMap[key].exports;
     if (!ex) return;
     imports[key].forEach(imp =>
       imp == '*'
@@ -41,10 +47,11 @@ const expandExportFromStar = (files:File[], exportMap:ExportMap) => {
       .exports
       .filter(ex => ex.indexOf('*:') === 0)
       .forEach(ex => {
-        delete fileExports[ex];
-        Object.keys(exportMap[ex.slice(2)])
+        delete fileExports.exports[ex];
+
+        Object.keys(exportMap[ex.slice(2)].exports)
           .filter(e => e != 'default')
-          .forEach(key => fileExports[key] = 0);
+          .forEach(key => fileExports.exports[key] = 0);
       });
   });
 };
@@ -57,9 +64,11 @@ export default (files:File[]) : Analysis => {
   const analysis:Analysis = {};
 
   Object.keys(exportMap).forEach(file => {
-    const ex = exportMap[file];
-    const unused = Object.keys(ex).filter(k => ex[k] === 0);
-    if (unused.length) analysis[file] = unused;
+    const expItem = exportMap[file];
+    const { exports, path } = expItem;
+    const unused = Object.keys(exports).filter(k => exports[k] === 0);
+
+    if (unused.length) analysis[path] = unused;
   });
 
   return analysis;

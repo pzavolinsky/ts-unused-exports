@@ -1,15 +1,15 @@
 const { join } = require('path');
 const parseFiles = require('../lib/parser').default;
 const analyzeFiles = require('../lib/analyzer').default;
+const { getExportsString } = require('./helper');
 
-const testWith = (files, baseUrl) =>
+const analyzePaths = (files, baseUrl) =>
   analyzeFiles(parseFiles('./spec/data', { files, baseUrl }));
-const testExports = (paths) => testWith(['./exports.ts'].concat(paths));
-const test1 = (paths, expected) => expect(
-    testExports(paths)['exports']
-  ).toEqual(
-    expected
-  );
+const testWithResults = (...args) =>
+  getExportsString(analyzePaths(...args));
+
+  const testExports = (paths) => testWithResults(['./exports.ts'].concat(paths));
+const test1 = (paths, expected) => expect(testExports(paths)).toEqual(expected);
 
 describe('analyze', () => {
   const itIs = (what, paths, expected) =>
@@ -24,24 +24,25 @@ describe('analyze', () => {
   itIs('e'      , ['./import-e.ts']        , [ 'a', 'b', 'c', 'd', 'default' ]);
   itIs('*'      , ['./import-star.ts']     , [ 'default' ]);
   itIs('all'    , ['./import-star.ts'
-                  ,'./import-default.ts'], undefined);
+                  ,'./import-default.ts'], []);
   itIs('non-ts' , ['./import-other.ts']    , [ 'b', 'c', 'd', 'e', 'default' ]);
 
   it('handles export * from', () => {
-    const result = testExports(['./import-export-star.ts']);
+    const result = analyzePaths(['./exports.ts', './import-export-star.ts']);
+    const keys = Object.keys(result);
 
-    expect(result['exports']).toEqual(['default']);
-    expect(result['import-export-star']).toEqual([ 'a', 'b', 'c', 'd', 'e' ]);
+    expect(result[keys[0]]).toEqual(['default']);
+    expect(result[keys[1]]).toEqual([ 'a', 'b', 'c', 'd', 'e' ]);
   });
 
   it('handles import from directory index', () => {
-    const result = testWith(['./index-dir/index.ts']);
-    expect(result).toEqual({});
+    const result = testWithResults(['./index-dir/index.ts']);
+    expect(result).toEqual([]);
   });
 
   describe('indexed modules', () => {
     const testIndex = (paths, expected) => expect(
-        testWith(['./has-index/index.ts'].concat(paths))['has-index']
+        testWithResults(['./has-index/index.ts'].concat(paths))
       ).toEqual(
         expected
       );
@@ -50,20 +51,20 @@ describe('analyze', () => {
       testIndex([], ['default']));
 
     it('handles implicit index imports', () =>
-      testIndex(['./import-index-implicit.ts'], undefined));
+      testIndex(['./import-index-implicit.ts'], []));
 
     it('handles explicit index imports', () =>
-      testIndex(['./import-index-explicit.ts'], undefined));
+      testIndex(['./import-index-explicit.ts'], []));
 
     it('handles explicit index imports in the same directory', () =>
-      testIndex(['./has-index/import-same-index.ts'], undefined));
+      testIndex(['./has-index/import-same-index.ts'], []));
   });
 
   describe('exported default function', () => {
     const testDefault = (paths, expected) => expect(
-        testWith(
+        testWithResults(
           ['./export-default-function.ts'].concat(paths)
-        )['export-default-function']
+        )
       ).toEqual(
         expected
       );
@@ -72,31 +73,27 @@ describe('analyze', () => {
       testDefault([], ['default']));
 
     it('handles import', () =>
-      testDefault(['./import-default-function.ts'], undefined));
+      testDefault(['./import-default-function.ts'], []));
   });
 
   describe('exported default named function', () => {
-    const testDefault = (paths, expected) => expect(
-        testWith(
-          ['./export-default-named-function.ts'].concat(paths)
-        )['export-default-named-function']
-      ).toEqual(
-        expected
-      );
+    const testDefault = (paths, expected) =>
+      expect(testWithResults(['./export-default-named-function.ts'].concat(paths)))
+        .toEqual(expected);
 
     it('handles missing import', () =>
       testDefault([], ['default']));
 
     it('handles import', () =>
-      testDefault(['./import-default-named-function.ts'], undefined));
+      testDefault(['./import-default-named-function.ts'], []));
   });
 
   describe('baseUrl', () => {
     const testBaseUrl = (paths, expected, ext) => () => expect(
-        testWith(
+        testWithResults(
           [`./mod-dir-${ext}/exports.${ext}`].concat(paths),
           `./mod-dir-${ext}`
-        )[join(`mod-dir-${ext}`, 'exports')]
+        )
       ).toEqual(
         expected
       );

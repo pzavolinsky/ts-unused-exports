@@ -208,6 +208,7 @@ const mapFile = (
 
   return {
     path: name,
+    fullPath: path,
     imports,
     exports
   };
