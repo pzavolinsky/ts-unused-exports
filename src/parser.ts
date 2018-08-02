@@ -52,7 +52,7 @@ const extractImport = (decl:ts.ImportDeclaration) : FromWhat => {
 const extractExportStatement = (decl:ts.ExportDeclaration): string[] => {
   return decl.exportClause
     ? decl.exportClause.elements
-      .map(e => (e.propertyName || e.name).text)
+      .map(e => (e.name || e.propertyName).text)
     : [];
 };
 
