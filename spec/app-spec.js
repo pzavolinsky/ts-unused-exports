@@ -9,7 +9,7 @@ describe('app', () => {
 
   it('understands tsconfig include', () => {
     const analysis = app(join(__dirname, 'data/tsconfig-include.json'));
-    expect(analysis.exports).toEqual([ 'b', 'c', 'd', 'e', 'default' ]);
+    expect(analysis.exports).toEqual([ 'a', 'b', 'c', 'd', 'e', 'default' ]);
   });
 
 });

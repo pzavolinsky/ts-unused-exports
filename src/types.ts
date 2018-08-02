@@ -11,3 +11,13 @@ export interface File {
 export interface Analysis {
   [index:string]:string[]
 }
+
+export interface TsConfigPaths {
+  [glob:string]:string[];
+}
+
+export interface TsConfig {
+  baseUrl?: string;
+  paths?: TsConfigPaths;
+  files: string[];
+}

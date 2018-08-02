@@ -1,9 +1,12 @@
 import { existsSync, readFileSync } from 'fs';
-import { dirname, resolve, relative, join } from 'path';
+import { dirname, resolve, relative, join, sep } from 'path';
 import * as ts from 'typescript';
-import { File, Imports } from './types';
+import * as tsconfigPaths from 'tsconfig-paths';
+import { File, TsConfig, TsConfigPaths, Imports } from './types';
 
 const TRIM_QUOTES = /^['"](.*)['"]$/;
+
+const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
 
 interface FromWhat {
   from: string
@@ -115,19 +118,43 @@ const mapFile = (
   rootDir:string,
   path:string,
   file:ts.SourceFile,
-  baseUrl?:string
+  baseUrl?:string,
+  paths?:TsConfigPaths,
 ) : File => {
   const imports:Imports = {};
   let exports:string[] = [];
   const name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
   const baseDir = baseUrl && resolve(rootDir, baseUrl);
+
+  const tsconfigPathsMatcher =
+    baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
+
   const addImport = (fw:FromWhat) => {
     const { from, what } = fw;
-    const key = from[0] == '.'
-      ? relativeTo(rootDir, path, from)
-      : baseDir && baseUrl && isRelativeToBaseDir(baseDir, from)
-        ? join(baseUrl, from)
+
+    const getKey = (from:string) => {
+      if (from[0] == '.') {
+        return relativeTo(rootDir, path, from);
+      } else if (baseDir && baseUrl) {
+        let matchedPath;
+
+        return isRelativeToBaseDir(baseDir, from)
+          ? baseUrl && join(baseUrl, from)
+          : tsconfigPathsMatcher &&
+            (matchedPath = tsconfigPathsMatcher(
+              from,
+              undefined,
+              undefined,
+              EXTENSIONS
+            ))
+            ? matchedPath.replace(`${baseDir}${sep}`, '')
         : undefined;
+      }
+
+      return undefined;
+    };
+
+    const key = getKey(from);
     if (!key) return undefined;
     const items = imports[key] || [];
     imports[key] = items.concat(what);
@@ -186,7 +213,12 @@ const mapFile = (
   };
 };
 
-const parseFile = (rootDir:string, path:string, baseUrl?:string) : File =>
+const parseFile = (
+  rootDir:string,
+  path:string,
+  baseUrl?:string,
+  paths?:TsConfigPaths
+): File =>
   mapFile(
     rootDir,
     path,
@@ -196,23 +228,20 @@ const parseFile = (rootDir:string, path:string, baseUrl?:string) : File =>
       ts.ScriptTarget.ES2015,
       /*setParentNodes */ true
     ),
-    baseUrl
+    baseUrl,
+    paths
   );
 
 const parsePaths = (
   rootDir:string,
-  paths:string[],
-  baseUrl:string|undefined,
+  {baseUrl, files: filePaths, paths}:TsConfig,
 ):File[] => {
-  const files = paths
+  const files = filePaths
     .filter(p => p.indexOf('.d.') == -1)
-    .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl));
-
-  const found:{ [path:string]:File } = {};
-  files.forEach(f => found[f.path] = f);
+    .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl, paths));
 
   return files;
 };
 
-export default (rootDir:string, paths:string[], baseUrl?:string):File[] =>
-  parsePaths(rootDir, paths, baseUrl);
+export default (rootDir:string, TsConfig:TsConfig):File[] =>
+  parsePaths(rootDir, TsConfig);

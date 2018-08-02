@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "strip-json-comments": "^2.0.1",
+    "tsconfig-paths": "^3.5.0",
     "typescript": "^2.9.2"
   }
 }

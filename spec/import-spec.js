@@ -2,8 +2,8 @@ const { join } = require('path');
 const parseFiles = require('../lib/parser').default;
 const analyzeFiles = require('../lib/analyzer').default;
 
-const testWith = (paths, baseUrl) =>
-  analyzeFiles(parseFiles('./spec/data', paths, baseUrl));
+const testWith = (files, baseUrl) =>
+  analyzeFiles(parseFiles('./spec/data', { files, baseUrl }));
 const testExports = (paths) => testWith(['./exports.ts'].concat(paths));
 const test1 = (paths, expected) => expect(
     testExports(paths)['exports']
