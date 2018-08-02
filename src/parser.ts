@@ -199,67 +199,20 @@ const parseFile = (rootDir:string, path:string, baseUrl?:string) : File =>
     baseUrl
   );
 
-const resolvePath = (rootDir:string) => (path:string):string|null => {
-  const tsPath = `${path}.ts`;
-  if (existsSync(resolve(rootDir, tsPath))) return tsPath;
-
-  const tsxPath = `${path}.tsx`;
-  if (existsSync(resolve(rootDir, tsxPath))) return tsxPath;
-
-  const jsIndexPath = `${path}/index.js`;
-  if (existsSync(resolve(rootDir, jsIndexPath))) return jsIndexPath;
-
-  const tsIndexPath = `${path}/index.ts`;
-  if (existsSync(resolve(rootDir, tsIndexPath))) return tsIndexPath;
-
-  const tsxIndexPath = `${path}/index.tsx`;
-  if (existsSync(resolve(rootDir, tsxIndexPath))) return tsxIndexPath;
-
-  const jsPath = `${path}.js`;
-  if (existsSync(resolve(rootDir, jsPath))) return jsPath;
-
-  if (existsSync(resolve(rootDir, path))) {
-    return null; // we have an explicit path that is *not* a TS (e.g. `.sass`).
-  }
-
-  throw `Cannot find module '${path}'.
-  I've tried the following paths and none of them works:
-  - ${tsPath}
-  - ${tsxPath}
-  - ${tsIndexPath}
-  - ${tsxIndexPath}
-  - ${jsPath}
-  - ${path} (only to skip it later)
-  `;
-};
-
-const notNull = <T>(v:T | null): v is T => v !== null;
-
 const parsePaths = (
   rootDir:string,
   paths:string[],
   baseUrl:string|undefined,
-  otherFiles:File[]
 ):File[] => {
-  const files = otherFiles.concat(
-    paths
+  const files = paths
     .filter(p => p.indexOf('.d.') == -1)
-    .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl))
-  );
+    .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl));
 
   const found:{ [path:string]:File } = {};
   files.forEach(f => found[f.path] = f);
 
-  const missingImports = ([] as string[])
-    .concat(...files.map(f => Object.keys(f.imports)))
-    .filter(i => !found[i])
-    .map(resolvePath(rootDir))
-    .filter(notNull);
-
-  return missingImports.length
-    ? parsePaths(rootDir, missingImports, baseUrl, files)
-    : files;
+  return files;
 };
 
 export default (rootDir:string, paths:string[], baseUrl?:string):File[] =>
-  parsePaths(rootDir, paths, baseUrl, []);
+  parsePaths(rootDir, paths, baseUrl);
