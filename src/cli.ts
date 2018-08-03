@@ -1,5 +1,6 @@
-import analyzeTsConfig from './app';
+import chalk from 'chalk';
 import { existsSync, statSync } from 'fs';
+import analyzeTsConfig from './app';
 
 const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
@@ -34,11 +35,15 @@ try {
 
   const files = Object.keys(analysis);
 
-  console.log(`${files.length} module${
+  console.log(chalk.red(`${chalk.bold(files.length.toString())} module${
     files.length == 1 ? '' : 's'
-  } with unused exports`);
+  } with unused exports`));
 
-  files.forEach(path => console.log(`${path}: ${analysis[path].join(', ')}`));
+  files.forEach(
+    path => console.log(
+      `${path}: ${chalk.bold.yellow(analysis[path].join(', '))}`
+    )
+  );
 
   process.exit(Math.min(255, files.length));
 } catch (e) {
