@@ -135,6 +135,21 @@ const mapFile = (
   };
 
   ts.forEachChild(file, (node:ts.Node) => {
+    const comments = ts.getLeadingCommentRanges(
+      file.getFullText(),
+      node.getFullStart()
+    );
+
+    if (comments) {
+      const commentRange = comments[comments.length - 1];
+      const commentText = file
+        .getFullText()
+        .substring(commentRange.pos, commentRange.end);
+      if (commentText === '// ts-unused-exports:disable-next-line') {
+        return;
+      }
+    }
+
     const { kind } = node;
 
     if (kind === ts.SyntaxKind.ImportDeclaration) {

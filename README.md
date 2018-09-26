@@ -102,3 +102,10 @@ or, in a more generic way:
 ```shell
 ./bin/ts-unused-exports example/tsconfig.json $(cd example; find -name '*.ts')
 ```
+
+You can use comment flags to ignore exports:
+
+```ts
+// ts-unused-exports:disable-next-line
+export function add2(x:number) { return x + 2; }
+```
