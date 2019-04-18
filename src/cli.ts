@@ -1,5 +1,5 @@
-import analyzeTsConfig from './app';
-import { existsSync, statSync } from 'fs';
+import analyzeTsConfig from "./app";
+import { existsSync, statSync } from "fs";
 
 const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
@@ -27,20 +27,16 @@ if (!tsconfig || !existsSync(tsconfig) || !statSync(tsconfig).isFile()) {
 try {
   const analysis = analyzeTsConfig(
     tsconfig,
-    tsFiles.length
-      ? tsFiles
-      : undefined
+    tsFiles.length ? tsFiles : undefined
   );
 
   const files = Object.keys(analysis);
 
-  console.log(`${files.length} module${
-    files.length == 1 ? '' : 's'
-  } with unused exports`);
+  console.log(
+    `${files.length} module${files.length == 1 ? "" : "s"} with unused exports`
+  );
 
-  files.forEach(path => console.log(`${path}: ${analysis[path].join(', ')}`));
-
-  process.exit(Math.min(255, files.length));
+  files.forEach(path => console.log(`${path}: ${analysis[path].join(", ")}`));
 } catch (e) {
   console.error(e);
   process.exit(-1);
