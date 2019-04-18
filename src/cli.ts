@@ -27,15 +27,15 @@ if (!tsconfig || !existsSync(tsconfig) || !statSync(tsconfig).isFile()) {
 try {
   const analysis = analyzeTsConfig(
     tsconfig,
-    tsFiles.length 
-      ? tsFiles 
+    tsFiles.length
+      ? tsFiles
       : undefined
   );
 
   const files = Object.keys(analysis);
 
   console.log(`${files.length} module${
-    files.length == 1 ? "" : "s"
+    files.length == 1 ? '' : 's'
   } with unused exports`);
 
   files.forEach(path => console.log(`${path}: ${analysis[path].join(", ")}`));
