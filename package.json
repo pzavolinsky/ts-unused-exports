@@ -1,11 +1,11 @@
 {
-  "name": "ts-unused-exports",
+  "name": "ts-unused-exports-updated",
   "version": "2.0.11",
-  "description": "ts-unused-exports finds unused exported symbols in your Typescript project",
+  "description": "ts-unused-exports-updated finds unused exported symbols in your Typescript project. note: this is a fork of the original `ts-unused-exports` with recent PRs added.",
   "main": "lib/app.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pzavolinsky/ts-unused-exports.git"
+    "url": "https://github.com/mrseanryan/ts-unused-exports-updated.git"
   },
   "keywords": [
     "typescript",
@@ -16,17 +16,17 @@
   "author": "Patricio Zavolinsky",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pzavolinsky/ts-unused-exports/issues"
+    "url": "https://github.com/mrseanryan/ts-unused-exports-updated/issues"
   },
-  "homepage": "https://github.com/pzavolinsky/ts-unused-exports",
+  "homepage": "https://github.com/mrseanryan/ts-unused-exports-updated",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "npm run build && jasmine",
-    "exec": "bin/ts-unused-exports"
+    "exec": "bin/ts-unused-exports-updated"
   },
   "bin": {
-    "ts-unused-exports": "bin/ts-unused-exports"
+    "ts-unused-exports-updated": "bin/ts-unused-exports-updated"
   },
   "devDependencies": {
     "@types/node": "^10.5.2",
