@@ -1,8 +1,9 @@
 import { existsSync, statSync } from 'fs';
 import { dirname } from 'path';
 import parseFiles from './parser';
-import { File } from './types';
 import { loadTsConfig } from './app';
+import { File, ExtraCommandLineOptions } from './types';
+import extractOptionsFromFiles from './ArgsParser';
 
 interface FileMap {
   [index:string]:File
@@ -63,9 +64,9 @@ function analyzeFile(
   return dep;
 };
 
-const analyzeDeps = (tsconfigPath:string) => {
+const analyzeDeps = (tsconfigPath: string, extraOptions: ExtraCommandLineOptions) => {
   const tsConfig = loadTsConfig(tsconfigPath);
-  const files = parseFiles(dirname(tsconfigPath), tsConfig);
+  const files = parseFiles(dirname(tsconfigPath), tsConfig, extraOptions);
   const fileMap = getFileMap(files);
 
   const analysis:DepAnalysis = {};
@@ -75,10 +76,10 @@ const analyzeDeps = (tsconfigPath:string) => {
   return analysis;
 };
 
-const [ tsconfig, filter ] = process.argv.slice(2);
+const [ tsconfig, filter, ...options ] = process.argv.slice(2);
 
 if (!tsconfig || !existsSync(tsconfig) || !statSync(tsconfig).isFile()) {
-  console.error(`usage: deps path/to/tsconfig.json [filter]`);
+  console.error(`usage: deps path/to/tsconfig.json [filter] [--ignorePaths=path1;path2]`);
   process.exit(-1);
 }
 
@@ -88,7 +89,9 @@ const getValues = (o:DepAnalysis) =>
     []
   );
 
-const analysis = analyzeDeps(tsconfig);
+const parsedOptions = extractOptionsFromFiles(options).options;
+
+const analysis = analyzeDeps(tsconfig, parsedOptions);
 const deps = getValues(analysis);
 deps.sort((a, b) => a.depth - b.depth);
 

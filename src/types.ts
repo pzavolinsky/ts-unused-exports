@@ -22,3 +22,7 @@ export interface TsConfig {
   paths?: TsConfigPaths;
   files: string[];
 }
+
+export interface ExtraCommandLineOptions {
+  pathsToIgnore?: string[];
+}
