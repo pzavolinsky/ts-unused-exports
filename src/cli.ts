@@ -38,9 +38,7 @@ try {
     files.length == 1 ? '' : 's'
   } with unused exports`);
 
-  files.forEach(path => console.log(`${path}: ${analysis[path].join(', ')}`));
-
-  process.exit(Math.min(255, files.length));
+  files.forEach(path => console.log(`${path}: ${analysis[path].join(", ")}`));
 } catch (e) {
   console.error(e);
   process.exit(-1);
