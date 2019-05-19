@@ -3,7 +3,9 @@ ts-unused-exports-updated
 
 `ts-unused-exports-updated` finds unused exported symbols in your Typescript project.
 
-note: this is a fork of the original `ts-unused-exports` with recent PRs added.
+note: This is a fork of the original `ts-unused-exports` with recent PRs added. It was created because the original is really useful, but newer PRs are missing, which I need for a large project. Hopefully the original will be updated, in which case this fork can be retired.
+
+You can find the original repo [here](https://github.com/pzavolinsky/ts-unused-exports) by *pzavolinsky*.
 
 Versioning
 ----------
