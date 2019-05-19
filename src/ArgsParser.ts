@@ -1,6 +1,6 @@
 import { ExtraCommandLineOptions } from "./types";
 
-export type TsFilesAndOptions = {
+type TsFilesAndOptions = {
   tsFiles?: string[];
   options: ExtraCommandLineOptions;
 };
