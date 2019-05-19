@@ -17,7 +17,10 @@ function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
 
     if (files) {
         const options = files.filter(f => isOption(f));
-        filesAndOptions.tsFiles = files.filter(f => !isOption(f));
+
+        const filteredFiles = files.filter(f => !isOption(f))
+
+        filesAndOptions.tsFiles = filteredFiles.length ? filteredFiles : undefined;
 
         return processOptions(filesAndOptions, options);
     }
