@@ -2,11 +2,18 @@ const { join } = require('path');
 const parseFiles = require('../lib/parser').default;
 const analyzeFiles = require('../lib/analyzer').default;
 const { getExportsString } = require('./helper');
+const extractOptionsFromFiles = require('../lib/ArgsParser').default;
 
-const analyzePaths = (files, baseUrl) =>
-  analyzeFiles(parseFiles('./spec/data', { files, baseUrl }));
-const testWithResults = (...args) =>
-  getExportsString(analyzePaths(...args));
+const analyzePaths = (files, baseUrl) => {
+  const tsFilesAndOptions = extractOptionsFromFiles(files);
+
+  return analyzeFiles(parseFiles('./spec/data', { files: tsFilesAndOptions.tsFiles, baseUrl: baseUrl }, tsFilesAndOptions.options))
+};
+const testWithResults = (...args) => {
+  const result = analyzePaths(...args);
+
+  return getExportsString(result);
+};
 
   const testExports = (paths) => testWithResults(['./exports.ts'].concat(paths));
 const test1 = (paths, expected) => expect(testExports(paths)).toEqual(expected);
@@ -17,6 +24,11 @@ describe('analyze', () => {
 
   itIs('nothing', []                       , [ 'a', 'b', 'c', 'd', 'e', 'default' ]);
   itIs('default', ['./import-default.ts']  , [ 'a', 'b', 'c', 'd', 'e' ]);
+
+  // Test ignoring results for some paths:
+  itIs('nothing', ['./import-default.ts', '--ignorePaths=exports;other-1'], []);
+  itIs('default', ['./import-default.ts', '--ignorePaths=other-1;other-2'], [ 'a', 'b', 'c', 'd', 'e' ]);
+
   itIs('a'      , ['./import-a.ts']        , [ 'b', 'c', 'd', 'e', 'default' ]);
   itIs('b'      , ['./import-b.ts']        , [ 'a', 'c', 'd', 'e', 'default' ]);
   itIs('c'      , ['./import-c.ts']        , [ 'a', 'b', 'd', 'e', 'default' ]);

@@ -6,7 +6,7 @@ const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
 if (!tsconfig || !existsSync(tsconfig) || !statSync(tsconfig).isFile()) {
   console.error(`
-  usage: ts-unused-exports-updated path/to/tsconfig.json [file1.ts file2.ts]
+  usage: ts-unused-exports-updated path/to/tsconfig.json [file1.ts file2.ts] [--ignorePaths=path1;path2]
 
   Note: if no file is specified after tsconfig, the files will be read from the
   tsconfig's "files" key which must be present.
