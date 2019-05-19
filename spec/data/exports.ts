@@ -10,7 +10,7 @@ const e = () => 5;
 
 export { e };
 
-// ts-unused-exports:disable-next-line
+// ts-unused-exports-updated:disable-next-line
 export const f = 1;
 
 export default 4;

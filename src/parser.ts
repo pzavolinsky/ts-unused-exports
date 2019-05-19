@@ -172,7 +172,7 @@ const mapFile = (
       const commentText = file
         .getFullText()
         .substring(commentRange.pos, commentRange.end);
-      if (commentText === '// ts-unused-exports:disable-next-line') {
+      if (commentText === '// ts-unused-exports-updated:disable-next-line') {
         return;
       }
     }
