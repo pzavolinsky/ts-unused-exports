@@ -3,6 +3,7 @@ import * as ts from 'typescript';
 import { dirname, resolve } from 'path';
 import parseFiles from './parser';
 import analyze, { Analysis } from './analyzer';
+import extractOptionsFromFiles from './ArgsParser';
 
 const parseTsConfig = (tsconfigPath:string) => {
   const basePath = resolve(dirname(tsconfigPath));
@@ -47,12 +48,15 @@ const loadTsConfig = (
 };
 
 export default (tsconfigPath:string, files?:string[]): Analysis => {
-  const tsConfig = loadTsConfig(tsconfigPath, files);
+  const args = extractOptionsFromFiles(files);
+  const tsConfig = loadTsConfig(tsconfigPath, args.tsFiles);
+
   return analyze(
     parseFiles(
       dirname(tsconfigPath),
       tsConfig.files,
-      tsConfig.baseUrl
+      tsConfig.baseUrl,
+      args.options
     )
   );
 };

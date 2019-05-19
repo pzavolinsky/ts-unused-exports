@@ -9,3 +9,6 @@ export interface File {
 export interface Analysis {
     [index: string]: string[];
 }
+export interface ExtraCommandLineOptions {
+    pathsToIgnore?: string[];
+}

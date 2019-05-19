@@ -1,9 +1,13 @@
 const { join } = require('path');
 const parseFiles = require('../lib/parser').default;
 const analyzeFiles = require('../lib/analyzer').default;
+const extractOptionsFromFiles= require('../lib/ArgsParser').default;
 
-const testWith = (paths, baseUrl) =>
-  analyzeFiles(parseFiles('./spec/data', paths, baseUrl));
+const testWith = (paths, baseUrl) => {
+  const tsFilesAndOptions = extractOptionsFromFiles(paths);
+
+  return analyzeFiles(parseFiles('./spec/data', tsFilesAndOptions.tsFiles, baseUrl, tsFilesAndOptions.options));
+};
 const testExports = (paths) => testWith(['./exports.ts'].concat(paths));
 const test1 = (paths, expected) => expect(
     testExports(paths)['exports']
@@ -17,6 +21,11 @@ describe('analyze', () => {
 
   itIs('nothing', []                       , [ 'a', 'b', 'c', 'd', 'e', 'default' ]);
   itIs('default', ['./import-default.ts']  , [ 'a', 'b', 'c', 'd', 'e' ]);
+
+  // Test ignoring results for some paths:
+  itIs('ignored', ['./import-default.ts', '--ignorePaths=exports;other-1'], undefined);
+  itIs('not ignored', ['./import-default.ts', '--ignorePaths=other-1;other-2'], [ 'a', 'b', 'c', 'd', 'e' ]);
+
   itIs('a'      , ['./import-a.ts']        , [ 'b', 'c', 'd', 'e', 'default' ]);
   itIs('b'      , ['./import-b.ts']        , [ 'a', 'c', 'd', 'e', 'default' ]);
   itIs('c'      , ['./import-c.ts']        , [ 'a', 'b', 'd', 'e', 'default' ]);

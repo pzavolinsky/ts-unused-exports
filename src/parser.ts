@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'fs';
 import { dirname, resolve, relative, join } from 'path';
 import * as ts from 'typescript';
-import { File, Imports } from './types';
+import { File, Imports, ExtraCommandLineOptions } from './types';
 
 const TRIM_QUOTES = /^['"](.*)['"]$/;
 
@@ -239,7 +239,8 @@ const parsePaths = (
   rootDir:string,
   paths:string[],
   baseUrl:string|undefined,
-  otherFiles:File[]
+  otherFiles:File[],
+  extraOptions: ExtraCommandLineOptions
 ):File[] => {
   const files = otherFiles.concat(
     paths
@@ -256,10 +257,22 @@ const parsePaths = (
     .map(resolvePath(rootDir))
     .filter(notNull);
 
-  return missingImports.length
-    ? parsePaths(rootDir, missingImports, baseUrl, files)
-    : files;
+    return missingImports.length
+    ? parsePaths(rootDir, missingImports, baseUrl, files, extraOptions)
+    : files.filter(f => !shouldPathBeIgnored(f.path, extraOptions.pathsToIgnore));
 };
 
-export default (rootDir:string, paths:string[], baseUrl?:string):File[] =>
-  parsePaths(rootDir, paths, baseUrl, []);
+// Allow disabling of results, by path from command line (useful for large projects)
+const shouldPathBeIgnored = (path: string, pathsToIgnore?: string[]) => {
+  if(!pathsToIgnore) {
+    return false;
+  }
+
+  return pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
+}
+
+export default (rootDir:string, paths:string[], baseUrl?:string, extraOptions?: ExtraCommandLineOptions): File[] => {
+  const activeExtraOptions = extraOptions || {};
+
+  return parsePaths(rootDir, paths, baseUrl, [], activeExtraOptions);
+};
