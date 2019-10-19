@@ -37,7 +37,7 @@ try {
 
   console.log(chalk.red(`${chalk.bold(files.length.toString())} module${
     files.length == 1 ? '' : 's'
-  } with unused exports`));
+    } with unused exports`));
 
   files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].join(", "))}`));
 } catch (e) {

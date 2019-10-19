@@ -1,5 +1,5 @@
 export interface Imports {
-  [index:string]:string[];
+  [index: string]: string[];
 }
 
 export interface File {
@@ -10,11 +10,11 @@ export interface File {
 }
 
 export interface Analysis {
-  [index:string]:string[];
+  [index: string]: string[];
 }
 
 export interface TsConfigPaths {
-  [glob:string]:string[];
+  [glob: string]: string[];
 }
 
 export interface TsConfig {

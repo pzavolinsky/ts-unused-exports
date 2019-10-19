@@ -6,7 +6,7 @@ import analyze, { Analysis } from './analyzer';
 import { TsConfig } from './types';
 import extractOptionsFromFiles from './ArgsParser';
 
-const parseTsConfig = (tsconfigPath:string) => {
+const parseTsConfig = (tsconfigPath: string) => {
   const basePath = resolve(dirname(tsconfigPath));
 
   try {
@@ -43,15 +43,15 @@ const parseTsConfig = (tsconfigPath:string) => {
 };
 
 export const loadTsConfig = (
-  tsconfigPath:string,
-  explicitFiles?:string[],
-):TsConfig => {
+  tsconfigPath: string,
+  explicitFiles?: string[],
+): TsConfig => {
   const { baseUrl, files, paths } = parseTsConfig(tsconfigPath);
 
   return { baseUrl, paths, files: explicitFiles || files };
 };
 
-export default (tsconfigPath:string, files?:string[]): Analysis => {
+export default (tsconfigPath: string, files?: string[]): Analysis => {
   const args = extractOptionsFromFiles(files);
   const tsConfig = loadTsConfig(tsconfigPath, args.tsFiles);
 

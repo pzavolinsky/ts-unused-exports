@@ -1,8 +1,8 @@
 import { ExtraCommandLineOptions } from "./types";
 
 type TsFilesAndOptions = {
-  tsFiles?: string[];
-  options: ExtraCommandLineOptions;
+    tsFiles?: string[];
+    options: ExtraCommandLineOptions;
 };
 
 function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
@@ -34,33 +34,33 @@ function processOptions(
 ): TsFilesAndOptions {
     const newFilesAndOptions: TsFilesAndOptions = {
         options: {
-        pathsToIgnore: []
-    },
-    tsFiles: filesAndOptions.tsFiles
+            pathsToIgnore: []
+        },
+        tsFiles: filesAndOptions.tsFiles
     };
 
-options.forEach(option => {
-    const parts = option.split("=");
-    const optionName = parts[0];
-    const optionValue = parts[1];
+    options.forEach(option => {
+        const parts = option.split("=");
+        const optionName = parts[0];
+        const optionValue = parts[1];
 
-    switch (optionName) {
-    case "--ignorePaths":
-        {
-        const paths = optionValue.split(";");
-        paths.forEach(path => {
-            newFilesAndOptions.options.pathsToIgnore!.push(path);
-        });
+        switch (optionName) {
+            case "--ignorePaths":
+                {
+                    const paths = optionValue.split(";");
+                    paths.forEach(path => {
+                        newFilesAndOptions.options.pathsToIgnore!.push(path);
+                    });
+                }
+                break;
+            default:
+                throw new Error(`Not a recognised option '${optionName}'`);
         }
-        break;
-    default:
-        throw new Error(`Not a recognised option '${optionName}'`);
-    }
-});
+    });
 
-return newFilesAndOptions;
+    return newFilesAndOptions;
 }
 
-export default (files?:string[]): TsFilesAndOptions => {
+export default (files?: string[]): TsFilesAndOptions => {
     return extractOptionsFromFiles(files);
 };  
