@@ -4,6 +4,7 @@ import parseFiles from './parser';
 import { loadTsConfig } from './app';
 import { File, ExtraCommandLineOptions } from './types';
 import extractOptionsFromFiles from './argsParser';
+import showUsage from './usage';
 
 interface FileMap {
   [index: string]: File
@@ -79,7 +80,7 @@ const analyzeDeps = (tsconfigPath: string, extraOptions: ExtraCommandLineOptions
 const [tsconfig, filter, ...options] = process.argv.slice(2);
 
 if (!tsconfig || !existsSync(tsconfig) || !statSync(tsconfig).isFile()) {
-  console.error(`usage: deps path/to/tsconfig.json [filter] [--ignorePaths=path1;path2]`);
+  showUsage();
   process.exit(-1);
 }
 
