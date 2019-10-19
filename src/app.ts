@@ -3,6 +3,7 @@ import * as ts from 'typescript';
 import { dirname, resolve } from 'path';
 import parseFiles from './parser';
 import analyze, { Analysis } from './analyzer';
+import { TsConfig } from './types';
 
 const parseTsConfig = (tsconfigPath:string) => {
   const basePath = resolve(dirname(tsconfigPath));
@@ -26,6 +27,9 @@ const parseTsConfig = (tsconfigPath:string) => {
       baseUrl: result.raw
         && result.raw.compilerOptions
         && result.raw.compilerOptions.baseUrl,
+      paths: result.raw
+        && result.raw.compilerOptions
+        && result.raw.compilerOptions.paths,
       files: result.fileNames,
     };
   } catch (e) {
@@ -37,22 +41,17 @@ const parseTsConfig = (tsconfigPath:string) => {
   }
 };
 
-const loadTsConfig = (
+export const loadTsConfig = (
   tsconfigPath:string,
-  explicitFiles:string[]|undefined
-) => {
-  const { baseUrl, files } = parseTsConfig(tsconfigPath);
+  explicitFiles?:string[],
+):TsConfig => {
+  const { baseUrl, files, paths } = parseTsConfig(tsconfigPath);
 
-  return { baseUrl, files: explicitFiles || files };
+  return { baseUrl, paths, files: explicitFiles || files };
 };
 
 export default (tsconfigPath:string, files?:string[]): Analysis => {
   const tsConfig = loadTsConfig(tsconfigPath, files);
-  return analyze(
-    parseFiles(
-      dirname(tsconfigPath),
-      tsConfig.files,
-      tsConfig.baseUrl
-    )
-  );
+
+  return analyze(parseFiles(dirname(tsconfigPath), tsConfig));
 };
