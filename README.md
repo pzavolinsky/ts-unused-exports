@@ -20,20 +20,25 @@ Usage
 -----
 
 ```shell
-./node_modules/.bin/ts-unused-exports path/to/tsconfig.json [file1.ts ...]
+./node_modules/.bin/ts-unused-exports path/to/tsconfig.json [file1.ts ...] [options]
 ```
 
 or, if installed globally:
 
 ```shell
-ts-unused-exports path/to/tsconfig.json [file1.ts ...]
+ts-unused-exports path/to/tsconfig.json [file1.ts ...] [options]
 ```
 
-or:
+where `options` can be:
+
+`--ignorePaths=math`
+
+or, as a library:
 ```ts
 import analyzeTsConfig from 'ts-unused-exports';
 const result = analyzeTsConfig('path/to/tsconfig.json');
 // or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts']);
+// or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts', '--ignorePaths=math']);
 
 // result : { [index:string] : string[] }
 // where the keys are file paths and the values are unused symbols
