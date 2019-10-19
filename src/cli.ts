@@ -1,11 +1,12 @@
 import chalk from 'chalk';
 
 import analyzeTsConfig from './app';
-import { isTsConfigValid, showUsage } from './usage';
+import { showUsage } from './usage';
+import { hasValidArgs } from './argsParser';
 
 const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
-if (isTsConfigValid(tsconfig)) {
+if (!hasValidArgs()) {
   showUsage();
   process.exit(-1);
 }

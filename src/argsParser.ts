@@ -1,3 +1,5 @@
+import { existsSync, statSync } from 'fs';
+
 import { ExtraCommandLineOptions } from "./types";
 
 type TsFilesAndOptions = {
@@ -5,7 +7,16 @@ type TsFilesAndOptions = {
     options: ExtraCommandLineOptions;
 };
 
-function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
+function canExtractOptionsFromFiles(files?: string[]): boolean {
+    try {
+        extractOptionsFromFiles(files);
+        return true;
+    } catch(_e) {
+        return false;
+    }
+}
+
+export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
     const filesAndOptions: TsFilesAndOptions = {
         tsFiles: undefined,
         options: {}
@@ -40,7 +51,6 @@ function processOptions(
     };
 
     options.forEach(option => {
-        // xxx !option
         const parts = option.split("=");
         const optionName = parts[0];
         const optionValue = parts[1];
@@ -62,6 +72,26 @@ function processOptions(
     return newFilesAndOptions;
 }
 
-export default (files?: string[]): TsFilesAndOptions => {
-    return extractOptionsFromFiles(files);
-};  
+export function hasValidArgs() {
+    const [tsconfig, ...tsFiles] = process.argv.slice(2);
+
+    if (!tsconfig) {
+        return false;
+    }
+
+    if (!isTsConfigValid(tsconfig)) {
+        console.error(`The tsconfig file '${tsconfig}' could not be found.`);
+        return false;
+    }
+
+    if (!canExtractOptionsFromFiles(tsFiles)) {
+        console.error(`Invalid options.`);
+        return false;
+    }
+
+    return true;
+}
+
+function isTsConfigValid(tsconfigFilePath: string) {
+    return existsSync(tsconfigFilePath) && statSync(tsconfigFilePath).isFile();
+}
