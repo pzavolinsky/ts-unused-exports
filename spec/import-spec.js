@@ -1,8 +1,7 @@
-const { join } = require('path');
 const parseFiles = require('../lib/parser').default;
 const analyzeFiles = require('../lib/analyzer').default;
 const { getExportsString } = require('./helper');
-const extractOptionsFromFiles = require('../lib/ArgsParser').default;
+const { extractOptionsFromFiles } = require('../lib/argsParser');
 
 const analyzePaths = (files, baseUrl) => {
   const tsFilesAndOptions = extractOptionsFromFiles(files);

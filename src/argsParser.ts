@@ -11,7 +11,7 @@ function canExtractOptionsFromFiles(files?: string[]): boolean {
     try {
         extractOptionsFromFiles(files);
         return true;
-    } catch(_e) {
+    } catch (_e) {
         return false;
     }
 }
