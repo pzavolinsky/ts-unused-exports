@@ -55,6 +55,9 @@ function processOptions(
         const optionValue = parts[1];
 
         switch (optionName) {
+            case "--exitWithCount":
+                newFilesAndOptions.options.exitWithCount = true;
+                break;
             case "--ignorePaths":
                 {
                     const paths = optionValue.split(";");
