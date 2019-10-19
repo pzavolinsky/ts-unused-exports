@@ -24,5 +24,6 @@ export interface TsConfig {
 }
 
 export interface ExtraCommandLineOptions {
+  exitWithCount?: boolean;
   pathsToIgnore?: string[];
 }

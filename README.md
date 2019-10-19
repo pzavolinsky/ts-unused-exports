@@ -29,10 +29,6 @@ or, if installed globally:
 ts-unused-exports path/to/tsconfig.json [file1.ts ...] [options]
 ```
 
-where `options` can be:
-
-`--ignorePaths=math`
-
 or, as a library:
 ```ts
 import analyzeTsConfig from 'ts-unused-exports';
@@ -43,6 +39,13 @@ const result = analyzeTsConfig('path/to/tsconfig.json');
 // result : { [index:string] : string[] }
 // where the keys are file paths and the values are unused symbols
 ```
+
+Options:
+
+| Option name | Description  | Example |
+|---|---|---|
+| `ignorePaths` | Exclude files that match the given path segments. | `--ignorePaths=math;utils` |
+| `exitWithCount` | Set the process exit code to be the count of files that have unused exports. | `--exitWithCount` |
 
 Note that if `ts-unused-exports` is called without files, the files will be read from the tsconfig's `files` or `include` key which must be present. If called with files, then those file paths should be relative to the `tsconfig.json`, just like you would specifie them in your tsconfig's `files` key.
 
@@ -91,12 +94,13 @@ The output should be:
 math: add1
 ```
 
-Also note the exit status (which equals the number of offending modules):
+If the option `--exitWithCount` is used, then the exit status will equal the number of offending modules:
 ```shell
 echo $?
 # or: echo %ERRORLEVEL%
-1
+25
 ```
+note: normally the exit code is 0, unless there was a problem with the arguments or the files.
 
 If not using `files` or `include` inside your `tsconfig` (e.g. using `webpack` with `ts-loader`), you can explicitly specify the files to check in the command line:
 

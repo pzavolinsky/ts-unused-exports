@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 import analyzeTsConfig from './app';
 import { showUsage } from './usage';
-import { hasValidArgs } from './argsParser';
+import { hasValidArgs, extractOptionsFromFiles } from './argsParser';
 
 const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
@@ -26,6 +26,10 @@ try {
     } with unused exports`));
 
   files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].join(", "))}`));
+
+  if (extractOptionsFromFiles(tsFiles).options.exitWithCount) {
+    process.exit(files.length);
+  }
 } catch (e) {
   console.error(e);
   process.exit(-1);
