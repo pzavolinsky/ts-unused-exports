@@ -266,9 +266,7 @@ const shouldPathBeIgnored = (path: string, pathsToIgnore?: string[]) => {
     return false;
   }
 
-  const result = pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
-
-  return result;
+  return pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
 }
 
 export default (rootDir: string, TsConfig: TsConfig, extraOptions?: ExtraCommandLineOptions): File[] => {
