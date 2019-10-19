@@ -1,8 +1,8 @@
-import { readFileSync } from 'fs';
 import { existsSync, statSync } from 'fs';
 import { dirname } from 'path';
 import parseFiles from './parser';
 import { File } from './types';
+import { loadTsConfig } from './app';
 
 interface FileMap {
   [index:string]:File
@@ -64,10 +64,8 @@ function analyzeFile(
 };
 
 const analyzeDeps = (tsconfigPath:string) => {
-  const files = parseFiles(
-    dirname(tsconfigPath),
-    JSON.parse(readFileSync(tsconfigPath, { encoding: 'utf8' })).files
-  );
+  const tsConfig = loadTsConfig(tsconfigPath);
+  const files = parseFiles(dirname(tsconfigPath), tsConfig);
   const fileMap = getFileMap(files);
 
   const analysis:DepAnalysis = {};

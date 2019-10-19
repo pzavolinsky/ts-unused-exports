@@ -1,5 +1,5 @@
 {
   "include": [
-    "./imp*-a.ts"
+    "./exports.ts"
   ]
 }

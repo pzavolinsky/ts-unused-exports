@@ -39,7 +39,9 @@ const result = analyzeTsConfig('path/to/tsconfig.json');
 // where the keys are file paths and the values are unused symbols
 ```
 
-Note that if `ts-unused-exports` is called without files, the files will be read from the tsconfig's `files` key which must be present. If called with files, then those file paths should be relative to the `tsconfig.json`, just like you would specifie them in your tsconfig's `files` key.
+Note that if `ts-unused-exports` is called without files, the files will be read from the tsconfig's `files` or `include` key which must be present. If called with files, then those file paths should be relative to the `tsconfig.json`, just like you would specifie them in your tsconfig's `files` key.
+
+`ts-unused-exports` also resolves path aliases specified in tsconfig's `paths` object.
 
 Why should I use this?
 ----------------------
@@ -91,7 +93,7 @@ echo $?
 1
 ```
 
-If not using `files` inside your `tsconfig` (e.g. using `webpack` with `ts-loader`), you can explicitly specify the files to check in the command line:
+If not using `files` or `include` inside your `tsconfig` (e.g. using `webpack` with `ts-loader`), you can explicitly specify the files to check in the command line:
 
 ```shell
 ./bin/ts-unused-exports example/tsconfig.json app.ts math.ts
