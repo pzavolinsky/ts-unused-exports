@@ -1,11 +1,11 @@
 import chalk from 'chalk';
-import { existsSync, statSync } from 'fs';
+
 import analyzeTsConfig from './app';
-import showUsage from './usage';
+import { isTsConfigValid, showUsage } from './usage';
 
 const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
-if (!tsconfig || !existsSync(tsconfig) || !statSync(tsconfig).isFile()) {
+if (isTsConfigValid(tsconfig)) {
   showUsage();
   process.exit(-1);
 }

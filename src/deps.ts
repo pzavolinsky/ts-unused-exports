@@ -1,10 +1,10 @@
-import { existsSync, statSync } from 'fs';
 import { dirname } from 'path';
-import parseFiles from './parser';
+
 import { loadTsConfig } from './app';
-import { File, ExtraCommandLineOptions } from './types';
 import extractOptionsFromFiles from './argsParser';
-import showUsage from './usage';
+import parseFiles from './parser';
+import { File, ExtraCommandLineOptions } from './types';
+import { isTsConfigValid, showUsage } from './usage';
 
 interface FileMap {
   [index: string]: File
@@ -79,7 +79,7 @@ const analyzeDeps = (tsconfigPath: string, extraOptions: ExtraCommandLineOptions
 
 const [tsconfig, filter, ...options] = process.argv.slice(2);
 
-if (!tsconfig || !existsSync(tsconfig) || !statSync(tsconfig).isFile()) {
+if (isTsConfigValid(tsconfig)) {
   showUsage();
   process.exit(-1);
 }

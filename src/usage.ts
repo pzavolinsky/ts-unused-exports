@@ -1,4 +1,12 @@
-function showUsage() {
+import { existsSync, statSync } from 'fs';
+
+export function isTsConfigValid(tsconfigFilePath: string) {
+    const isInvalid = (!tsconfigFilePath || !existsSync(tsconfigFilePath) || !statSync(tsconfigFilePath).isFile());
+
+    return !isInvalid;
+}
+
+export function showUsage() {
     console.error(`
     usage: ts-unused-exports path/to/tsconfig.json [file1.ts file2.ts] [--ignorePaths=path1;path2]
   
@@ -17,7 +25,3 @@ function showUsage() {
       ts-unused-exports config/tsconfig.json ../src/file.ts
     `); 
 }
-
-export default () => {
-    return showUsage();
-};  
