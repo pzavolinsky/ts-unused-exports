@@ -4,7 +4,7 @@ import { dirname, resolve } from 'path';
 import parseFiles from './parser';
 import analyze, { Analysis } from './analyzer';
 import { TsConfig } from './types';
-import extractOptionsFromFiles from './ArgsParser';
+import extractOptionsFromFiles from './argsParser';
 
 const parseTsConfig = (tsconfigPath: string) => {
   const basePath = resolve(dirname(tsconfigPath));

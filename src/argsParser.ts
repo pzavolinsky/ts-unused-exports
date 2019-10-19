@@ -40,6 +40,7 @@ function processOptions(
     };
 
     options.forEach(option => {
+        // xxx !option
         const parts = option.split("=");
         const optionName = parts[0];
         const optionValue = parts[1];

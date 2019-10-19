@@ -3,7 +3,7 @@ import { dirname } from 'path';
 import parseFiles from './parser';
 import { loadTsConfig } from './app';
 import { File, ExtraCommandLineOptions } from './types';
-import extractOptionsFromFiles from './ArgsParser';
+import extractOptionsFromFiles from './argsParser';
 
 interface FileMap {
   [index: string]: File
