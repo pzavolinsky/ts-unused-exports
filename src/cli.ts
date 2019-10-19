@@ -1,27 +1,13 @@
 import chalk from 'chalk';
-import { existsSync, statSync } from 'fs';
+
 import analyzeTsConfig from './app';
+import { showUsage } from './usage';
+import { hasValidArgs } from './argsParser';
 
 const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
-if (!tsconfig || !existsSync(tsconfig) || !statSync(tsconfig).isFile()) {
-  console.error(`
-  usage: ts-unused-exports path/to/tsconfig.json [file1.ts file2.ts]
-
-  Note: if no file is specified after tsconfig, the files will be read from the
-  tsconfig's "files" key which must be present.
-
-  If the files are specified, their path must be relative to the tsconfig file.
-  For example, given:
-    /
-    |-- config
-    |    \-- tsconfig.json
-    \-- src
-         \-- file.ts
-
-  Then the usage would be:
-    ts-unused-exports config/tsconfig.json ../src/file.ts
-  `);
+if (!hasValidArgs()) {
+  showUsage();
   process.exit(-1);
 }
 
@@ -37,7 +23,7 @@ try {
 
   console.log(chalk.red(`${chalk.bold(files.length.toString())} module${
     files.length == 1 ? '' : 's'
-  } with unused exports`));
+    } with unused exports`));
 
   files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].join(", "))}`));
 } catch (e) {

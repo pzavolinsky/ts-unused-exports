@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'fs';
 import { dirname, resolve, relative, join, sep } from 'path';
 import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
-import { File, TsConfig, TsConfigPaths, Imports } from './types';
+import { File, TsConfig, TsConfigPaths, Imports, ExtraCommandLineOptions } from './types';
 
 const TRIM_QUOTES = /^['"](.*)['"]$/;
 
@@ -15,13 +15,13 @@ interface FromWhat {
 
 const star = ['*'];
 
-const getFrom = (moduleSpecifier:ts.Expression) =>
+const getFrom = (moduleSpecifier: ts.Expression) =>
   moduleSpecifier
-  .getText()
-  .replace(TRIM_QUOTES, '$1')
-  .replace(/\/index$/, '');
+    .getText()
+    .replace(TRIM_QUOTES, '$1')
+    .replace(/\/index$/, '');
 
-const extractImport = (decl:ts.ImportDeclaration) : FromWhat => {
+const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   const from = getFrom(decl.moduleSpecifier);
   const { importClause } = decl;
   if (!importClause) return {
@@ -35,16 +35,16 @@ const extractImport = (decl:ts.ImportDeclaration) : FromWhat => {
     : [];
   const importStar =
     namedBindings
-    && !!(namedBindings as ts.NamespaceImport).name
-    ? star
-    : [];
+      && !!(namedBindings as ts.NamespaceImport).name
+      ? star
+      : [];
   const importNames =
     namedBindings
-    && !importStar.length
-    ? (namedBindings as ts.NamedImports)
-      .elements
-      .map(e => (e.propertyName || e.name).text)
-    : [];
+      && !importStar.length
+      ? (namedBindings as ts.NamedImports)
+        .elements
+        .map(e => (e.propertyName || e.name).text)
+      : [];
 
   return {
     from,
@@ -52,14 +52,14 @@ const extractImport = (decl:ts.ImportDeclaration) : FromWhat => {
   };
 };
 
-const extractExportStatement = (decl:ts.ExportDeclaration): string[] => {
+const extractExportStatement = (decl: ts.ExportDeclaration): string[] => {
   return decl.exportClause
     ? decl.exportClause.elements
       .map(e => (e.name || e.propertyName).text)
     : [];
 };
 
-const extractExportFromImport = (decl:ts.ExportDeclaration) : FromWhat => {
+const extractExportFromImport = (decl: ts.ExportDeclaration): FromWhat => {
   const { moduleSpecifier, exportClause } = decl;
   if (!moduleSpecifier) return {
     from: '',
@@ -77,7 +77,7 @@ const extractExportFromImport = (decl:ts.ExportDeclaration) : FromWhat => {
   };
 };
 
-const extractExport = (path:string, node:ts.Node):string => {
+const extractExport = (path: string, node: ts.Node): string => {
   switch (node.kind) {
     case ts.SyntaxKind.VariableStatement:
       return (node as ts.VariableStatement)
@@ -98,10 +98,10 @@ const extractExport = (path:string, node:ts.Node):string => {
   return '';
 };
 
-const relativeTo = (rootDir:string, file:string, path:string) : string =>
+const relativeTo = (rootDir: string, file: string, path: string): string =>
   relative(rootDir, resolve(dirname(file), path));
 
-const isRelativeToBaseDir = (baseDir:string, from:string) =>
+const isRelativeToBaseDir = (baseDir: string, from: string) =>
   existsSync(resolve(baseDir, `${from}.js`))
   || existsSync(resolve(baseDir, `${from}.ts`))
   || existsSync(resolve(baseDir, `${from}.tsx`))
@@ -110,29 +110,29 @@ const isRelativeToBaseDir = (baseDir:string, from:string) =>
   || existsSync(resolve(baseDir, from, 'index.tsx'))
   ;
 
-const hasModifier = (node:ts.Node, mod:ts.SyntaxKind) =>
+const hasModifier = (node: ts.Node, mod: ts.SyntaxKind) =>
   node.modifiers
-  && node.modifiers .filter(m => m.kind === mod).length > 0;
+  && node.modifiers.filter(m => m.kind === mod).length > 0;
 
 const mapFile = (
-  rootDir:string,
-  path:string,
-  file:ts.SourceFile,
-  baseUrl?:string,
-  paths?:TsConfigPaths,
-) : File => {
-  const imports:Imports = {};
-  let exports:string[] = [];
+  rootDir: string,
+  path: string,
+  file: ts.SourceFile,
+  baseUrl?: string,
+  paths?: TsConfigPaths,
+): File => {
+  const imports: Imports = {};
+  let exports: string[] = [];
   const name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
   const baseDir = baseUrl && resolve(rootDir, baseUrl);
 
   const tsconfigPathsMatcher =
     baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
 
-  const addImport = (fw:FromWhat) => {
+  const addImport = (fw: FromWhat) => {
     const { from, what } = fw;
 
-    const getKey = (from:string) => {
+    const getKey = (from: string) => {
       if (from[0] == '.') {
         return relativeTo(rootDir, path, from);
       } else if (baseDir && baseUrl) {
@@ -148,7 +148,7 @@ const mapFile = (
               EXTENSIONS
             ))
             ? matchedPath.replace(`${baseDir}${sep}`, '')
-        : undefined;
+            : undefined;
       }
 
       return undefined;
@@ -161,7 +161,7 @@ const mapFile = (
     return key;
   };
 
-  ts.forEachChild(file, (node:ts.Node) => {
+  ts.forEachChild(file, (node: ts.Node) => {
     const comments = ts.getLeadingCommentRanges(
       file.getFullText(),
       node.getFullStart()
@@ -230,10 +230,10 @@ const mapFile = (
 };
 
 const parseFile = (
-  rootDir:string,
-  path:string,
-  baseUrl?:string,
-  paths?:TsConfigPaths
+  rootDir: string,
+  path: string,
+  baseUrl?: string,
+  paths?: TsConfigPaths
 ): File =>
   mapFile(
     rootDir,
@@ -249,15 +249,28 @@ const parseFile = (
   );
 
 const parsePaths = (
-  rootDir:string,
-  {baseUrl, files: filePaths, paths}:TsConfig,
-):File[] => {
+  rootDir: string,
+  { baseUrl, files: filePaths, paths }: TsConfig,
+  extraOptions: ExtraCommandLineOptions
+): File[] => {
   const files = filePaths
-    .filter(p => p.indexOf('.d.') == -1)
+    .filter(p => p.indexOf('.d.') == -1 && !shouldPathBeIgnored(p, extraOptions.pathsToIgnore))
     .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl, paths));
 
   return files;
 };
 
-export default (rootDir:string, TsConfig:TsConfig):File[] =>
-  parsePaths(rootDir, TsConfig);
+// Allow disabling of results, by path from command line (useful for large projects)
+const shouldPathBeIgnored = (path: string, pathsToIgnore?: string[]) => {
+  if (!pathsToIgnore) {
+    return false;
+  }
+
+  return pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
+}
+
+export default (rootDir: string, TsConfig: TsConfig, extraOptions?: ExtraCommandLineOptions): File[] => {
+  const activeExtraOptions = extraOptions || {};
+
+  return parsePaths(rootDir, TsConfig, activeExtraOptions);
+};
