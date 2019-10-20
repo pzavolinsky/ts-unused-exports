@@ -2,7 +2,9 @@
 *.log
 *.tgz
 example
+features
 ispec
+lib/test.*
 spec
 src
 tsconfig.json
