@@ -3,28 +3,51 @@
   "rules": {
     "arrow-parens": false,
     "curly": false,
-    "interface-name": [true, "never-prefix"],
-    "max-line-length": [true, 80],
+    "interface-name": [
+      true,
+      "never-prefix"
+    ],
+    "max-line-length": [
+      true,
+      80
+    ],
     "member-access": null,
     "no-bitwise": false,
     "no-console": false,
     "no-shadowed-variable": false,
-    "no-unused-variable": [true, "react", {"ignore-pattern": "^_$"}],
+    "no-unused-variable": [
+      true,
+      "react",
+      {
+        "ignore-pattern": "^_$"
+      }
+    ],
     "object-literal-sort-keys": false,
-    "one-line": [true,
-        "check-catch",
-        "check-finally",
-        "check-open-brace",
-        "check-whitespace"
+    "one-line": [
+      true,
+      "check-catch",
+      "check-finally",
+      "check-open-brace",
+      "check-whitespace"
     ],
     "ordered-imports": false,
-    "quotemark": [true, "single", "avoid-escape", "jsx-double"],
+    "quotemark": [
+      true,
+      "single",
+      "avoid-escape",
+      "jsx-double"
+    ],
     "radix": false,
-    "semicolon": [true, "always", "ignore-interfaces"],
+    "semicolon": [
+      true,
+      "always",
+      "ignore-interfaces"
+    ],
     "switch-default": false,
     "trailing-comma": false,
     "triple-equals": false,
-    "typedef-whitespace": [true,
+    "typedef-whitespace": [
+      true,
       {
         "call-signature": "nospace",
         "index-signature": "nospace",
@@ -40,13 +63,14 @@
         "variable-declaration": "nospace"
       }
     ],
-    "whitespace": [true,
+    "whitespace": [
+      true,
       "check-branch",
       "check-decl",
       "check-operator",
       "check-module",
       "check-separator",
       "check-typecast"
-      ]
+    ]
   }
 }
