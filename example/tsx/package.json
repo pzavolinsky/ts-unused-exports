@@ -1,0 +1,10 @@
+{
+    "scripts": {
+        "test": "npm i && ../../bin/ts-unused-exports tsconfig.json"
+    },
+    "dependencies": {
+        "@types/react": "^16.4.18",
+        "react": "^16.6.0",
+        "ts-unused-exports": "^2.0.11"
+    }
+}
