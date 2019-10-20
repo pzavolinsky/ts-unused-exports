@@ -1,5 +1,10 @@
 ## [Unreleased] - ReleaseDate
 ### Added
+
+### Changed
+
+## [2.1.0] - 20 Oct 2019
+### Added
 - Add comment flag to ignore some exports
 - Add tsconfig paths aliases support
 - Remove recursive imports check (performance on big projects)
