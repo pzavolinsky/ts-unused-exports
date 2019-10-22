@@ -24,7 +24,7 @@
     "watch": "tsc -w",
     "test": "npm run build && npm run test:unit && npm run test:itest",
     "test:unit": "jasmine",
-    "test:itest": "./bin/ts-unused-exports ./example/tsconfig.json",
+    "test:itest": "cd ispec && bash ./run.sh",
     "exec": "bin/ts-unused-exports"
   },
   "bin": {

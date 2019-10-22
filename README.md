@@ -76,7 +76,7 @@ In this sense, `ts-unused-exports` does not replace `tslint` but rather compleme
 Example
 -------
 
-There is a (very silly) example in the [example/](https://github.com/pzavolinsky/ts-unused-exports/blob/master/example) directory.
+There is a (very silly) example in the [example/](https://github.com/pzavolinsky/ts-unused-exports/blob/master/example/simple) directory.
 
 If you want to run it you can:
 
@@ -84,8 +84,8 @@ If you want to run it you can:
 git clone https://github.com/pzavolinsky/ts-unused-exports
 cd ts-unused-exports
 ./bin/ts-unused-exports example/tsconfig.json
-# or: node ./bin/ts-unused-exports example/tsconfig.json
-# or: node bin\ts-unused-exports example\tsconfig.json
+# or: node ./bin/ts-unused-exports example/simple/tsconfig.json
+# or: node bin\ts-unused-exports example\simple\tsconfig.json
 ```
 
 The output should be:
@@ -105,13 +105,13 @@ note: normally the exit code is 0, unless there was a problem with the arguments
 If not using `files` or `include` inside your `tsconfig` (e.g. using `webpack` with `ts-loader`), you can explicitly specify the files to check in the command line:
 
 ```shell
-./bin/ts-unused-exports example/tsconfig.json app.ts math.ts
+./bin/ts-unused-exports example/simple/tsconfig.json app.ts math.ts
 ```
 
 or, in a more generic way:
 
 ```shell
-./bin/ts-unused-exports example/tsconfig.json $(cd example; find -name '*.ts')
+./bin/ts-unused-exports example/simple/tsconfig.json $(cd example/simple; find -name '*.ts')
 ```
 
 You can use comment flags to ignore exports:
