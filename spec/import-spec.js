@@ -6,7 +6,7 @@ const { extractOptionsFromFiles } = require('../lib/argsParser');
 const analyzePaths = (files, baseUrl) => {
   const tsFilesAndOptions = extractOptionsFromFiles(files);
 
-  return analyzeFiles(parseFiles('./spec/data', { files: tsFilesAndOptions.tsFiles, baseUrl: baseUrl }, tsFilesAndOptions.options))
+  return analyzeFiles(parseFiles('./spec/data', { files: tsFilesAndOptions.tsFiles, baseUrl: baseUrl }), tsFilesAndOptions.options)
 };
 const testWithResults = (...args) => {
   const result = analyzePaths(...args);
@@ -25,8 +25,9 @@ describe('analyze', () => {
   itIs('default', ['./import-default.ts'], ['a', 'b', 'c', 'd', 'e']);
 
   // Test ignoring results for some paths:
-  itIs('nothing', ['./import-default.ts', '--ignorePaths=exports;other-1'], []);
-  itIs('default', ['./import-default.ts', '--ignorePaths=other-1;other-2'], ['a', 'b', 'c', 'd', 'e']);
+  itIs('ignorePaths - all ignored', ['./import-default.ts', '--ignorePaths=exports;other-1'], []);
+  itIs('ignorePaths - none ignored', ['./import-default.ts', '--ignorePaths=other-1;other-2'], ['a','b','c','d','e']);
+  itIs('ignorePaths - default', ['./import-default.ts', '--ignorePaths=other-1;other-2'], ['a', 'b', 'c', 'd', 'e']);
 
   itIs('a', ['./import-a.ts'], ['b', 'c', 'd', 'e', 'default']);
   itIs('b', ['./import-b.ts'], ['a', 'c', 'd', 'e', 'default']);

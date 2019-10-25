@@ -1,8 +1,8 @@
-import chalk from 'chalk';
+import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
 
 import analyzeTsConfig from './app';
+import chalk from 'chalk';
 import { showUsage } from './usage';
-import { hasValidArgs, extractOptionsFromFiles } from './argsParser';
 
 const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
@@ -27,7 +27,8 @@ try {
 
   files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].join(", "))}`));
 
-  if (extractOptionsFromFiles(tsFiles).options.exitWithCount) {
+  const options = extractOptionsFromFiles(tsFiles).options;
+  if (options && options.exitWithCount) {
     process.exit(files.length);
   }
 } catch (e) {

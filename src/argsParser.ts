@@ -4,7 +4,7 @@ import { ExtraCommandLineOptions } from "./types";
 
 type TsFilesAndOptions = {
     tsFiles?: string[];
-    options: ExtraCommandLineOptions;
+    options?: ExtraCommandLineOptions;
 };
 
 function canExtractOptionsFromFiles(files?: string[]): boolean {
@@ -56,13 +56,13 @@ function processOptions(
 
         switch (optionName) {
             case "--exitWithCount":
-                newFilesAndOptions.options.exitWithCount = true;
+                newFilesAndOptions.options!.exitWithCount = true;
                 break;
             case "--ignorePaths":
                 {
                     const paths = optionValue.split(";");
                     paths.forEach(path => {
-                        newFilesAndOptions.options.pathsToIgnore!.push(path);
+                        newFilesAndOptions.options!.pathsToIgnore!.push(path);
                     });
                 }
                 break;

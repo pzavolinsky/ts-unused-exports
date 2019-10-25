@@ -1,4 +1,4 @@
-import { File, Imports, Analysis } from './types';
+import { Analysis, ExtraCommandLineOptions, File, Imports } from './types';
 export { Analysis } from './types'
 
 interface FileExports {
@@ -56,7 +56,16 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
   });
 };
 
-export default (files: File[]): Analysis => {
+// Allow disabling of results, by path from command line (useful for large projects)
+const shouldPathBeIgnored = (path: string, extraOptions?: ExtraCommandLineOptions) => {
+  if (!extraOptions || !extraOptions.pathsToIgnore) {
+    return false;
+  }
+
+  return extraOptions.pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
+}
+
+export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis => {
   const exportMap = getExportMap(files);
   expandExportFromStar(files, exportMap);
   files.forEach(file => processImports(file.imports, exportMap));
@@ -68,7 +77,7 @@ export default (files: File[]): Analysis => {
     const { exports, path } = expItem;
     const unused = Object.keys(exports).filter(k => exports[k] === 0);
 
-    if (unused.length) analysis[path] = unused;
+    if (unused.length && !shouldPathBeIgnored(path, extraOptions)) analysis[path] = unused;
   });
 
   return analysis;
