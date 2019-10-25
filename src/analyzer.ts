@@ -1,8 +1,13 @@
 import { Analysis, ExtraCommandLineOptions, File, Imports } from './types';
 export { Analysis } from './types'
 
+interface FileExport {
+  usageCount: number;
+  location: LocationInFile
+}
+
 interface FileExports {
-  [index: string]: number
+  [index: string]: FileExport,
 }
 
 interface ExportItem {
@@ -16,7 +21,12 @@ interface ExportMap {
 
 const getFileExports = (file: File): ExportItem => {
   const exports: FileExports = {};
-  file.exports.forEach(e => exports[e] = 0);
+  file.exports.forEach((e, index) => {
+    exports[e] = {
+      usageCount: 0,
+      location: file.exportLocations[index]
+    };
+  });
 
   return { exports, path: file.fullPath };
 };
@@ -35,8 +45,8 @@ const processImports = (imports: Imports, exportMap: ExportMap) => {
     if (!ex) return;
     imports[key].forEach(imp =>
       imp == '*'
-        ? Object.keys(ex).filter(e => e != 'default').forEach(e => ++ex[e])
-        : ++ex[imp]);
+        ? Object.keys(ex).filter(e => e != 'default').forEach(e => ex[e].usageCount++)
+        : ex[imp].usageCount++);
   });
 };
 
@@ -51,7 +61,16 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
 
         Object.keys(exportMap[ex.slice(2)].exports)
           .filter(e => e != 'default')
-          .forEach(key => fileExports.exports[key] = 0);
+          .forEach(key => {
+            if (!fileExports.exports[key]) {
+              const export1 = exportMap[ex.slice(2)].exports[key];
+              fileExports.exports[key] = {
+                usageCount: 0,
+                location: export1.location
+              };
+            }
+            fileExports.exports[key].usageCount = 0;
+          });
       });
   });
 };
@@ -75,9 +94,19 @@ export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis
   Object.keys(exportMap).forEach(file => {
     const expItem = exportMap[file];
     const { exports, path } = expItem;
-    const unused = Object.keys(exports).filter(k => exports[k] === 0);
 
-    if (unused.length && !shouldPathBeIgnored(path, extraOptions)) analysis[path] = unused;
+    if (shouldPathBeIgnored(path, extraOptions))
+      return;
+
+    const unusedExports = Object.keys(exports).filter(k => exports[k].usageCount === 0);
+
+    analysis[path] = [];
+    unusedExports.forEach(e => {
+      analysis[path].push({
+        exportName: e,
+        location: exports[e].location
+      });
+    });
   });
 
   return analysis;
