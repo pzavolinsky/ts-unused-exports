@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
 
-import { ExtraCommandLineOptions, File, Imports, TsConfig, TsConfigPaths } from './types';
+import { File, Imports, TsConfig, TsConfigPaths } from './types';
 import { dirname, join, relative, resolve, sep } from 'path';
 import { existsSync, readFileSync } from 'fs';
 
