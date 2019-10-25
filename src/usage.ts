@@ -1,6 +1,6 @@
 export function showUsage() {
   console.error(`
-    usage: ts-unused-exports path/to/tsconfig.json [file1.ts file2.ts] [--exitWithCount][--ignorePaths=path1;path2]
+    usage: ts-unused-exports path/to/tsconfig.json [file1.ts file2.ts] [--exitWithCount][--ignorePaths=path1;path2][--showLineNumber]
   
     Note: if no file is specified after tsconfig, the files will be read from the
     tsconfig's "files" key which must be present.

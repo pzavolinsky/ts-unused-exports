@@ -33,14 +33,17 @@ try {
     return `[${location.line},${location.character}]`;
   };
 
-  // xxx opt
-  files.forEach(path => {
-    analysis[path].forEach(unusedExport => {
-      console.log(`${path}${getLocationInFile(unusedExport.location)}: ${chalk.bold.yellow(unusedExport.exportName)}`);
-    });
-  });
-
   const options = extractOptionsFromFiles(tsFiles).options;
+  if (options && options.showLineNumber) {
+    files.forEach(path => {
+      analysis[path].forEach(unusedExport => {
+        console.log(`${path}${getLocationInFile(unusedExport.location)}: ${chalk.bold.yellow(unusedExport.exportName)}`);
+      });
+    });
+  } else {
+    files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].join(", "))}`));
+  }
+
   if (options && options.exitWithCount) {
     process.exit(files.length);
   }

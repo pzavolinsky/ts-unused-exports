@@ -66,6 +66,9 @@ function processOptions(
                     });
                 }
                 break;
+            case "--showLineNumber":
+                newFilesAndOptions.options.showLineNumber = true;
+                break;
             default:
                 throw new Error(`Not a recognised option '${optionName}'`);
         }
