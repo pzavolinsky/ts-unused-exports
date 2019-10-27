@@ -1,11 +1,12 @@
-import { readFileSync } from 'fs';
 import * as ts from 'typescript';
+
+import analyze, { Analysis } from './analyzer';
 import { dirname, resolve } from 'path';
 
-import parseFiles from './parser';
-import analyze, { Analysis } from './analyzer';
 import { TsConfig } from './types';
 import { extractOptionsFromFiles } from './argsParser';
+import parseFiles from './parser';
+import { readFileSync } from 'fs';
 
 const parseTsConfig = (tsconfigPath: string) => {
   const basePath = resolve(dirname(tsconfigPath));
@@ -59,8 +60,8 @@ export default (tsconfigPath: string, files?: string[]): Analysis => {
   return analyze(
     parseFiles(
       dirname(tsconfigPath),
-      tsConfig,
-      args.options
-    )
+      tsConfig
+    ),
+    args.options
   );
 };

@@ -1,6 +1,6 @@
 # continue on error
 set +e;
-node ../../bin/ts-unused-exports tsconfig.json --exitWithCount
+node ../../bin/ts-unused-exports tsconfig.json --exitWithCount --ignorePaths=to-ignore
 ERROR_COUNT=$?
 if [ $ERROR_COUNT -ne 1 ]
 then 

@@ -1,9 +1,9 @@
-import { dirname } from 'path';
-
-import { loadTsConfig } from './app';
+import { ExtraCommandLineOptions, File } from './types';
 import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
+
+import { dirname } from 'path';
+import { loadTsConfig } from './app';
 import parseFiles from './parser';
-import { File, ExtraCommandLineOptions } from './types';
 import { showUsage } from './usage';
 
 interface FileMap {
@@ -65,9 +65,9 @@ function analyzeFile(
   return dep;
 };
 
-const analyzeDeps = (tsconfigPath: string, extraOptions: ExtraCommandLineOptions) => {
+const analyzeDeps = (tsconfigPath: string): DepAnalysis => {
   const tsConfig = loadTsConfig(tsconfigPath);
-  const files = parseFiles(dirname(tsconfigPath), tsConfig, extraOptions);
+  const files = parseFiles(dirname(tsconfigPath), tsConfig);
   const fileMap = getFileMap(files);
 
   const analysis: DepAnalysis = {};
@@ -77,7 +77,8 @@ const analyzeDeps = (tsconfigPath: string, extraOptions: ExtraCommandLineOptions
   return analysis;
 };
 
-const [tsconfig, filter, ...options] = process.argv.slice(2);
+// Not using options here
+const [tsconfig, filter] = process.argv.slice(2);
 
 if (!hasValidArgs()) {
   showUsage();
@@ -90,9 +91,7 @@ const getValues = (o: DepAnalysis) =>
     []
   );
 
-const parsedOptions = extractOptionsFromFiles(options).options;
-
-const analysis = analyzeDeps(tsconfig, parsedOptions);
+const analysis = analyzeDeps(tsconfig);
 const deps = getValues(analysis);
 deps.sort((a, b) => a.depth - b.depth);
 

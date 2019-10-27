@@ -1,8 +1,9 @@
-import { existsSync, readFileSync } from 'fs';
-import { dirname, resolve, relative, join, sep } from 'path';
 import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
-import { File, TsConfig, TsConfigPaths, Imports, ExtraCommandLineOptions } from './types';
+
+import { File, Imports, TsConfig, TsConfigPaths } from './types';
+import { dirname, join, relative, resolve, sep } from 'path';
+import { existsSync, readFileSync } from 'fs';
 
 const TRIM_QUOTES = /^['"](.*)['"]$/;
 
@@ -250,27 +251,15 @@ const parseFile = (
 
 const parsePaths = (
   rootDir: string,
-  { baseUrl, files: filePaths, paths }: TsConfig,
-  extraOptions: ExtraCommandLineOptions
+  { baseUrl, files: filePaths, paths }: TsConfig
 ): File[] => {
   const files = filePaths
-    .filter(p => p.indexOf('.d.') == -1 && !shouldPathBeIgnored(p, extraOptions.pathsToIgnore))
+    .filter(p => p.indexOf('.d.') == -1)
     .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl, paths));
 
   return files;
-};
-
-// Allow disabling of results, by path from command line (useful for large projects)
-const shouldPathBeIgnored = (path: string, pathsToIgnore?: string[]) => {
-  if (!pathsToIgnore) {
-    return false;
-  }
-
-  return pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
 }
 
-export default (rootDir: string, TsConfig: TsConfig, extraOptions?: ExtraCommandLineOptions): File[] => {
-  const activeExtraOptions = extraOptions || {};
-
-  return parsePaths(rootDir, TsConfig, activeExtraOptions);
+export default (rootDir: string, TsConfig: TsConfig): File[] => {
+  return parsePaths(rootDir, TsConfig);
 };
