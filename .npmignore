@@ -2,6 +2,7 @@
 *.log
 *.tgz
 example
+ispec
 spec
 src
 tsconfig.json
