@@ -41,7 +41,7 @@ try {
       });
     });
   } else {
-    files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].join(", "))}`));
+    files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].map(r => r.exportName).join(", "))}`));
   }
 
   if (options && options.exitWithCount) {
