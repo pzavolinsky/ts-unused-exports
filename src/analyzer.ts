@@ -100,6 +100,10 @@ export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis
 
     const unusedExports = Object.keys(exports).filter(k => exports[k].usageCount === 0);
 
+    if (unusedExports.length === 0) {
+      return;
+    }
+
     analysis[path] = [];
     unusedExports.forEach(e => {
       analysis[path].push({
