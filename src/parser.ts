@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
 
-import { File, Imports, TsConfig, TsConfigPaths } from './types';
+import { ExtraCommandLineOptions, File, Imports, LocationInFile, TsConfig, TsConfigPaths } from './types';
 import { dirname, join, relative, resolve, sep } from 'path';
 import { existsSync, readFileSync } from 'fs';
 
@@ -124,11 +124,23 @@ const mapFile = (
 ): File => {
   const imports: Imports = {};
   let exports: string[] = [];
+  let exportLocations: LocationInFile[] = [];
   const name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
   const baseDir = baseUrl && resolve(rootDir, baseUrl);
 
   const tsconfigPathsMatcher =
     baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
+
+  const addExport = (exportName: string, file: ts.SourceFile, node: ts.Node) => {
+    exports.push(exportName);
+
+    const location = file.getLineAndCharacterOfPosition(node.getStart());
+
+    exportLocations.push({
+      line: location.line + 1,
+      character: location.character
+    });
+  };
 
   const addImport = (fw: FromWhat) => {
     const { from, what } = fw;
@@ -186,12 +198,12 @@ const mapFile = (
     }
 
     if (kind === ts.SyntaxKind.ExportAssignment) {
-      exports.push('default');
+      addExport('default', file, node);
       return;
     }
     if (kind === ts.SyntaxKind.ExportDeclaration) {
       if ((node as ts.ExportDeclaration).moduleSpecifier === undefined) {
-        exports.push(...extractExportStatement(node as ts.ExportDeclaration));
+        extractExportStatement(node as ts.ExportDeclaration).forEach(e => addExport(e, file, node));
         return;
       } else {
         const fw = extractExportFromImport(node as ts.ExportDeclaration);
@@ -199,7 +211,7 @@ const mapFile = (
         if (key) {
           const { what } = fw;
           if (what == star) {
-            exports.push(`*:${key}`);
+            addExport(`*:${key}`, file, node);
           } else {
             exports = exports.concat(what);
           }
@@ -210,7 +222,7 @@ const mapFile = (
 
     if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
       if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
-        exports.push('default');
+        addExport('default', file, node);
         return;
       }
       const decl = (node as ts.DeclarationStatement);
@@ -218,7 +230,7 @@ const mapFile = (
         ? decl.name.text
         : extractExport(path, node);
 
-      if (name) exports.push(name);
+      if (name) addExport(name, file, node);
     }
   });
 
@@ -226,7 +238,8 @@ const mapFile = (
     path: name,
     fullPath: path,
     imports,
-    exports
+    exports,
+    exportLocations
   };
 };
 

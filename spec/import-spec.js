@@ -11,7 +11,7 @@ const analyzePaths = (files, baseUrl) => {
 const testWithResults = (...args) => {
   const result = analyzePaths(...args);
 
-  return getExportsString(result);
+  return getExportsString(result).map(e => e.exportName);
 };
 
 const testExports = (paths) => testWithResults(['./exports.ts'].concat(paths));
@@ -26,7 +26,7 @@ describe('analyze', () => {
 
   // Test ignoring results for some paths:
   itIs('ignorePaths - all ignored', ['./import-default.ts', '--ignorePaths=exports;other-1'], []);
-  itIs('ignorePaths - none ignored', ['./import-default.ts', '--ignorePaths=other-1;other-2'], ['a','b','c','d','e']);
+  itIs('ignorePaths - none ignored', ['./import-default.ts', '--ignorePaths=other-1;other-2'], ['a', 'b', 'c', 'd', 'e']);
   itIs('ignorePaths - default', ['./import-default.ts', '--ignorePaths=other-1;other-2'], ['a', 'b', 'c', 'd', 'e']);
 
   itIs('a', ['./import-a.ts'], ['b', 'c', 'd', 'e', 'default']);
@@ -43,8 +43,8 @@ describe('analyze', () => {
     const result = analyzePaths(['./exports.ts', './import-export-star.ts']);
     const keys = Object.keys(result);
 
-    expect(result[keys[0]]).toEqual(['default']);
-    expect(result[keys[1]]).toEqual(['a', 'b', 'c', 'd', 'e']);
+    expect(result[keys[0]].map(e => e.exportName)).toEqual(['default']);
+    expect(result[keys[1]].map(e => e.exportName)).toEqual(['a', 'b', 'c', 'd', 'e']);
   });
 
   it('handles import from directory index', () => {

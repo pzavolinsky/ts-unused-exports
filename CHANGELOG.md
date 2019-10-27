@@ -1,5 +1,6 @@
 ## [Unreleased] - ReleaseDate
 ### Added
+- If the option --showLineNumber is given, then output 1 line per unused export, with the location in the file (line number, column)
 
 ### Changed
 - Fix the --ignorePaths option (it was incorrectly filtering the parsed files, instead of filtering the output)

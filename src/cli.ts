@@ -1,3 +1,4 @@
+import { LocationInFile } from './types';
 import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
 
 import analyzeTsConfig from './app';
@@ -25,9 +26,24 @@ try {
     files.length == 1 ? '' : 's'
     } with unused exports`));
 
-  files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].join(", "))}`));
+  const getLocationInFile = (location: LocationInFile): string => {
+    if (!location) {
+      return "";
+    }
+    return `[${location.line},${location.character}]`;
+  };
 
   const options = extractOptionsFromFiles(tsFiles).options;
+  if (options && options.showLineNumber) {
+    files.forEach(path => {
+      analysis[path].forEach(unusedExport => {
+        console.log(`${path}${getLocationInFile(unusedExport.location)}: ${chalk.bold.yellow(unusedExport.exportName)}`);
+      });
+    });
+  } else {
+    files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].map(r => r.exportName).join(", "))}`));
+  }
+
   if (options && options.exitWithCount) {
     process.exit(files.length);
   }
