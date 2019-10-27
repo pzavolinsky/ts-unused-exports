@@ -1,4 +1,4 @@
-import { Analysis, ExtraCommandLineOptions, File, Imports } from './types';
+import { Analysis, ExtraCommandLineOptions, File, Imports, LocationInFile } from './types';
 export { Analysis } from './types'
 
 interface FileExport {
