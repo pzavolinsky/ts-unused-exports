@@ -4,6 +4,7 @@
 
 ### Changed
 - Fix the --ignorePaths option (it was incorrectly filtering the parsed files, instead of filtering the output)
+- Updated TypeScript dependency to 3.6.4
 
 ## [2.1.0] - 20 Oct 2019
 ### Added
