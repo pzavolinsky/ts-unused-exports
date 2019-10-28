@@ -43,10 +43,24 @@ const processImports = (imports: Imports, exportMap: ExportMap) => {
   Object.keys(imports).forEach(key => {
     const ex = exportMap[key] && exportMap[key].exports;
     if (!ex) return;
+
+    const addUsage = (imp: string) => {
+      if (!ex[imp]) {
+        ex[imp] = {
+          usageCount: 0,
+          location: {
+            line:1,
+            character: 1
+          }
+        }
+      }
+      ex[imp].usageCount++;
+    };
+
     imports[key].forEach(imp =>
       imp == '*'
-        ? Object.keys(ex).filter(e => e != 'default').forEach(e => ex[e].usageCount++)
-        : ex[imp].usageCount++);
+        ? Object.keys(ex).filter(e => e != 'default').forEach(addUsage)
+        : addUsage(imp));
   });
 };
 
