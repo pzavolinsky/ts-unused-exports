@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
 
-import { ExtraCommandLineOptions, File, Imports, LocationInFile, TsConfig, TsConfigPaths } from './types';
+import { File, Imports, LocationInFile, TsConfig, TsConfigPaths } from './types';
 import { dirname, join, relative, resolve, sep } from 'path';
 import { existsSync, readFileSync } from 'fs';
 
@@ -147,7 +147,8 @@ const mapFile = (
 
     const getKey = (from: string) => {
       if (from[0] == '.') {
-        return relativeTo(rootDir, path, from);
+        // An undefined return indicates the import is from 'index.ts' or similar == '.'
+        return relativeTo(rootDir, path, from) || ".";
       } else if (baseDir && baseUrl) {
         let matchedPath;
 

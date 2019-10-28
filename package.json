@@ -21,9 +21,12 @@
   "homepage": "https://github.com/pzavolinsky/ts-unused-exports",
   "scripts": {
     "build": "tsc",
+    "lint": "tslint -p .",
     "watch": "tsc -w",
-    "test": "npm run build && npm run test:unit && npm run test:itest",
-    "test:unit": "jasmine",
+    "test": "npm run build && npm run test:unit:raw && npm run test:itest",
+    "test:unit": "VERBOSE=1 npm run test:unit:raw",
+    "test:unit:raw": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags 'not @ignore'",
+    "test:unit:only": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags '@only'",
     "test:itest": "cd ispec && bash ./run.sh",
     "exec": "bin/ts-unused-exports"
   },
@@ -33,8 +36,9 @@
   "devDependencies": {
     "@types/node": "^10.5.2",
     "@types/strip-json-comments": "0.0.28",
-    "jasmine": "^2.99.0",
-    "tslint": "^4.5.1"
+    "pickled-cucumber": "^2.0.8",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0"
   },
   "dependencies": {
     "chalk": "^2.4.1",

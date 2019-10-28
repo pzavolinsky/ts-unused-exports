@@ -41,7 +41,19 @@ const getExportMap = (files: File[]): ExportMap => {
 
 const processImports = (imports: Imports, exportMap: ExportMap) => {
   Object.keys(imports).forEach(key => {
-    const ex = exportMap[key] && exportMap[key].exports;
+    let ex = exportMap[key] && exportMap[key].exports;
+
+    // Handle imports from an index file
+    if (!ex && key === ".") {
+      const indexCandidates = ["index", "index.ts", "index.tsx"];
+      for (let c = 0; c < indexCandidates.length; c++) {
+        let indexKey = indexCandidates[c];
+        ex = exportMap[indexKey] && exportMap[indexKey].exports;
+        if (ex)
+          break;
+      }
+    }
+
     if (!ex) return;
 
     const addUsage = (imp: string) => {
@@ -49,7 +61,7 @@ const processImports = (imports: Imports, exportMap: ExportMap) => {
         ex[imp] = {
           usageCount: 0,
           location: {
-            line:1,
+            line: 1,
             character: 1
           }
         }

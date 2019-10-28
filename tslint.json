@@ -15,13 +15,6 @@
     "no-bitwise": false,
     "no-console": false,
     "no-shadowed-variable": false,
-    "no-unused-variable": [
-      true,
-      "react",
-      {
-        "ignore-pattern": "^_$"
-      }
-    ],
     "object-literal-sort-keys": false,
     "one-line": [
       true,
