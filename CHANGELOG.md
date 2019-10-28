@@ -1,10 +1,18 @@
 ## [Unreleased] - ReleaseDate
 ### Added
+
+### Changed
+
+## [3.0.0] - 27 Oct 2019
+### Changed
+- Updated TypeScript dependency to 3.6.4
+
+## [2.2.0] - 27 Oct 2019
+### Added
 - If the option --showLineNumber is given, then output 1 line per unused export, with the location in the file (line number, column)
 
 ### Changed
 - Fix the --ignorePaths option (it was incorrectly filtering the parsed files, instead of filtering the output)
-- Updated TypeScript dependency to 3.6.4
 
 ## [2.1.0] - 20 Oct 2019
 ### Added
