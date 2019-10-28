@@ -19,5 +19,8 @@
     { "language": "typescript", "autoFix": true },
     { "language": "typescriptreact", "autoFix": true }
   ],
-  "prettier.useTabs": false
+  "prettier.useTabs": false,
+  "files.exclude": {
+    "lib": true
+  }
 }

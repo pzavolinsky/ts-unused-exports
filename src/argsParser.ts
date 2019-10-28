@@ -7,37 +7,6 @@ type TsFilesAndOptions = {
   options?: ExtraCommandLineOptions;
 };
 
-function canExtractOptionsFromFiles(files?: string[]): boolean {
-  try {
-    extractOptionsFromFiles(files);
-    return true;
-  } catch (_e) {
-    return false;
-  }
-}
-
-export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
-  const filesAndOptions: TsFilesAndOptions = {
-    tsFiles: undefined,
-    options: {},
-  };
-
-  const isOption = (opt: string): boolean => {
-    return opt.indexOf('--') === 0;
-  };
-
-  if (files) {
-    const options = files.filter(f => isOption(f));
-    const filteredFiles = files.filter(f => !isOption(f));
-
-    filesAndOptions.tsFiles = filteredFiles.length ? filteredFiles : undefined;
-
-    return processOptions(filesAndOptions, options);
-  }
-
-  return filesAndOptions;
-}
-
 function processOptions(filesAndOptions: TsFilesAndOptions, options: string[]): TsFilesAndOptions {
   const pathsToIgnore: string[] = [];
   const newOptions: ExtraCommandLineOptions = {
@@ -76,6 +45,41 @@ function processOptions(filesAndOptions: TsFilesAndOptions, options: string[]): 
   return newFilesAndOptions;
 }
 
+export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
+  const filesAndOptions: TsFilesAndOptions = {
+    tsFiles: undefined,
+    options: {},
+  };
+
+  const isOption = (opt: string): boolean => {
+    return opt.indexOf('--') === 0;
+  };
+
+  if (files) {
+    const options = files.filter(f => isOption(f));
+    const filteredFiles = files.filter(f => !isOption(f));
+
+    filesAndOptions.tsFiles = filteredFiles.length ? filteredFiles : undefined;
+
+    return processOptions(filesAndOptions, options);
+  }
+
+  return filesAndOptions;
+}
+
+function canExtractOptionsFromFiles(files?: string[]): boolean {
+  try {
+    extractOptionsFromFiles(files);
+    return true;
+  } catch (_e) {
+    return false;
+  }
+}
+
+function isTsConfigValid(tsconfigFilePath: string): boolean {
+  return existsSync(tsconfigFilePath) && statSync(tsconfigFilePath).isFile();
+}
+
 export function hasValidArgs(): boolean {
   const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
@@ -94,8 +98,4 @@ export function hasValidArgs(): boolean {
   }
 
   return true;
-}
-
-function isTsConfigValid(tsconfigFilePath: string): boolean {
-  return existsSync(tsconfigFilePath) && statSync(tsconfigFilePath).isFile();
 }
