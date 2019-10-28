@@ -2,6 +2,7 @@
 ### Added
 
 ### Changed
+- Fix bug introduced by --showLineNumber option, where analysis throws error on more complex projects.
 
 ## [3.0.0] - 27 Oct 2019
 ### Changed
