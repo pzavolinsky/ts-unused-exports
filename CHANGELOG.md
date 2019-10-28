@@ -2,6 +2,8 @@
 ### Added
 
 ### Changed
+- Replaced jasmine tests with cucumber tests
+- Fix handling of import from index files, like "." or "./index.ts"
 
 ## [3.0.1] - 28 Oct 2019
 ### Changed
