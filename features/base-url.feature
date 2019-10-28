@@ -4,6 +4,7 @@ Background:
   Given file "tsconfig.json" is
     """
     {
+      // This is a comment
       "compilerOptions": { "baseUrl": "./stuff" },
       "include": ["**/*.ts", "**/*.tsx"]
     }
