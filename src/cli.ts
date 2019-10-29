@@ -13,22 +13,17 @@ if (!hasValidArgs()) {
 }
 
 try {
-  const analysis = analyzeTsConfig(
-    tsconfig,
-    tsFiles.length
-      ? tsFiles
-      : undefined
-  );
+  const analysis = analyzeTsConfig(tsconfig, tsFiles.length ? tsFiles : undefined);
 
   const files = Object.keys(analysis);
 
-  console.log(chalk.red(`${chalk.bold(files.length.toString())} module${
-    files.length == 1 ? '' : 's'
-    } with unused exports`));
+  console.log(
+    chalk.red(`${chalk.bold(files.length.toString())} module${files.length == 1 ? '' : 's'} with unused exports`),
+  );
 
   const getLocationInFile = (location: LocationInFile): string => {
     if (!location) {
-      return "";
+      return '';
     }
     return `[${location.line},${location.character}]`;
   };
@@ -37,11 +32,15 @@ try {
   if (options && options.showLineNumber) {
     files.forEach(path => {
       analysis[path].forEach(unusedExport => {
-        console.log(`${path}${getLocationInFile(unusedExport.location)}: ${chalk.bold.yellow(unusedExport.exportName)}`);
+        console.log(
+          `${path}${getLocationInFile(unusedExport.location)}: ${chalk.bold.yellow(unusedExport.exportName)}`,
+        );
       });
     });
   } else {
-    files.forEach(path => console.log(`${path}: ${chalk.bold.yellow(analysis[path].map(r => r.exportName).join(", "))}`));
+    files.forEach(path =>
+      console.log(`${path}: ${chalk.bold.yellow(analysis[path].map(r => r.exportName).join(', '))}`),
+    );
   }
 
   if (options && options.exitWithCount) {
