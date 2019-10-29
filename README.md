@@ -36,9 +36,12 @@ const result = analyzeTsConfig('path/to/tsconfig.json');
 // or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts']);
 // or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts', '--ignorePaths=math']);
 
-// result : { [index:string] : string[] }
-// where the keys are file paths and the values are unused symbols
-```
+// result : { [index:string] : ExportNameAndLocation[] }
+// where the keys are file paths and the values are a structure descibing unused symbols:
+// interface ExportNameAndLocation {
+//   exportName: string;
+//   location: LocationInFile;
+// }
 
 Options:
 
