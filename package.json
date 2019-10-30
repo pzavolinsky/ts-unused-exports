@@ -21,7 +21,8 @@
   "homepage": "https://github.com/pzavolinsky/ts-unused-exports",
   "scripts": {
     "build": "tsc",
-    "lint": "tslint -p .",
+    "lint": "./node_modules/.bin/eslint --ext .ts src",
+    "lint:fix": "./node_modules/.bin/eslint --ext .ts src --fix",
     "watch": "tsc -w",
     "test": "npm run build && npm run test:unit:raw && npm run test:itest",
     "test:unit": "VERBOSE=1 npm run test:unit:raw",
@@ -35,14 +36,17 @@
   },
   "devDependencies": {
     "@types/node": "^10.5.2",
-    "@types/strip-json-comments": "0.0.28",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "pickled-cucumber": "^2.0.8",
-    "ts-node": "^8.4.1",
-    "tslint": "^5.20.0"
+    "prettier": "^1.18.2",
+    "ts-node": "^8.4.1"
   },
   "dependencies": {
     "chalk": "^2.4.1",
-    "strip-json-comments": "^2.0.1",
     "tsconfig-paths": "^3.5.0",
     "typescript": "^3.6.4"
   }

@@ -1,5 +1,5 @@
-import { ExtraCommandLineOptions, File } from './types';
-import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
+import { File } from './types';
+import { hasValidArgs } from './argsParser';
 
 import { dirname } from 'path';
 import { loadTsConfig } from './app';
@@ -7,33 +7,33 @@ import parseFiles from './parser';
 import { showUsage } from './usage';
 
 interface FileMap {
-  [index: string]: File
+  [index: string]: File;
 }
 interface Dups {
-  [index: string]: boolean
+  [index: string]: boolean;
 }
 
 interface Dependency {
-  name: string
-  depth: number
-  count: number
-  dependencies: Dependency[]
+  name: string;
+  depth: number;
+  count: number;
+  dependencies: Dependency[];
 }
 
 interface DepAnalysis {
-  [index: string]: Dependency
+  [index: string]: Dependency;
 }
 
 const getFileMap = (files: File[]): FileMap => {
   const map: FileMap = {};
-  files.map(f => map[f.path] = f);
+  files.map(f => (map[f.path] = f));
   return map;
 };
 
 function analyzeFile(
   fileMap: FileMap,
   file: File,
-  analysis: DepAnalysis
+  analysis: DepAnalysis,
 ): Dependency {
   const existing = analysis[file.path];
 
@@ -43,17 +43,13 @@ function analyzeFile(
     name: file.path,
     count: 1,
     depth: 1,
-    dependencies: []
+    dependencies: [],
   };
 
   analysis[file.path] = dep;
 
   const deps = Object.keys(file.imports).map(d =>
-    analyzeFile(
-      fileMap,
-      fileMap[d],
-      analysis
-    )
+    analyzeFile(fileMap, fileMap[d], analysis),
   );
 
   const depth = deps.map(d => d.depth).reduce((a, b) => Math.max(a, b), 0);
@@ -63,7 +59,7 @@ function analyzeFile(
   dep.dependencies = deps;
 
   return dep;
-};
+}
 
 const analyzeDeps = (tsconfigPath: string): DepAnalysis => {
   const tsConfig = loadTsConfig(tsconfigPath);
@@ -85,11 +81,8 @@ if (!hasValidArgs()) {
   process.exit(-1);
 }
 
-const getValues = (o: DepAnalysis) =>
-  Object.keys(o).reduce<Dependency[]>(
-    (v, k) => v.concat([o[k]]),
-    []
-  );
+const getValues = (o: DepAnalysis): Dependency[] =>
+  Object.keys(o).reduce<Dependency[]>((v, k) => v.concat([o[k]]), []);
 
 const analysis = analyzeDeps(tsconfig);
 const deps = getValues(analysis);
@@ -97,17 +90,17 @@ deps.sort((a, b) => a.depth - b.depth);
 
 console.log(`${deps.length} modules found`);
 
-function dumpDep(dep: Dependency, dups: Dups = {}, padd: string = ''): boolean {
+function dumpDep(dep: Dependency, dups: Dups = {}, padd = ''): boolean {
   const dup = dups[dep.name] ? ' [dup]' : '';
   console.log(`${padd}[${dep.depth - 1}|${dep.count - 1}] ${dep.name}${dup}`);
   return !dup;
-};
+}
 
-function dumpDepRec(dep: Dependency, dups: Dups = {}, padd: string = ''): void {
+function dumpDepRec(dep: Dependency, dups: Dups = {}, padd = ''): void {
   if (!dumpDep(dep, dups, padd)) return;
   dups[dep.name] = true;
   dep.dependencies.forEach(d => dumpDepRec(d, dups, `${padd}  `));
-};
+}
 
 deps.forEach(d => dumpDep(d));
 
@@ -115,8 +108,10 @@ console.log(`${Object.keys(analysis).length} nodes in the dependency tree`);
 
 if (filter) {
   const re = new RegExp(filter, 'i');
-  deps.filter(d => d.name.match(re)).forEach(d => {
-    console.log('-----------------');
-    dumpDepRec(d);
-  });
+  deps
+    .filter(d => d.name.match(re))
+    .forEach(d => {
+      console.log('-----------------');
+      dumpDepRec(d);
+    });
 }

@@ -1,17 +1,23 @@
-import { Analysis, ExtraCommandLineOptions, File, Imports, LocationInFile } from './types';
-export { Analysis } from './types'
+import {
+  Analysis,
+  ExtraCommandLineOptions,
+  File,
+  Imports,
+  LocationInFile,
+} from './types';
+export { Analysis } from './types';
 
 interface FileExport {
   usageCount: number;
-  location: LocationInFile
+  location: LocationInFile;
 }
 
 interface FileExports {
-  [index: string]: FileExport,
+  [index: string]: FileExport;
 }
 
 interface ExportItem {
-  exports: FileExports,
+  exports: FileExports;
   path: string;
 }
 
@@ -24,7 +30,7 @@ const getFileExports = (file: File): ExportItem => {
   file.exports.forEach((e, index) => {
     exports[e] = {
       usageCount: 0,
-      location: file.exportLocations[index]
+      location: file.exportLocations[index],
     };
   });
 
@@ -39,48 +45,49 @@ const getExportMap = (files: File[]): ExportMap => {
   return map;
 };
 
-const processImports = (imports: Imports, exportMap: ExportMap) => {
+const processImports = (imports: Imports, exportMap: ExportMap): void => {
   Object.keys(imports).forEach(key => {
     let ex = exportMap[key] && exportMap[key].exports;
 
     // Handle imports from an index file
-    if (!ex && key === ".") {
-      const indexCandidates = ["index", "index.ts", "index.tsx"];
+    if (!ex && key === '.') {
+      const indexCandidates = ['index', 'index.ts', 'index.tsx'];
       for (let c = 0; c < indexCandidates.length; c++) {
-        let indexKey = indexCandidates[c];
+        const indexKey = indexCandidates[c];
         ex = exportMap[indexKey] && exportMap[indexKey].exports;
-        if (ex)
-          break;
+        if (ex) break;
       }
     }
 
     if (!ex) return;
 
-    const addUsage = (imp: string) => {
+    const addUsage = (imp: string): void => {
       if (!ex[imp]) {
         ex[imp] = {
           usageCount: 0,
           location: {
             line: 1,
-            character: 1
-          }
-        }
+            character: 1,
+          },
+        };
       }
       ex[imp].usageCount++;
     };
 
     imports[key].forEach(imp =>
       imp == '*'
-        ? Object.keys(ex).filter(e => e != 'default').forEach(addUsage)
-        : addUsage(imp));
+        ? Object.keys(ex)
+            .filter(e => e != 'default')
+            .forEach(addUsage)
+        : addUsage(imp),
+    );
   });
 };
 
-const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
+const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
   files.forEach(file => {
     const fileExports = exportMap[file.path];
-    file
-      .exports
+    file.exports
       .filter(ex => ex.indexOf('*:') === 0)
       .forEach(ex => {
         delete fileExports.exports[ex];
@@ -92,7 +99,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
               const export1 = exportMap[ex.slice(2)].exports[key];
               fileExports.exports[key] = {
                 usageCount: 0,
-                location: export1.location
+                location: export1.location,
               };
             }
             fileExports.exports[key].usageCount = 0;
@@ -102,15 +109,21 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
 };
 
 // Allow disabling of results, by path from command line (useful for large projects)
-const shouldPathBeIgnored = (path: string, extraOptions?: ExtraCommandLineOptions) => {
+const shouldPathBeIgnored = (
+  path: string,
+  extraOptions?: ExtraCommandLineOptions,
+): boolean => {
   if (!extraOptions || !extraOptions.pathsToIgnore) {
     return false;
   }
 
   return extraOptions.pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
-}
+};
 
-export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis => {
+export default (
+  files: File[],
+  extraOptions?: ExtraCommandLineOptions,
+): Analysis => {
   const exportMap = getExportMap(files);
   expandExportFromStar(files, exportMap);
   files.forEach(file => processImports(file.imports, exportMap));
@@ -121,10 +134,11 @@ export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis
     const expItem = exportMap[file];
     const { exports, path } = expItem;
 
-    if (shouldPathBeIgnored(path, extraOptions))
-      return;
+    if (shouldPathBeIgnored(path, extraOptions)) return;
 
-    const unusedExports = Object.keys(exports).filter(k => exports[k].usageCount === 0);
+    const unusedExports = Object.keys(exports).filter(
+      k => exports[k].usageCount === 0,
+    );
 
     if (unusedExports.length === 0) {
       return;
@@ -134,7 +148,7 @@ export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis
     unusedExports.forEach(e => {
       analysis[path].push({
         exportName: e,
-        location: exports[e].location
+        location: exports[e].location,
       });
     });
   });

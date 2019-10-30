@@ -8,7 +8,7 @@ import { extractOptionsFromFiles } from './argsParser';
 import parseFiles from './parser';
 import { readFileSync } from 'fs';
 
-const parseTsConfig = (tsconfigPath: string) => {
+const parseTsConfig = (tsconfigPath: string): TsConfig => {
   const basePath = resolve(dirname(tsconfigPath));
 
   try {
@@ -27,12 +27,14 @@ const parseTsConfig = (tsconfigPath: string) => {
     if (result.errors.length) throw result.errors;
 
     return {
-      baseUrl: result.raw
-        && result.raw.compilerOptions
-        && result.raw.compilerOptions.baseUrl,
-      paths: result.raw
-        && result.raw.compilerOptions
-        && result.raw.compilerOptions.paths,
+      baseUrl:
+        result.raw &&
+        result.raw.compilerOptions &&
+        result.raw.compilerOptions.baseUrl,
+      paths:
+        result.raw &&
+        result.raw.compilerOptions &&
+        result.raw.compilerOptions.paths,
       files: result.fileNames,
     };
   } catch (e) {
@@ -57,11 +59,5 @@ export default (tsconfigPath: string, files?: string[]): Analysis => {
   const args = extractOptionsFromFiles(files);
   const tsConfig = loadTsConfig(tsconfigPath, args.tsFiles);
 
-  return analyze(
-    parseFiles(
-      dirname(tsconfigPath),
-      tsConfig
-    ),
-    args.options
-  );
+  return analyze(parseFiles(dirname(tsconfigPath), tsConfig), args.options);
 };
