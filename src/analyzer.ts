@@ -1,17 +1,17 @@
 import { Analysis, ExtraCommandLineOptions, File, Imports, LocationInFile } from './types';
-export { Analysis } from './types'
+export { Analysis } from './types';
 
 interface FileExport {
   usageCount: number;
-  location: LocationInFile
+  location: LocationInFile;
 }
 
 interface FileExports {
-  [index: string]: FileExport,
+  [index: string]: FileExport;
 }
 
 interface ExportItem {
-  exports: FileExports,
+  exports: FileExports;
   path: string;
 }
 
@@ -24,7 +24,7 @@ const getFileExports = (file: File): ExportItem => {
   file.exports.forEach((e, index) => {
     exports[e] = {
       usageCount: 0,
-      location: file.exportLocations[index]
+      location: file.exportLocations[index],
     };
   });
 
@@ -44,13 +44,12 @@ const processImports = (imports: Imports, exportMap: ExportMap) => {
     let ex = exportMap[key] && exportMap[key].exports;
 
     // Handle imports from an index file
-    if (!ex && key === ".") {
-      const indexCandidates = ["index", "index.ts", "index.tsx"];
+    if (!ex && key === '.') {
+      const indexCandidates = ['index', 'index.ts', 'index.tsx'];
       for (let c = 0; c < indexCandidates.length; c++) {
-        let indexKey = indexCandidates[c];
+        const indexKey = indexCandidates[c];
         ex = exportMap[indexKey] && exportMap[indexKey].exports;
-        if (ex)
-          break;
+        if (ex) break;
       }
     }
 
@@ -62,25 +61,27 @@ const processImports = (imports: Imports, exportMap: ExportMap) => {
           usageCount: 0,
           location: {
             line: 1,
-            character: 1
-          }
-        }
+            character: 1,
+          },
+        };
       }
       ex[imp].usageCount++;
     };
 
     imports[key].forEach(imp =>
       imp == '*'
-        ? Object.keys(ex).filter(e => e != 'default').forEach(addUsage)
-        : addUsage(imp));
+        ? Object.keys(ex)
+            .filter(e => e != 'default')
+            .forEach(addUsage)
+        : addUsage(imp),
+    );
   });
 };
 
 const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
   files.forEach(file => {
     const fileExports = exportMap[file.path];
-    file
-      .exports
+    file.exports
       .filter(ex => ex.indexOf('*:') === 0)
       .forEach(ex => {
         delete fileExports.exports[ex];
@@ -92,7 +93,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
               const export1 = exportMap[ex.slice(2)].exports[key];
               fileExports.exports[key] = {
                 usageCount: 0,
-                location: export1.location
+                location: export1.location,
               };
             }
             fileExports.exports[key].usageCount = 0;
@@ -108,7 +109,7 @@ const shouldPathBeIgnored = (path: string, extraOptions?: ExtraCommandLineOption
   }
 
   return extraOptions.pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
-}
+};
 
 export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis => {
   const exportMap = getExportMap(files);
@@ -121,8 +122,7 @@ export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis
     const expItem = exportMap[file];
     const { exports, path } = expItem;
 
-    if (shouldPathBeIgnored(path, extraOptions))
-      return;
+    if (shouldPathBeIgnored(path, extraOptions)) return;
 
     const unusedExports = Object.keys(exports).filter(k => exports[k].usageCount === 0);
 
@@ -134,7 +134,7 @@ export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis
     unusedExports.forEach(e => {
       analysis[path].push({
         exportName: e,
-        location: exports[e].location
+        location: exports[e].location,
       });
     });
   });

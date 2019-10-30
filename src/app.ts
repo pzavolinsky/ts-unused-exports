@@ -19,20 +19,12 @@ const parseTsConfig = (tsconfigPath: string) => {
 
     if (parseJsonResult.error) throw parseJsonResult.error;
 
-    const result = ts.parseJsonConfigFileContent(
-      parseJsonResult.config,
-      ts.sys,
-      basePath,
-    );
+    const result = ts.parseJsonConfigFileContent(parseJsonResult.config, ts.sys, basePath);
     if (result.errors.length) throw result.errors;
 
     return {
-      baseUrl: result.raw
-        && result.raw.compilerOptions
-        && result.raw.compilerOptions.baseUrl,
-      paths: result.raw
-        && result.raw.compilerOptions
-        && result.raw.compilerOptions.paths,
+      baseUrl: result.raw && result.raw.compilerOptions && result.raw.compilerOptions.baseUrl,
+      paths: result.raw && result.raw.compilerOptions && result.raw.compilerOptions.paths,
       files: result.fileNames,
     };
   } catch (e) {
@@ -44,10 +36,7 @@ const parseTsConfig = (tsconfigPath: string) => {
   }
 };
 
-export const loadTsConfig = (
-  tsconfigPath: string,
-  explicitFiles?: string[],
-): TsConfig => {
+export const loadTsConfig = (tsconfigPath: string, explicitFiles?: string[]): TsConfig => {
   const { baseUrl, files, paths } = parseTsConfig(tsconfigPath);
 
   return { baseUrl, paths, files: explicitFiles || files };
@@ -57,11 +46,5 @@ export default (tsconfigPath: string, files?: string[]): Analysis => {
   const args = extractOptionsFromFiles(files);
   const tsConfig = loadTsConfig(tsconfigPath, args.tsFiles);
 
-  return analyze(
-    parseFiles(
-      dirname(tsconfigPath),
-      tsConfig
-    ),
-    args.options
-  );
+  return analyze(parseFiles(dirname(tsconfigPath), tsConfig), args.options);
 };

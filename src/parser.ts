@@ -10,8 +10,8 @@ const TRIM_QUOTES = /^['"](.*)['"]$/;
 const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
 
 interface FromWhat {
-  from: string
-  what: string[]
+  from: string;
+  what: string[];
 }
 
 const star = ['*'];
@@ -25,72 +25,53 @@ const getFrom = (moduleSpecifier: ts.Expression) =>
 const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   const from = getFrom(decl.moduleSpecifier);
   const { importClause } = decl;
-  if (!importClause) return {
-    from,
-    what: star
-  };
+  if (!importClause)
+    return {
+      from,
+      what: star,
+    };
 
   const { namedBindings } = importClause;
-  const importDefault = !!importClause.name
-    ? ['default']
-    : [];
-  const importStar =
-    namedBindings
-      && !!(namedBindings as ts.NamespaceImport).name
-      ? star
-      : [];
+  const importDefault = !!importClause.name ? ['default'] : [];
+  const importStar = namedBindings && !!(namedBindings as ts.NamespaceImport).name ? star : [];
   const importNames =
-    namedBindings
-      && !importStar.length
-      ? (namedBindings as ts.NamedImports)
-        .elements
-        .map(e => (e.propertyName || e.name).text)
+    namedBindings && !importStar.length
+      ? (namedBindings as ts.NamedImports).elements.map(e => (e.propertyName || e.name).text)
       : [];
 
   return {
     from,
-    what: importDefault.concat(importStar, importNames)
+    what: importDefault.concat(importStar, importNames),
   };
 };
 
 const extractExportStatement = (decl: ts.ExportDeclaration): string[] => {
-  return decl.exportClause
-    ? decl.exportClause.elements
-      .map(e => (e.name || e.propertyName).text)
-    : [];
+  return decl.exportClause ? decl.exportClause.elements.map(e => (e.name || e.propertyName).text) : [];
 };
 
 const extractExportFromImport = (decl: ts.ExportDeclaration): FromWhat => {
   const { moduleSpecifier, exportClause } = decl;
-  if (!moduleSpecifier) return {
-    from: '',
-    what: []
-  };
+  if (!moduleSpecifier)
+    return {
+      from: '',
+      what: [],
+    };
 
-  const what = exportClause
-    ? exportClause.elements
-      .map(e => (e.propertyName || e.name).text)
-    : star;
+  const what = exportClause ? exportClause.elements.map(e => (e.propertyName || e.name).text) : star;
 
   return {
     from: getFrom(moduleSpecifier),
-    what
+    what,
   };
 };
 
 const extractExport = (path: string, node: ts.Node): string => {
   switch (node.kind) {
     case ts.SyntaxKind.VariableStatement:
-      return (node as ts.VariableStatement)
-        .declarationList
-        .declarations[0]
-        .name
-        .getText();
+      return (node as ts.VariableStatement).declarationList.declarations[0].name.getText();
     case ts.SyntaxKind.FunctionDeclaration:
-      const { name } = (node as ts.FunctionDeclaration);
-      return name
-        ? name.text
-        : 'default';
+      const { name } = node as ts.FunctionDeclaration;
+      return name ? name.text : 'default';
     default: {
       console.warn(`WARN: ${path}: unknown export node (kind:${node.kind})`);
       break;
@@ -103,33 +84,24 @@ const relativeTo = (rootDir: string, file: string, path: string): string =>
   relative(rootDir, resolve(dirname(file), path));
 
 const isRelativeToBaseDir = (baseDir: string, from: string) =>
-  existsSync(resolve(baseDir, `${from}.js`))
-  || existsSync(resolve(baseDir, `${from}.ts`))
-  || existsSync(resolve(baseDir, `${from}.tsx`))
-  || existsSync(resolve(baseDir, from, 'index.js'))
-  || existsSync(resolve(baseDir, from, 'index.ts'))
-  || existsSync(resolve(baseDir, from, 'index.tsx'))
-  ;
+  existsSync(resolve(baseDir, `${from}.js`)) ||
+  existsSync(resolve(baseDir, `${from}.ts`)) ||
+  existsSync(resolve(baseDir, `${from}.tsx`)) ||
+  existsSync(resolve(baseDir, from, 'index.js')) ||
+  existsSync(resolve(baseDir, from, 'index.ts')) ||
+  existsSync(resolve(baseDir, from, 'index.tsx'));
 
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind) =>
-  node.modifiers
-  && node.modifiers.filter(m => m.kind === mod).length > 0;
+  node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
 
-const mapFile = (
-  rootDir: string,
-  path: string,
-  file: ts.SourceFile,
-  baseUrl?: string,
-  paths?: TsConfigPaths,
-): File => {
+const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: string, paths?: TsConfigPaths): File => {
   const imports: Imports = {};
   let exports: string[] = [];
-  let exportLocations: LocationInFile[] = [];
+  const exportLocations: LocationInFile[] = [];
   const name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
   const baseDir = baseUrl && resolve(rootDir, baseUrl);
 
-  const tsconfigPathsMatcher =
-    baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
+  const tsconfigPathsMatcher = baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
 
   const addExport = (exportName: string, file: ts.SourceFile, node: ts.Node) => {
     exports.push(exportName);
@@ -138,7 +110,7 @@ const mapFile = (
 
     exportLocations.push({
       line: location.line + 1,
-      character: location.character
+      character: location.character,
     });
   };
 
@@ -148,21 +120,15 @@ const mapFile = (
     const getKey = (from: string) => {
       if (from[0] == '.') {
         // An undefined return indicates the import is from 'index.ts' or similar == '.'
-        return relativeTo(rootDir, path, from) || ".";
+        return relativeTo(rootDir, path, from) || '.';
       } else if (baseDir && baseUrl) {
         let matchedPath;
 
         return isRelativeToBaseDir(baseDir, from)
           ? baseUrl && join(baseUrl, from)
-          : tsconfigPathsMatcher &&
-            (matchedPath = tsconfigPathsMatcher(
-              from,
-              undefined,
-              undefined,
-              EXTENSIONS
-            ))
-            ? matchedPath.replace(`${baseDir}${sep}`, '')
-            : undefined;
+          : tsconfigPathsMatcher && (matchedPath = tsconfigPathsMatcher(from, undefined, undefined, EXTENSIONS))
+          ? matchedPath.replace(`${baseDir}${sep}`, '')
+          : undefined;
       }
 
       return undefined;
@@ -176,16 +142,11 @@ const mapFile = (
   };
 
   ts.forEachChild(file, (node: ts.Node) => {
-    const comments = ts.getLeadingCommentRanges(
-      file.getFullText(),
-      node.getFullStart()
-    );
+    const comments = ts.getLeadingCommentRanges(file.getFullText(), node.getFullStart());
 
     if (comments) {
       const commentRange = comments[comments.length - 1];
-      const commentText = file
-        .getFullText()
-        .substring(commentRange.pos, commentRange.end);
+      const commentText = file.getFullText().substring(commentRange.pos, commentRange.end);
       if (commentText === '// ts-unused-exports:disable-next-line') {
         return;
       }
@@ -226,10 +187,8 @@ const mapFile = (
         addExport('default', file, node);
         return;
       }
-      const decl = (node as ts.DeclarationStatement);
-      const name = decl.name
-        ? decl.name.text
-        : extractExport(path, node);
+      const decl = node as ts.DeclarationStatement;
+      const name = decl.name ? decl.name.text : extractExport(path, node);
 
       if (name) addExport(name, file, node);
     }
@@ -240,16 +199,11 @@ const mapFile = (
     fullPath: path,
     imports,
     exports,
-    exportLocations
+    exportLocations,
   };
 };
 
-const parseFile = (
-  rootDir: string,
-  path: string,
-  baseUrl?: string,
-  paths?: TsConfigPaths
-): File =>
+const parseFile = (rootDir: string, path: string, baseUrl?: string, paths?: TsConfigPaths): File =>
   mapFile(
     rootDir,
     path,
@@ -257,22 +211,19 @@ const parseFile = (
       path,
       readFileSync(path, { encoding: 'utf8' }),
       ts.ScriptTarget.ES2015,
-      /*setParentNodes */ true
+      /*setParentNodes */ true,
     ),
     baseUrl,
-    paths
+    paths,
   );
 
-const parsePaths = (
-  rootDir: string,
-  { baseUrl, files: filePaths, paths }: TsConfig
-): File[] => {
+const parsePaths = (rootDir: string, { baseUrl, files: filePaths, paths }: TsConfig): File[] => {
   const files = filePaths
     .filter(p => p.indexOf('.d.') == -1)
     .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl, paths));
 
   return files;
-}
+};
 
 export default (rootDir: string, TsConfig: TsConfig): File[] => {
   return parsePaths(rootDir, TsConfig);
