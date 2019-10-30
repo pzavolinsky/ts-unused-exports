@@ -1,4 +1,4 @@
-export function showUsage() {
+export function showUsage(): void {
   console.error(`
     usage: ts-unused-exports path/to/tsconfig.json [file1.ts file2.ts] [--exitWithCount][--ignorePaths=path1;path2][--showLineNumber]
   

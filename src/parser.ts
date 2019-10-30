@@ -16,7 +16,7 @@ interface FromWhat {
 
 const star = ['*'];
 
-const getFrom = (moduleSpecifier: ts.Expression) =>
+const getFrom = (moduleSpecifier: ts.Expression): string =>
   moduleSpecifier
     .getText()
     .replace(TRIM_QUOTES, '$1')
@@ -83,7 +83,7 @@ const extractExport = (path: string, node: ts.Node): string => {
 const relativeTo = (rootDir: string, file: string, path: string): string =>
   relative(rootDir, resolve(dirname(file), path));
 
-const isRelativeToBaseDir = (baseDir: string, from: string) =>
+const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
   existsSync(resolve(baseDir, `${from}.js`)) ||
   existsSync(resolve(baseDir, `${from}.ts`)) ||
   existsSync(resolve(baseDir, `${from}.tsx`)) ||
@@ -91,7 +91,7 @@ const isRelativeToBaseDir = (baseDir: string, from: string) =>
   existsSync(resolve(baseDir, from, 'index.ts')) ||
   existsSync(resolve(baseDir, from, 'index.tsx'));
 
-const hasModifier = (node: ts.Node, mod: ts.SyntaxKind) =>
+const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
 
 const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: string, paths?: TsConfigPaths): File => {
@@ -103,7 +103,7 @@ const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: s
 
   const tsconfigPathsMatcher = baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
 
-  const addExport = (exportName: string, file: ts.SourceFile, node: ts.Node) => {
+  const addExport = (exportName: string, file: ts.SourceFile, node: ts.Node): void => {
     exports.push(exportName);
 
     const location = file.getLineAndCharacterOfPosition(node.getStart());
@@ -114,10 +114,10 @@ const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: s
     });
   };
 
-  const addImport = (fw: FromWhat) => {
+  const addImport = (fw: FromWhat): string | undefined => {
     const { from, what } = fw;
 
-    const getKey = (from: string) => {
+    const getKey = (from: string): string | undefined => {
       if (from[0] == '.') {
         // An undefined return indicates the import is from 'index.ts' or similar == '.'
         return relativeTo(rootDir, path, from) || '.';

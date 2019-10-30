@@ -39,7 +39,7 @@ const getExportMap = (files: File[]): ExportMap => {
   return map;
 };
 
-const processImports = (imports: Imports, exportMap: ExportMap) => {
+const processImports = (imports: Imports, exportMap: ExportMap): void => {
   Object.keys(imports).forEach(key => {
     let ex = exportMap[key] && exportMap[key].exports;
 
@@ -55,7 +55,7 @@ const processImports = (imports: Imports, exportMap: ExportMap) => {
 
     if (!ex) return;
 
-    const addUsage = (imp: string) => {
+    const addUsage = (imp: string): void => {
       if (!ex[imp]) {
         ex[imp] = {
           usageCount: 0,
@@ -78,7 +78,7 @@ const processImports = (imports: Imports, exportMap: ExportMap) => {
   });
 };
 
-const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
+const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
   files.forEach(file => {
     const fileExports = exportMap[file.path];
     file.exports
@@ -103,7 +103,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap) => {
 };
 
 // Allow disabling of results, by path from command line (useful for large projects)
-const shouldPathBeIgnored = (path: string, extraOptions?: ExtraCommandLineOptions) => {
+const shouldPathBeIgnored = (path: string, extraOptions?: ExtraCommandLineOptions): boolean => {
   if (!extraOptions || !extraOptions.pathsToIgnore) {
     return false;
   }

@@ -39,10 +39,12 @@ export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
 }
 
 function processOptions(filesAndOptions: TsFilesAndOptions, options: string[]): TsFilesAndOptions {
+  const pathsToIgnore: string[] = [];
+  const newOptions: ExtraCommandLineOptions = {
+    pathsToIgnore: pathsToIgnore,
+  };
   const newFilesAndOptions: TsFilesAndOptions = {
-    options: {
-      pathsToIgnore: [],
-    },
+    options: newOptions,
     tsFiles: filesAndOptions.tsFiles,
   };
 
@@ -53,18 +55,18 @@ function processOptions(filesAndOptions: TsFilesAndOptions, options: string[]): 
 
     switch (optionName) {
       case '--exitWithCount':
-        newFilesAndOptions.options!.exitWithCount = true;
+        newOptions.exitWithCount = true;
         break;
       case '--ignorePaths':
         {
           const paths = optionValue.split(';');
           paths.forEach(path => {
-            newFilesAndOptions.options!.pathsToIgnore!.push(path);
+            pathsToIgnore.push(path);
           });
         }
         break;
       case '--showLineNumber':
-        newFilesAndOptions.options!.showLineNumber = true;
+        newOptions.showLineNumber = true;
         break;
       default:
         throw new Error(`Not a recognised option '${optionName}'`);
@@ -74,7 +76,7 @@ function processOptions(filesAndOptions: TsFilesAndOptions, options: string[]): 
   return newFilesAndOptions;
 }
 
-export function hasValidArgs() {
+export function hasValidArgs(): boolean {
   const [tsconfig, ...tsFiles] = process.argv.slice(2);
 
   if (!tsconfig) {
@@ -94,6 +96,6 @@ export function hasValidArgs() {
   return true;
 }
 
-function isTsConfigValid(tsconfigFilePath: string) {
+function isTsConfigValid(tsconfigFilePath: string): boolean {
   return existsSync(tsconfigFilePath) && statSync(tsconfigFilePath).isFile();
 }

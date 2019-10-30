@@ -1,5 +1,5 @@
-import { ExtraCommandLineOptions, File } from './types';
-import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
+import { File } from './types';
+import { hasValidArgs } from './argsParser';
 
 import { dirname } from 'path';
 import { loadTsConfig } from './app';
@@ -75,7 +75,7 @@ if (!hasValidArgs()) {
   process.exit(-1);
 }
 
-const getValues = (o: DepAnalysis) => Object.keys(o).reduce<Dependency[]>((v, k) => v.concat([o[k]]), []);
+const getValues = (o: DepAnalysis): Dependency[] => Object.keys(o).reduce<Dependency[]>((v, k) => v.concat([o[k]]), []);
 
 const analysis = analyzeDeps(tsconfig);
 const deps = getValues(analysis);

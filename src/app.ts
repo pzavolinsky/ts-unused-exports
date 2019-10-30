@@ -8,7 +8,7 @@ import { extractOptionsFromFiles } from './argsParser';
 import parseFiles from './parser';
 import { readFileSync } from 'fs';
 
-const parseTsConfig = (tsconfigPath: string) => {
+const parseTsConfig = (tsconfigPath: string): TsConfig => {
   const basePath = resolve(dirname(tsconfigPath));
 
   try {
