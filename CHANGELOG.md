@@ -1,30 +1,45 @@
 ## [Unreleased] - ReleaseDate
+
 ### Added
 
 ### Changed
 
+- (Internal) Adds eslint with default rules (via typescript-eslint)
+- (Internal) Fixes all the linting issues (separate commits)
+
 ## [3.0.2] - 28 Oct 2019
+
 ### Changed
-- Replaced jasmine tests with cucumber tests
+
+- (Internal) Replaced jasmine tests with cucumber tests
 - Fix handling of import from index files, like "." or "./index.ts"
 
 ## [3.0.1] - 28 Oct 2019
+
 ### Changed
+
 - Fix bug introduced by --showLineNumber option, where analysis throws error on more complex projects.
 
 ## [3.0.0] - 27 Oct 2019
+
 ### Changed
+
 - Updated TypeScript dependency to 3.6.4
 
 ## [2.2.0] - 27 Oct 2019
+
 ### Added
+
 - If the option --showLineNumber is given, then output 1 line per unused export, with the location in the file (line number, column)
 
 ### Changed
+
 - Fix the --ignorePaths option (it was incorrectly filtering the parsed files, instead of filtering the output)
 
 ## [2.1.0] - 20 Oct 2019
+
 ### Added
+
 - Add comment flag to ignore some exports
 - Add tsconfig paths aliases support
 - Remove recursive imports check (performance on big projects)
@@ -33,5 +48,6 @@
 - Add cmd line option to ignore results from some file paths
 
 ### Changed
+
 - By default, the process exit code will be 0 unless there was a critical error (bad arguments or a missing file)
 - If the option --exitWithCount is given, then return the count of files that have unused exports
