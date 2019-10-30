@@ -1,7 +1,13 @@
 import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
 
-import { File, Imports, LocationInFile, TsConfig, TsConfigPaths } from './types';
+import {
+  File,
+  Imports,
+  LocationInFile,
+  TsConfig,
+  TsConfigPaths,
+} from './types';
 import { dirname, join, relative, resolve, sep } from 'path';
 import { existsSync, readFileSync } from 'fs';
 
@@ -33,10 +39,13 @@ const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
 
   const { namedBindings } = importClause;
   const importDefault = !!importClause.name ? ['default'] : [];
-  const importStar = namedBindings && !!(namedBindings as ts.NamespaceImport).name ? star : [];
+  const importStar =
+    namedBindings && !!(namedBindings as ts.NamespaceImport).name ? star : [];
   const importNames =
     namedBindings && !importStar.length
-      ? (namedBindings as ts.NamedImports).elements.map(e => (e.propertyName || e.name).text)
+      ? (namedBindings as ts.NamedImports).elements.map(
+          e => (e.propertyName || e.name).text,
+        )
       : [];
 
   return {
@@ -46,7 +55,9 @@ const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
 };
 
 const extractExportStatement = (decl: ts.ExportDeclaration): string[] => {
-  return decl.exportClause ? decl.exportClause.elements.map(e => (e.name || e.propertyName).text) : [];
+  return decl.exportClause
+    ? decl.exportClause.elements.map(e => (e.name || e.propertyName).text)
+    : [];
 };
 
 const extractExportFromImport = (decl: ts.ExportDeclaration): FromWhat => {
@@ -57,7 +68,9 @@ const extractExportFromImport = (decl: ts.ExportDeclaration): FromWhat => {
       what: [],
     };
 
-  const what = exportClause ? exportClause.elements.map(e => (e.propertyName || e.name).text) : star;
+  const what = exportClause
+    ? exportClause.elements.map(e => (e.propertyName || e.name).text)
+    : star;
 
   return {
     from: getFrom(moduleSpecifier),
@@ -94,16 +107,27 @@ const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
 
-const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: string, paths?: TsConfigPaths): File => {
+const mapFile = (
+  rootDir: string,
+  path: string,
+  file: ts.SourceFile,
+  baseUrl?: string,
+  paths?: TsConfigPaths,
+): File => {
   const imports: Imports = {};
   let exports: string[] = [];
   const exportLocations: LocationInFile[] = [];
   const name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
   const baseDir = baseUrl && resolve(rootDir, baseUrl);
 
-  const tsconfigPathsMatcher = baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
+  const tsconfigPathsMatcher =
+    baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
 
-  const addExport = (exportName: string, file: ts.SourceFile, node: ts.Node): void => {
+  const addExport = (
+    exportName: string,
+    file: ts.SourceFile,
+    node: ts.Node,
+  ): void => {
     exports.push(exportName);
 
     const location = file.getLineAndCharacterOfPosition(node.getStart());
@@ -126,7 +150,13 @@ const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: s
 
         return isRelativeToBaseDir(baseDir, from)
           ? baseUrl && join(baseUrl, from)
-          : tsconfigPathsMatcher && (matchedPath = tsconfigPathsMatcher(from, undefined, undefined, EXTENSIONS))
+          : tsconfigPathsMatcher &&
+            (matchedPath = tsconfigPathsMatcher(
+              from,
+              undefined,
+              undefined,
+              EXTENSIONS,
+            ))
           ? matchedPath.replace(`${baseDir}${sep}`, '')
           : undefined;
       }
@@ -142,11 +172,16 @@ const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: s
   };
 
   ts.forEachChild(file, (node: ts.Node) => {
-    const comments = ts.getLeadingCommentRanges(file.getFullText(), node.getFullStart());
+    const comments = ts.getLeadingCommentRanges(
+      file.getFullText(),
+      node.getFullStart(),
+    );
 
     if (comments) {
       const commentRange = comments[comments.length - 1];
-      const commentText = file.getFullText().substring(commentRange.pos, commentRange.end);
+      const commentText = file
+        .getFullText()
+        .substring(commentRange.pos, commentRange.end);
       if (commentText === '// ts-unused-exports:disable-next-line') {
         return;
       }
@@ -165,7 +200,9 @@ const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: s
     }
     if (kind === ts.SyntaxKind.ExportDeclaration) {
       if ((node as ts.ExportDeclaration).moduleSpecifier === undefined) {
-        extractExportStatement(node as ts.ExportDeclaration).forEach(e => addExport(e, file, node));
+        extractExportStatement(node as ts.ExportDeclaration).forEach(e =>
+          addExport(e, file, node),
+        );
         return;
       } else {
         const fw = extractExportFromImport(node as ts.ExportDeclaration);
@@ -203,7 +240,12 @@ const mapFile = (rootDir: string, path: string, file: ts.SourceFile, baseUrl?: s
   };
 };
 
-const parseFile = (rootDir: string, path: string, baseUrl?: string, paths?: TsConfigPaths): File =>
+const parseFile = (
+  rootDir: string,
+  path: string,
+  baseUrl?: string,
+  paths?: TsConfigPaths,
+): File =>
   mapFile(
     rootDir,
     path,
@@ -217,7 +259,10 @@ const parseFile = (rootDir: string, path: string, baseUrl?: string, paths?: TsCo
     paths,
   );
 
-const parsePaths = (rootDir: string, { baseUrl, files: filePaths, paths }: TsConfig): File[] => {
+const parsePaths = (
+  rootDir: string,
+  { baseUrl, files: filePaths, paths }: TsConfig,
+): File[] => {
   const files = filePaths
     .filter(p => p.indexOf('.d.') == -1)
     .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl, paths));

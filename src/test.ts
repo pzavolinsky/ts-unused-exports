@@ -1,11 +1,28 @@
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmdirSync, unlinkSync, writeFileSync } from 'fs';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  rmdirSync,
+  unlinkSync,
+  writeFileSync,
+} from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import pickledCucumber, { SetupFn } from 'pickled-cucumber';
 import analyzeTsConfig from './app';
 import { Analysis } from './types';
 
-const setup: SetupFn = ({ After, Before, compare, getCtx, Given, setCtx, Then, When }) => {
+const setup: SetupFn = ({
+  After,
+  Before,
+  compare,
+  getCtx,
+  Given,
+  setCtx,
+  Then,
+  When,
+}) => {
   const pathFor = (fileName: string): string =>
     fileName.indexOf('--') === 0 ? fileName : join(getCtx('DIR'), fileName);
   const createFile = (path: string, content: string): void => {
@@ -35,7 +52,9 @@ const setup: SetupFn = ({ After, Before, compare, getCtx, Given, setCtx, Then, W
       `);
     }
     const removeDir = (path: string): void => {
-      const items = readdirSync(path, { encoding: 'utf8' }).filter(f => f[0] !== '.');
+      const items = readdirSync(path, { encoding: 'utf8' }).filter(
+        f => f[0] !== '.',
+      );
       const files = items.filter(f => !!f.match(/\.(json|ts|tsx)$/));
       files.forEach(f => unlinkSync(join(path, f)));
       const dirs = items.filter(i => files.indexOf(i) === -1);

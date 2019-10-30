@@ -1,4 +1,10 @@
-import { Analysis, ExtraCommandLineOptions, File, Imports, LocationInFile } from './types';
+import {
+  Analysis,
+  ExtraCommandLineOptions,
+  File,
+  Imports,
+  LocationInFile,
+} from './types';
 export { Analysis } from './types';
 
 interface FileExport {
@@ -103,7 +109,10 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
 };
 
 // Allow disabling of results, by path from command line (useful for large projects)
-const shouldPathBeIgnored = (path: string, extraOptions?: ExtraCommandLineOptions): boolean => {
+const shouldPathBeIgnored = (
+  path: string,
+  extraOptions?: ExtraCommandLineOptions,
+): boolean => {
   if (!extraOptions || !extraOptions.pathsToIgnore) {
     return false;
   }
@@ -111,7 +120,10 @@ const shouldPathBeIgnored = (path: string, extraOptions?: ExtraCommandLineOption
   return extraOptions.pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
 };
 
-export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis => {
+export default (
+  files: File[],
+  extraOptions?: ExtraCommandLineOptions,
+): Analysis => {
   const exportMap = getExportMap(files);
   expandExportFromStar(files, exportMap);
   files.forEach(file => processImports(file.imports, exportMap));
@@ -124,7 +136,9 @@ export default (files: File[], extraOptions?: ExtraCommandLineOptions): Analysis
 
     if (shouldPathBeIgnored(path, extraOptions)) return;
 
-    const unusedExports = Object.keys(exports).filter(k => exports[k].usageCount === 0);
+    const unusedExports = Object.keys(exports).filter(
+      k => exports[k].usageCount === 0,
+    );
 
     if (unusedExports.length === 0) {
       return;

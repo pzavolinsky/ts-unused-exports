@@ -30,7 +30,11 @@ const getFileMap = (files: File[]): FileMap => {
   return map;
 };
 
-function analyzeFile(fileMap: FileMap, file: File, analysis: DepAnalysis): Dependency {
+function analyzeFile(
+  fileMap: FileMap,
+  file: File,
+  analysis: DepAnalysis,
+): Dependency {
   const existing = analysis[file.path];
 
   if (existing) return existing;
@@ -44,7 +48,9 @@ function analyzeFile(fileMap: FileMap, file: File, analysis: DepAnalysis): Depen
 
   analysis[file.path] = dep;
 
-  const deps = Object.keys(file.imports).map(d => analyzeFile(fileMap, fileMap[d], analysis));
+  const deps = Object.keys(file.imports).map(d =>
+    analyzeFile(fileMap, fileMap[d], analysis),
+  );
 
   const depth = deps.map(d => d.depth).reduce((a, b) => Math.max(a, b), 0);
   const count = deps.map(d => d.count).reduce((a, b) => a + b, 0);
@@ -75,7 +81,8 @@ if (!hasValidArgs()) {
   process.exit(-1);
 }
 
-const getValues = (o: DepAnalysis): Dependency[] => Object.keys(o).reduce<Dependency[]>((v, k) => v.concat([o[k]]), []);
+const getValues = (o: DepAnalysis): Dependency[] =>
+  Object.keys(o).reduce<Dependency[]>((v, k) => v.concat([o[k]]), []);
 
 const analysis = analyzeDeps(tsconfig);
 const deps = getValues(analysis);

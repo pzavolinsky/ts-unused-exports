@@ -7,7 +7,10 @@ type TsFilesAndOptions = {
   options?: ExtraCommandLineOptions;
 };
 
-function processOptions(filesAndOptions: TsFilesAndOptions, options: string[]): TsFilesAndOptions {
+function processOptions(
+  filesAndOptions: TsFilesAndOptions,
+  options: string[],
+): TsFilesAndOptions {
   const pathsToIgnore: string[] = [];
   const newOptions: ExtraCommandLineOptions = {
     pathsToIgnore: pathsToIgnore,
