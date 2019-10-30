@@ -12,6 +12,7 @@
   "[typescriptreact]": {
     "editor.formatOnSave": false
   },
+  "editor.rulers": [80],
   "eslint.autoFixOnSave": true,
   "eslint.validate": [
     "javascript",
