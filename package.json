@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "@types/node": "^10.5.2",
-    "@types/strip-json-comments": "0.0.28",
     "@typescript-eslint/eslint-plugin": "^2.6.0",
     "@typescript-eslint/parser": "^2.6.0",
     "eslint": "^6.6.0",
