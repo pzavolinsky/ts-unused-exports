@@ -21,8 +21,8 @@
   "homepage": "https://github.com/pzavolinsky/ts-unused-exports",
   "scripts": {
     "build": "tsc",
-    "lint": "./node_modules/eslint/bin/eslint.js --ext .ts src",
-    "lint:fix": "./node_modules/eslint/bin/eslint.js --ext .ts src --fix",
+    "lint": "./node_modules/.bin/eslint --ext .ts src",
+    "lint:fix": "./node_modules/.bin/eslint --ext .ts src --fix",
     "watch": "tsc -w",
     "test": "npm run build && npm run test:unit:raw && npm run test:itest",
     "test:unit": "VERBOSE=1 npm run test:unit:raw",
