@@ -9,5 +9,8 @@ module.exports =  {
     ecmaVersion:  2018,  // Allows for the parsing of modern ECMAScript features
     project: "./tsconfig.json",
     sourceType:  'module',  // Allows for the use of imports
+  },
+  "rules": {
+    "@typescript-eslint/no-use-before-define": "off"
   }
 };
