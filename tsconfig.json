@@ -8,22 +8,9 @@
     "strictNullChecks": true,
     "strict": true
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "filesGlob": [
-    "./src/**/*.ts"
-  ],
+  "exclude": ["node_modules"],
+  "include": ["src/**/*"],
   "atom": {
     "rewriteTsconfig": true
-  },
-  "files": [
-    "./src/analyzer.ts",
-    "./src/app.ts",
-    "./src/cli.ts",
-    "./src/deps.ts",
-    "./src/parser.ts",
-    "./src/argsParser.ts",
-    "./src/types.ts"
-  ]
+  }
 }
