@@ -4,8 +4,11 @@
 
 ### Changed
 
-- (Internal) Adds eslint with default rules (via typescript-eslint)
-- (Internal) Fixes all the linting issues (separate commits)
+## [3.0.3] - 30 October 2019
+### Changed
+
+- (Internal) Add eslint with default rules (via typescript-eslint)
+- (Internal) Fix all the linting issues
 
 ## [3.0.2] - 28 Oct 2019
 
