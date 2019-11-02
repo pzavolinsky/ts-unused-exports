@@ -4,7 +4,10 @@
 
 ### Changed
 
+- use eslint-style exit code (0 = no issues, 1 = unused exports found, 2 = exception occurred)
+
 ## [3.0.3] - 30 October 2019
+
 ### Changed
 
 - (Internal) Add eslint with default rules (via typescript-eslint)
