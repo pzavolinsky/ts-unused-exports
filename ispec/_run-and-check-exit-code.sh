@@ -7,6 +7,7 @@ function run {
     if [ $ERROR_COUNT -ne 2 ]
     then
         echo "[FAIL] Expected 2 issues, but got {$ERROR_COUNT}."
+        exit 1
     else
         echo "[PASS]."
     fi
