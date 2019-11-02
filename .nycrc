@@ -1,24 +1,18 @@
 {
-  "cache": false,
-  "check-coverage": false,
-  "extension": [
-    ".ts"
-  ],
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "coverage/**",
-    "node_modules/**",
-    "**/*.d.ts",
-    "**/*.test.ts"
-  ],
-  "sourceMap": true,
-  "reporter": [
-    "html",
-    "text",
-    "text-summary"
-  ],
-  "all": true,
-  "instrument": true
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "all": true,
+    "include": [
+        "src/**/*.ts"
+    ],
+    "reporter": [
+        "html",
+        "text",
+        "text-summary"
+    ],
+    "watermarks": {
+      "statements": [80, 100],
+      "branches": [80, 100],
+      "functions": [80, 100],
+      "lines": [80, 100]
+    }
 }

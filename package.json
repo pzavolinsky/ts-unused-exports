@@ -25,7 +25,7 @@
     "lint:fix": "./node_modules/.bin/eslint --ext .ts src --fix",
     "watch": "tsc -w",
     "test": "npm run build && npm run test:unit:raw && npm run test:itest",
-    "test:cc": "nyc npm run test:unit",
+    "test:cc": "nyc npm run test:unit:raw",
     "test:unit": "VERBOSE=1 npm run test:unit:raw",
     "test:unit:raw": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags 'not @ignore'",
     "test:unit:only": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags '@only'",
@@ -36,6 +36,7 @@
     "ts-unused-exports": "bin/ts-unused-exports"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^0.1.3",
     "@types/node": "^10.5.2",
     "@typescript-eslint/eslint-plugin": "^2.6.0",
     "@typescript-eslint/parser": "^2.6.0",
