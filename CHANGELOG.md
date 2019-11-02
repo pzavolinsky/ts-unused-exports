@@ -4,7 +4,11 @@
 
 ### Changed
 
+- (Internal) add code coverage via nyc
+- (Internal) code coverage and linting are included in `npm test`
+
 ## [3.0.3] - 30 October 2019
+
 ### Changed
 
 - (Internal) Add eslint with default rules (via typescript-eslint)
