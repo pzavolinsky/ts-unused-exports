@@ -7,6 +7,7 @@ import {
   LocationInFile,
   TsConfig,
   TsConfigPaths,
+  ExtraCommandLineOptions,
 } from './types';
 import { dirname, join, relative, resolve, sep } from 'path';
 import { existsSync, readFileSync } from 'fs';
@@ -261,14 +262,22 @@ const parseFile = (
 const parsePaths = (
   rootDir: string,
   { baseUrl, files: filePaths, paths }: TsConfig,
+  extraOptions?: ExtraCommandLineOptions,
 ): File[] => {
+  const includeDeclarationFiles =
+    extraOptions && extraOptions.includeDeclarationFiles;
+
   const files = filePaths
-    .filter(p => p.indexOf('.d.') == -1)
+    .filter(p => includeDeclarationFiles || p.indexOf('.d.') === -1)
     .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl, paths));
 
   return files;
 };
 
-export default (rootDir: string, TsConfig: TsConfig): File[] => {
-  return parsePaths(rootDir, TsConfig);
+export default (
+  rootDir: string,
+  TsConfig: TsConfig,
+  extraOptions?: ExtraCommandLineOptions,
+): File[] => {
+  return parsePaths(rootDir, TsConfig, extraOptions);
 };

@@ -2,6 +2,8 @@
 
 ### Added
 
+- Add option --includeDeclarationFiles to include `.d.ts` files when searching for unused exports.
+
 ### Changed
 
 ## [4.0.0] - Thu Nov 07 2019
