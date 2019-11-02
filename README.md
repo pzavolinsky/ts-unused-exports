@@ -134,3 +134,11 @@ export function add2(x: number) {
   return x + 2;
 }
 ```
+
+# Contributing
+
+Contributions are welcome - for inspiration, see our [open issues](https://github.com/pzavolinsky/ts-unused-exports/issues) or our [Roadmap](https://github.com/pzavolinsky/ts-unused-exports/wiki).
+
+# Licence: MIT
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
