@@ -6,14 +6,8 @@
     "noImplicitAny": true,
     "strictNullChecks": true
   },
-  "filesGlob": [
-    "./*.ts"
-  ],
+  "include": ["./**/*.ts"],
   "atom": {
     "rewriteTsconfig": true
-  },
-  "files": [
-    "./app.ts",
-    "./math.ts"
-  ]
+  }
 }
