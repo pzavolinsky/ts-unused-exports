@@ -1,6 +1,7 @@
 {
     "extends": "@istanbuljs/nyc-config-typescript",
     "all": true,
+    "check-coverage": true,
     "include": [
         "src/**/*.ts"
     ],
@@ -9,6 +10,10 @@
         "text",
         "text-summary"
     ],
+    "statements": 76,
+    "branches": 61,
+    "functions": 85,
+    "lines": 79,
     "watermarks": {
       "statements": [80, 100],
       "branches": [80, 100],
