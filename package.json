@@ -24,7 +24,7 @@
     "lint": "./node_modules/.bin/eslint --ext .ts src",
     "lint:fix": "./node_modules/.bin/eslint --ext .ts src --fix",
     "watch": "tsc -w",
-    "test": "npm run build && npm run test:unit:raw && npm run test:itest",
+    "test": "npm run lint && npm run build && npm run test:cc && npm run test:itest",
     "test:cc": "nyc npm run test:unit:raw",
     "test:unit": "VERBOSE=1 npm run test:unit:raw",
     "test:unit:raw": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags 'not @ignore'",
