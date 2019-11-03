@@ -5,15 +5,18 @@
     "include": [
         "src/**/*.ts"
     ],
+    "exclude": [
+      "**/*test.ts"
+    ],
     "reporter": [
         "html",
         "text",
         "text-summary"
     ],
-    "statements": 76,
-    "branches": 61,
-    "functions": 85,
-    "lines": 79,
+    "statements": 71,
+    "branches": 60,
+    "functions": 81,
+    "lines": 74,
     "watermarks": {
       "statements": [80, 100],
       "branches": [80, 100],
