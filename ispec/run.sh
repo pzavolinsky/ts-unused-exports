@@ -1,5 +1,8 @@
 echo "== Integration Tests =="
 
+# Exit on error:
+set -e;
+
 pushd ../example/simple
 ../../ispec/_run-and-check-exit-code.sh
 popd
