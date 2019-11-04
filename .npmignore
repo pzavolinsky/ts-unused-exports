@@ -6,6 +6,7 @@ coverage
 example
 features
 ispec
+lib/*.map
 lib/test.*
 spec
 src

@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import {
   existsSync,
   mkdirSync,
@@ -11,7 +12,11 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import pickledCucumber, { SetupFn } from 'pickled-cucumber';
 import analyzeTsConfig from './app';
+import { runCli } from './cli';
 import { Analysis } from './types';
+
+// No colors
+chalk.level = 0;
 
 const setup: SetupFn = ({
   After,
@@ -24,7 +29,9 @@ const setup: SetupFn = ({
   When,
 }) => {
   const pathFor = (fileName: string): string =>
-    fileName.indexOf('--') === 0 ? fileName : join(getCtx('DIR'), fileName);
+    !fileName || fileName.indexOf('--') === 0
+      ? fileName
+      : join(getCtx('DIR'), fileName);
   const createFile = (path: string, content: string): void => {
     const segments = path.split('/');
     const dirs = segments.slice(0, segments.length - 1);
@@ -55,7 +62,7 @@ const setup: SetupFn = ({
       const items = readdirSync(path, { encoding: 'utf8' }).filter(
         f => f[0] !== '.',
       );
-      const files = items.filter(f => !!f.match(/\.(json|ts|tsx)$/));
+      const files = items.filter(f => !!f.match(/\.(json|ts|tsx|js|jsx)$/));
       files.forEach(f => unlinkSync(join(path, f)));
       const dirs = items.filter(i => files.indexOf(i) === -1);
       dirs.forEach(d => removeDir(join(path, d)));
@@ -88,6 +95,34 @@ const setup: SetupFn = ({
     },
     { optional: 'with files' },
   );
+  When('running ts-unused-exports(.*)', args => {
+    const stdout = [] as string[];
+    const stderr = [] as string[];
+
+    try {
+      const status = runCli(
+        code => code,
+        s => stderr.push(s),
+        s => stdout.push(s),
+        args
+          .trim()
+          .split(' ')
+          .map(s => s.replace(/^"(.*)"$/, '$1'))
+          .map(pathFor),
+      );
+      setCtx('$run', {
+        status,
+        stdout: stdout.join('\n'),
+        stderr: stderr.join('\n'),
+      });
+    } catch (status) {
+      setCtx('$run', {
+        status,
+        stdout: stdout.join('\n'),
+        stderr: stderr.join('\n'),
+      });
+    }
+  });
   Then(
     'the( raw)? result {op}',
     (raw, op, payload) => {
@@ -104,6 +139,11 @@ const setup: SetupFn = ({
           );
       compare(fixDot(op), actual, fixDot(payload));
     },
+    { inline: true },
+  );
+  Then(
+    'the CLI result {op}',
+    (op, payload) => compare(op, getCtx('$run'), payload),
     { inline: true },
   );
 };

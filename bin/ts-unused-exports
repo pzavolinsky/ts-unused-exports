@@ -1,2 +1,7 @@
 #!/usr/bin/env node
-require('../lib/cli.js')
+require('../lib/cli.js').runCli(
+  process.exit,
+  console.error.bind(console),
+  console.log.bind(console),
+  process.argv.slice(2),
+);

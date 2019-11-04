@@ -3,9 +3,7 @@ import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
 
 import analyzeTsConfig from './app';
 import chalk from 'chalk';
-import { showUsage } from './usage';
-
-const [tsconfig, ...tsFiles] = process.argv.slice(2);
+import { USAGE } from './usage';
 
 // eslint style exit code:
 enum ExitCode {
@@ -14,65 +12,72 @@ enum ExitCode {
   BadArgsOrException = 2,
 }
 
-if (!hasValidArgs()) {
-  showUsage();
-  process.exit(ExitCode.BadArgsOrException);
-}
+export const runCli = (
+  exitWith: (code: ExitCode) => ExitCode,
+  showError: (s: string) => void,
+  showMessage: (s: string) => void,
+  [tsconfig, ...tsFiles]: string[],
+): ExitCode => {
+  if (!hasValidArgs(showError, tsconfig, tsFiles)) {
+    showError(USAGE);
+    return exitWith(ExitCode.BadArgsOrException);
+  }
 
-try {
-  const analysis = analyzeTsConfig(
-    tsconfig,
-    tsFiles.length ? tsFiles : undefined,
-  );
+  try {
+    const analysis = analyzeTsConfig(
+      tsconfig,
+      tsFiles.length ? tsFiles : undefined,
+    );
 
-  const files = Object.keys(analysis);
+    const files = Object.keys(analysis);
 
-  console.log(
-    chalk.red(
-      `${chalk.bold(files.length.toString())} module${
-        files.length == 1 ? '' : 's'
-      } with unused exports`,
-    ),
-  );
-
-  const getLocationInFile = (location: LocationInFile): string => {
-    if (!location) {
-      return '';
-    }
-    return `[${location.line},${location.character}]`;
-  };
-
-  const options = extractOptionsFromFiles(tsFiles).options;
-  if (options && options.showLineNumber) {
-    files.forEach(path => {
-      analysis[path].forEach(unusedExport => {
-        console.log(
-          `${path}${getLocationInFile(
-            unusedExport.location,
-          )}: ${chalk.bold.yellow(unusedExport.exportName)}`,
-        );
-      });
-    });
-  } else {
-    files.forEach(path =>
-      console.log(
-        `${path}: ${chalk.bold.yellow(
-          analysis[path].map(r => r.exportName).join(', '),
-        )}`,
+    showMessage(
+      chalk.red(
+        `${chalk.bold(files.length.toString())} module${
+          files.length == 1 ? '' : 's'
+        } with unused exports`,
       ),
     );
-  }
 
-  if (options && options.exitWithCount) {
-    process.exit(files.length);
-  }
+    const getLocationInFile = (location: LocationInFile): string => {
+      if (!location) {
+        return '';
+      }
+      return `[${location.line},${location.character}]`;
+    };
 
-  process.exit(
-    files.length === 0
-      ? ExitCode.NoUnusedExportsFound
-      : ExitCode.UnusedExportsFound,
-  );
-} catch (e) {
-  console.error(e);
-  process.exit(ExitCode.BadArgsOrException);
-}
+    const options = extractOptionsFromFiles(tsFiles).options;
+    if (options && options.showLineNumber) {
+      files.forEach(path => {
+        analysis[path].forEach(unusedExport => {
+          showMessage(
+            `${path}${getLocationInFile(
+              unusedExport.location,
+            )}: ${chalk.bold.yellow(unusedExport.exportName)}`,
+          );
+        });
+      });
+    } else {
+      files.forEach(path =>
+        showMessage(
+          `${path}: ${chalk.bold.yellow(
+            analysis[path].map(r => r.exportName).join(', '),
+          )}`,
+        ),
+      );
+    }
+
+    if (options && options.exitWithCount) {
+      return exitWith(files.length);
+    }
+
+    return exitWith(
+      files.length === 0
+        ? ExitCode.NoUnusedExportsFound
+        : ExitCode.UnusedExportsFound,
+    );
+  } catch (e) {
+    showError(e);
+    return exitWith(ExitCode.BadArgsOrException);
+  }
+};
