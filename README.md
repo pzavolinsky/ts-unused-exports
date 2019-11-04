@@ -1,4 +1,4 @@
-# ts-unused-exports
+# ts-unused-exports [![Build Status](https://travis-ci.com/pzavolinsky/ts-unused-exports.svg?branch=master)](https://travis-ci.com/pzavolinsky/ts-unused-exports)
 
 `ts-unused-exports` finds unused exported symbols in your Typescript project.
 
