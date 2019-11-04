@@ -50,7 +50,7 @@ Options:
 | `ignorePaths`    | Exclude files that match the given path segments.                            | `--ignorePaths=math;utils` |
 | `showLineNumber` | Show the line number and column of the unused export.                        | `--showLineNumber`         |
 
-Note that if `ts-unused-exports` is called without files, the files will be read from the tsconfig's `files` or `include` key which must be present. If called with files, then those file paths should be relative to the `tsconfig.json`, just like you would specif thyem in your tsconfig's `files` key.
+Note that if `ts-unused-exports` is called without files, the files will be read from the tsconfig's `files` or `include` key which must be present. If called with files, then those file paths should be relative to the `tsconfig.json`, just like you would specify them in your tsconfig's `files` key.
 
 `ts-unused-exports` also resolves path aliases specified in tsconfig's `paths` object.
 
@@ -96,9 +96,17 @@ The output should be:
 
 ```
 2 modules with unused exports
-/home/sean/src/github/mrseanryan/ts-unused-exports/example/simple/math.ts: add1
-/home/sean/src/github/mrseanryan/ts-unused-exports/example/simple/unused.ts: unused
+/home/stuff/src/github/ts-unused-exports/example/simple/math.ts: add1
+/home/stuff/src/github/ts-unused-exports/example/simple/unused.ts: unused
 ```
+
+## Exit Code
+
+Normally, the exit code follows the convention used by [eslint](https://eslint.org/docs/user-guide/command-line-interface):
+
+- 0 = Linting was successful and there are no linting errors.
+- 1 = Linting was successful and there is at least one linting error.
+- 2 = Linting was unsuccessful due to bad arguments or an internal error.
 
 If the option `--exitWithCount` is used, then the exit status will equal the number of offending modules:
 
@@ -108,11 +116,7 @@ echo $?
 2
 ```
 
-Normally the exit code follows the convention used by [eslint](https://eslint.org/docs/user-guide/command-line-interface):
-
-- 0 = Linting was successful and there are no linting errors.
-- 1 = Linting was successful and there is at least one linting error.
-- 2 = Linting was unsuccessful due to bad arguments or an internal error.
+## Specifying which TypeScript files to check
 
 If not using `files` or `include` inside your `tsconfig` (e.g. using `webpack` with `ts-loader`), you can explicitly specify the files to check in the command line:
 
@@ -135,10 +139,10 @@ export function add2(x: number) {
 }
 ```
 
-# Contributing
+## Contributing
 
 Contributions are welcome - for inspiration, see our [open issues](https://github.com/pzavolinsky/ts-unused-exports/issues) or our [Roadmap](https://github.com/pzavolinsky/ts-unused-exports/wiki).
 
-# Licence: MIT
+## Licence: MIT
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
