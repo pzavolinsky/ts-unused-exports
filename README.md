@@ -137,7 +137,10 @@ export function add2(x: number) {
 
 # Contributing
 
-Contributions are welcome - for inspiration, see our [open issues](https://github.com/pzavolinsky/ts-unused-exports/issues) or our [Roadmap](https://github.com/pzavolinsky/ts-unused-exports/wiki).
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+`ts-unused-exports` was created by Patricio Zavolinsky. Improvements were contributed by the [open source
+community](https://github.com/pzavolinsky/ts-unused-exports/graphs/contributors).
 
 # Licence: MIT
 
