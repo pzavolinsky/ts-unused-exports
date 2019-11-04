@@ -11,6 +11,7 @@
     "require": ["ts-node/register"],
     "reporter": [
         "html",
+        "lcov",
         "text",
         "text-summary"
     ],
