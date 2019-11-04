@@ -2,7 +2,7 @@
 
 ### Added
 
-- Add option --includeDeclarationFiles to include `.d.ts` files when searching for unused exports.
+- Include `.d.ts` files when searching for unused exports. This can be disabled via the --excludeDeclarationFiles option.
 
 ### Changed
 

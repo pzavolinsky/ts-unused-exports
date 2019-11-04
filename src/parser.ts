@@ -265,7 +265,7 @@ const parsePaths = (
   extraOptions?: ExtraCommandLineOptions,
 ): File[] => {
   const includeDeclarationFiles =
-    extraOptions && extraOptions.includeDeclarationFiles;
+    extraOptions && !extraOptions.excludeDeclarationFiles;
 
   const files = filePaths
     .filter(p => includeDeclarationFiles || p.indexOf('.d.') === -1)

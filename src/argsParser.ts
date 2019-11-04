@@ -37,8 +37,8 @@ function processOptions(
           });
         }
         break;
-      case '--includeDeclarationFiles':
-        newOptions.includeDeclarationFiles = true;
+      case '--excludeDeclarationFiles':
+        newOptions.excludeDeclarationFiles = true;
         break;
       case '--showLineNumber':
         newOptions.showLineNumber = true;

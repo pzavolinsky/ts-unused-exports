@@ -57,7 +57,7 @@ Options:
 | ------------------------- | ---------------------------------------------------------------------------- | --------------------------- |
 | `exitWithCount`           | Set the process exit code to be the count of files that have unused exports. | `--exitWithCount`           |
 | `ignorePaths`             | Exclude files that match the given path segments.                            | `--ignorePaths=math;utils`  |
-| `includeDeclarationFiles` | Include `.d.ts` files when looking for unused exports.                       | `--includeDeclarationFiles` |
+| `excludeDeclarationFiles` | Exclude `.d.ts` files when looking for unused exports.                       | `--excludeDeclarationFiles` |
 | `showLineNumber`          | Show the line number and column of the unused export.                        | `--showLineNumber`          |
 
 Note that if `ts-unused-exports` is called without files, the files will be read from the tsconfig's `files` or `include` key which must be present. If called with files, then those file paths should be relative to the `tsconfig.json`, just like you would specify them in your tsconfig's `files` key.

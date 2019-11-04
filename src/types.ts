@@ -39,7 +39,7 @@ export interface TsConfig {
 
 export interface ExtraCommandLineOptions {
   exitWithCount?: boolean;
-  includeDeclarationFiles?: boolean;
+  excludeDeclarationFiles?: boolean;
   pathsToIgnore?: string[];
   showLineNumber?: boolean;
 }
