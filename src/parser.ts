@@ -60,14 +60,11 @@ const extractExportStatement = (decl: ts.ExportDeclaration): string[] => {
     : [];
 };
 
-const extractExportFromImport = (decl: ts.ExportDeclaration): FromWhat => {
-  const { moduleSpecifier, exportClause } = decl;
-  if (!moduleSpecifier)
-    return {
-      from: '',
-      what: [],
-    };
-
+const extractExportFromImport = (
+  decl: ts.ExportDeclaration,
+  moduleSpecifier: ts.Expression,
+): FromWhat => {
+  const { exportClause } = decl;
   const what = exportClause
     ? exportClause.elements.map(e => (e.propertyName || e.name).text)
     : star;
@@ -199,13 +196,15 @@ const mapFile = (
       return;
     }
     if (kind === ts.SyntaxKind.ExportDeclaration) {
-      if ((node as ts.ExportDeclaration).moduleSpecifier === undefined) {
-        extractExportStatement(node as ts.ExportDeclaration).forEach(e =>
+      const exportDecl = node as ts.ExportDeclaration;
+      const { moduleSpecifier } = exportDecl;
+      if (moduleSpecifier === undefined) {
+        extractExportStatement(exportDecl).forEach(e =>
           addExport(e, file, node),
         );
         return;
       } else {
-        const fw = extractExportFromImport(node as ts.ExportDeclaration);
+        const fw = extractExportFromImport(exportDecl, moduleSpecifier);
         const key = addImport(fw);
         if (key) {
           const { what } = fw;

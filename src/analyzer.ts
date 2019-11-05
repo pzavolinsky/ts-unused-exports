@@ -63,6 +63,12 @@ const processImports = (imports: Imports, exportMap: ExportMap): void => {
 
     const addUsage = (imp: string): void => {
       if (!ex[imp]) {
+        // The imported symbol we are checking was not found in the imported
+        // file. For example:
+        // `a.ts` import { b } from './b';
+        // `b.ts` does not export a `b` symbol
+        // In here `imp` is `b`, `imports` represents `a.ts` and `ex.exports`
+        // are the symbols exported by `b.ts`
         ex[imp] = {
           usageCount: 0,
           location: {

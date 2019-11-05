@@ -1,16 +1,27 @@
 {
-  "editor.formatOnSave": true,
   "[javascript]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true
   },
   "[javascriptreact]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true
   },
   "[typescript]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true
   },
   "[typescriptreact]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true
+  },
+  "[feature]": {
+    "editor.formatOnSave": true
+  },
+  "cucumberautocomplete.formatConfOverride": {
+    "\"\"\"": 2,
+    "And": 1,
+    "Background": 0,
+    "Given": 1,
+    "Scenario": 0,
+    "Then": 1,
+    "When": 1
   },
   "editor.rulers": [80],
   "eslint.autoFixOnSave": true,

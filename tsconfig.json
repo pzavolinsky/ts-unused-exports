@@ -5,6 +5,7 @@
     "module": "commonjs",
     "outDir": "./lib",
     "noImplicitAny": true,
+    "sourceMap": true,
     "strictNullChecks": true,
     "strict": true
   },

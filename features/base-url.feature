@@ -4,9 +4,9 @@ Background:
   Given file "tsconfig.json" is
     """
     {
-      // This is a comment
-      "compilerOptions": { "baseUrl": "./stuff" },
-      "include": ["**/*.ts", "**/*.tsx"]
+    // This is a comment
+    "compilerOptions": { "baseUrl": "./stuff" },
+    "include": ["**/*.ts", "**/*.tsx"]
     }
     """
 
@@ -31,5 +31,23 @@ Scenario: Import default with base url
 Scenario: Import default with base url TSX
   Given file "stuff/a.tsx" is export default 1;
   And file "b.ts" is import a from 'a';
+  When analyzing "tsconfig.json"
+  Then the result is {}
+
+Scenario: Index TS
+  Given file "stuff/dir/index.ts" is export default 1;
+  And file "b.ts" is import a from 'dir';
+  When analyzing "tsconfig.json"
+  Then the result is {}
+
+Scenario: Index JS
+  Given file "stuff/dir/index.js" is export default 1;
+  And file "b.ts" is import a from 'dir';
+  When analyzing "tsconfig.json"
+  Then the result is {}
+
+Scenario: Index TSX
+  Given file "stuff/dir/index.tsx" is export default 1;
+  And file "b.ts" is import a from 'dir';
   When analyzing "tsconfig.json"
   Then the result is {}

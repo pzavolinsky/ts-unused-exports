@@ -83,20 +83,22 @@ function isTsConfigValid(tsconfigFilePath: string): boolean {
   return existsSync(tsconfigFilePath) && statSync(tsconfigFilePath).isFile();
 }
 
-export function hasValidArgs(): boolean {
-  const [tsconfig, ...tsFiles] = process.argv.slice(2);
-
+export function hasValidArgs(
+  showError: (s: string) => void,
+  tsconfig: string,
+  tsFiles: string[],
+): boolean {
   if (!tsconfig) {
     return false;
   }
 
   if (!isTsConfigValid(tsconfig)) {
-    console.error(`The tsconfig file '${tsconfig}' could not be found.`);
+    showError(`The tsconfig file '${tsconfig}' could not be found.`);
     return false;
   }
 
   if (!canExtractOptionsFromFiles(tsFiles)) {
-    console.error(`Invalid options.`);
+    showError(`Invalid options.`);
     return false;
   }
 

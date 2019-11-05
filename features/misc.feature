@@ -1,0 +1,29 @@
+Feature: misc
+
+Scenario: Import JSON
+  Given file "consts.json" is module.exports = 1;
+  And file "index.ts" is import * as CONSTS from './consts.json';
+  When analyzing "tsconfig.json"
+  Then the result is {}
+
+Scenario: Import JSON index
+  Given file "index.json" is module.exports = 1;
+  And file "file.ts" is import * as CONSTS from '.';
+  When analyzing "tsconfig.json"
+  Then the result is {}
+
+Scenario: Import non-existent symbol (not valid TS!)
+  Given file "a.ts" is export const a = 1;
+  And file "b.ts" is import { b } from './a';
+  When analyzing "tsconfig.json"
+  Then the result is { "a.ts": ["a"] }
+
+Scenario: Disable with comments
+  Given file "a.ts" is
+    """
+    // ts-unused-exports:disable-next-line
+    export const a = 1;
+    export const b = 1;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "a.ts": ["b"] }

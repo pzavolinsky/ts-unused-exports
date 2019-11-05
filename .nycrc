@@ -8,15 +8,16 @@
     "exclude": [
       "**/*test.ts"
     ],
+    "require": ["ts-node/register"],
     "reporter": [
         "html",
         "text",
         "text-summary"
     ],
-    "statements": 71,
-    "branches": 60,
-    "functions": 81,
-    "lines": 74,
+    "statements": 90,
+    "branches": 80,
+    "functions": 100,
+    "lines": 90,
     "watermarks": {
       "statements": [80, 100],
       "branches": [80, 100],

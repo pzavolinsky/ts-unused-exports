@@ -59,4 +59,3 @@ Scenario: Import './stuff/index' TSX
   And file "stuff/a.ts" is import { a } from './index';
   When analyzing "tsconfig.json"
   Then the result is {}
-
