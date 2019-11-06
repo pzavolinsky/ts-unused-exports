@@ -80,7 +80,7 @@ In this sense, `ts-unused-exports` does not replace `tslint` but rather compleme
 
 ## Example
 
-There is a (very silly) example in the [example/](https://github.com/pzavolinsky/ts-unused-exports/blob/master/example/simple) directory.
+There is a (very silly) example in the [example/simple](https://github.com/pzavolinsky/ts-unused-exports/blob/master/example/simple) directory.
 
 If you want to run it you can:
 
@@ -135,9 +135,16 @@ export function add2(x: number) {
 }
 ```
 
+# Changelog (Release History) 
+
+To see what has changed in each version, please see our [CHANGELOG.md](https://github.com/pzavolinsky/ts-unused-exports/blob/master/CHANGELOG.md).
+
 # Contributing
 
-Contributions are welcome - for inspiration, see our [open issues](https://github.com/pzavolinsky/ts-unused-exports/issues) or our [Roadmap](https://github.com/pzavolinsky/ts-unused-exports/wiki).
+Please see [CONTRIBUTING.md](https://github.com/pzavolinsky/ts-unused-exports/blob/master/CONTRIBUTING.md).
+
+`ts-unused-exports` was created by Patricio Zavolinsky. Improvements were contributed by the [open source
+community](https://github.com/pzavolinsky/ts-unused-exports/graphs/contributors).
 
 # Licence: MIT
 
