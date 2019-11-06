@@ -8,6 +8,7 @@
 - (Internal) add code coverage via nyc
 - (Internal) code coverage and linting are included in `npm test`
 - (Internal) add more unit tests, increasing the code coverage
+- (Internal) add badges including: code coverage, npm package version, license, dependency status.
 
 ## [3.0.3] - 30 October 2019
 

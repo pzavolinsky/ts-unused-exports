@@ -1,6 +1,15 @@
-# ts-unused-exports [![Build Status](https://travis-ci.com/pzavolinsky/ts-unused-exports.svg?branch=master)](https://travis-ci.com/pzavolinsky/ts-unused-exports)
+# ts-unused-exports
 
 `ts-unused-exports` finds unused exported symbols in your Typescript project.
+
+[![Build Status](https://travis-ci.com/pzavolinsky/ts-unused-exports.svg?branch=master)](https://travis-ci.com/pzavolinsky/ts-unused-exports)
+[![Coveralls](https://img.shields.io/coveralls/pzavolinsky/ts-unused-exports.svg)](https://coveralls.io/github/pzavolinsky/ts-unused-exports)
+
+[![npm Package](https://img.shields.io/npm/v/ts-unused-exports.svg?style=flat-square)](https://www.npmjs.org/package/ts-unused-exports)
+[![NPM Downloads](https://img.shields.io/npm/dm/ts-unused-exports.svg)](https://npmjs.org/package/ts-unused-exports)
+
+[![Dependencies](https://david-dm.org/pzavolinsky/ts-unused-exports.svg)](https://david-dm.org/pzavolinsky/ts-unused-exports)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Installation
 
