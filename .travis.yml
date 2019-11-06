@@ -3,6 +3,8 @@ node_js:
   - 10
   - 12
   # TODO - 14 when it is released
+notifications:
+    email: false
 script:
   - npm test
 after_success:
