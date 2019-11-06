@@ -68,7 +68,8 @@ export const runCli = (
     }
 
     if (options && options.exitWithCount) {
-      return exitWith(files.length);
+      // Max allowed exit code is 127 (single signed byte)
+      return exitWith(Math.min(127, files.length));
     }
 
     return exitWith(
