@@ -21,16 +21,17 @@
   "homepage": "https://github.com/pzavolinsky/ts-unused-exports",
   "scripts": {
     "build": "tsc",
+    "exec": "bin/ts-unused-exports",
     "lint": "./node_modules/.bin/eslint --ext .ts src",
     "lint:fix": "./node_modules/.bin/eslint --ext .ts src --fix",
     "watch": "tsc -w",
+    "report-coverage-to-coveralls": "cat ./coverage/lcov.info | coveralls",
     "test": "npm run lint && npm run build && npm run test:cc && npm run test:itest",
     "test:cc": "nyc npm run test:unit:raw",
     "test:unit": "VERBOSE=1 npm run test:unit:raw",
     "test:unit:raw": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags 'not @ignore'",
     "test:unit:only": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags '@only'",
-    "test:itest": "cd ispec && bash ./run.sh",
-    "exec": "bin/ts-unused-exports"
+    "test:itest": "cd ispec && bash ./run.sh"
   },
   "bin": {
     "ts-unused-exports": "bin/ts-unused-exports"
@@ -41,6 +42,7 @@
     "@typescript-eslint/eslint-plugin": "^2.6.0",
     "@typescript-eslint/parser": "^2.6.0",
     "codecov": "^3.6.1",
+    "coveralls": "^3.0.7",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-prettier": "^3.1.1",

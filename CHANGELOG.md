@@ -9,6 +9,7 @@
 - (Internal) code coverage and linting are included in `npm test`
 - (Internal) add more unit tests, increasing the code coverage
 - Limit max exit code when --exitWithCount option is used (max is 127, a signed byte)
+- (Internal) add badges including: code coverage, npm package version, license, dependency status.
 
 ## [3.0.3] - 30 October 2019
 
