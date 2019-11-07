@@ -4,6 +4,10 @@
 
 ### Changed
 
+## [4.0.0] - Thu Nov 07 2019
+
+### Changed
+
 - use eslint-style exit code (0 = no issues, 1 = unused exports found, 2 = exception occurred)
 - (Internal) add code coverage via nyc
 - (Internal) code coverage and linting are included in `npm test`
