@@ -105,6 +105,19 @@ const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
 
+const extractFilename = (rootDir: string, path: string): string => {
+  let name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
+
+  // Imports always have the '.d' part dropped from the filename,
+  // so for the export counting to work with d.ts files, we need to also drop '.d' part.
+  // Assumption: the same folder will not contain two files like: a.ts, a.d.ts.
+  if (!!name.match(/\.d$/)) {
+    name = name.substr(0, name.length - 2);
+  }
+
+  return name;
+};
+
 const mapFile = (
   rootDir: string,
   path: string,
@@ -239,19 +252,6 @@ const mapFile = (
     exports,
     exportLocations,
   };
-};
-
-const extractFilename = (rootDir: string, path: string): string => {
-  let name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
-
-  // Imports always have the '.d' part dropped from the filename,
-  // so for the export counting to work with d.ts files, we need to also drop '.d' part.
-  // Assumption: the same folder will not contain two files like: a.ts, a.d.ts.
-  if (!!name.match(/\.d$/)) {
-    name = name.substr(0, name.length - 2);
-  }
-
-  return name;
 };
 
 const parseFile = (
