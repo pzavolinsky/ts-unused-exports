@@ -115,7 +115,8 @@ const mapFile = (
   const imports: Imports = {};
   let exports: string[] = [];
   const exportLocations: LocationInFile[] = [];
-  const name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
+  const name = extractFilename(rootDir, path);
+
   const baseDir = baseUrl && resolve(rootDir, baseUrl);
 
   const tsconfigPathsMatcher =
@@ -238,6 +239,19 @@ const mapFile = (
     exports,
     exportLocations,
   };
+};
+
+const extractFilename = (rootDir: string, path: string): string => {
+  let name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
+
+  // Imports always have the '.d' part dropped from the filename,
+  // so for the export counting to work with d.ts files, we need to also drop '.d' part.
+  // Assumption: the same folder will not contain two files like: a.ts, a.d.ts.
+  if (!!name.match(/\.d$/)) {
+    name = name.substr(0, name.length - 2);
+  }
+
+  return name;
 };
 
 const parseFile = (

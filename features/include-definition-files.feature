@@ -22,7 +22,7 @@ Feature: include definition files
       export const a: A = 0
       """
     When analyzing "tsconfig.json"
-    Then the result is { "b.ts": ["a"], "x/a.d.ts": ["A", "A_unused"] }
+    Then the result is { "b.ts": ["a"], "x/a.d.ts": ["A_unused"] }
 
   Scenario: Do NOT include definition files from sub-folder, without error
     Given file "x/a.d.ts" is
