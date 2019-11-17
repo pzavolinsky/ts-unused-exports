@@ -23,11 +23,11 @@ interface FromWhat {
 
 const star = ['*'];
 
+const getFromText = (moduleSpecifier: string): string =>
+  moduleSpecifier.replace(TRIM_QUOTES, '$1').replace(/\/index$/, '');
+
 const getFrom = (moduleSpecifier: ts.Expression): string =>
-  moduleSpecifier
-    .getText()
-    .replace(TRIM_QUOTES, '$1')
-    .replace(/\/index$/, '');
+  getFromText(moduleSpecifier.getText());
 
 const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   const from = getFrom(decl.moduleSpecifier);
@@ -267,6 +267,55 @@ const mapFile = (
         }
         return;
       }
+    }
+
+    // Searching for dynamic imports requires inspecting statements in the file,
+    // so for performance should only be done when necessary.
+    const mightContainDynamicImports =
+      node
+        .getSourceFile()
+        .getText()
+        .indexOf('import(') > -1;
+
+    if (mightContainDynamicImports) {
+      const addImportsInAnyExpression = (node: ts.Node): void => {
+        const hasExpression = (node: ts.Node): boolean => {
+          return !!(node as any)['expression'];
+        };
+        const getExpressionFrom = (node: ts.Node): any => {
+          return !!node && (node as any)['expression'];
+        };
+        const getArgumentFrom = (node: any): string | undefined => {
+          return node.arguments && node.arguments[0].getText();
+        };
+
+        if (hasExpression(node)) {
+          let expr = node;
+          while (hasExpression(expr)) {
+            const newExpr = getExpressionFrom(expr);
+
+            if (newExpr.getText() === 'import') {
+              const importing = getArgumentFrom(expr);
+
+              if (!!importing) {
+                addImport({
+                  from: getFromText(importing),
+                  what: ['default'],
+                });
+              }
+            }
+            expr = newExpr;
+          }
+        }
+      };
+
+      const recurseIntoChildren = (next: ts.Node): void => {
+        addImportsInAnyExpression(next);
+
+        next.getChildren().forEach(recurseIntoChildren);
+      };
+
+      recurseIntoChildren(node);
     }
 
     if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
