@@ -118,6 +118,86 @@ const extractFilename = (rootDir: string, path: string): string => {
   return name;
 };
 
+const addExportCore = (
+  exportName: string,
+  file: ts.SourceFile,
+  node: ts.Node,
+  exportLocations: LocationInFile[],
+  exports: string[],
+): void => {
+  exports.push(exportName);
+
+  const location = file.getLineAndCharacterOfPosition(node.getStart());
+
+  exportLocations.push({
+    line: location.line + 1,
+    character: location.character,
+  });
+};
+
+const addImportCore = (
+  fw: FromWhat,
+  rootDir: string,
+  path: string,
+  imports: Imports,
+  tsconfigPathsMatcher?: tsconfigPaths.MatchPath,
+  baseDir?: string,
+  baseUrl?: string,
+): string | undefined => {
+  const { from, what } = fw;
+
+  const getKey = (from: string): string | undefined => {
+    if (from[0] == '.') {
+      // An undefined return indicates the import is from 'index.ts' or similar == '.'
+      return relativeTo(rootDir, path, from) || '.';
+    } else if (baseDir && baseUrl) {
+      let matchedPath;
+
+      return isRelativeToBaseDir(baseDir, from)
+        ? baseUrl && join(baseUrl, from)
+        : tsconfigPathsMatcher &&
+          (matchedPath = tsconfigPathsMatcher(
+            from,
+            undefined,
+            undefined,
+            EXTENSIONS,
+          ))
+        ? matchedPath.replace(`${baseDir}${sep}`, '')
+        : undefined;
+    }
+
+    return undefined;
+  };
+
+  const key = getKey(from);
+  if (!key) return undefined;
+  const items = imports[key] || [];
+  imports[key] = items.concat(what);
+  return key;
+};
+
+const isNodeDisabledViaComment = (
+  node: ts.Node,
+  file: ts.SourceFile,
+): boolean => {
+  const comments = ts.getLeadingCommentRanges(
+    file.getFullText(),
+    node.getFullStart(),
+  );
+
+  if (comments) {
+    const commentRange = comments[comments.length - 1];
+    const commentText = file
+      .getFullText()
+      .substring(commentRange.pos, commentRange.end);
+    if (commentText === '// ts-unused-exports:disable-next-line') {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 const mapFile = (
   rootDir: string,
   path: string,
@@ -131,72 +211,29 @@ const mapFile = (
   const name = extractFilename(rootDir, path);
 
   const baseDir = baseUrl && resolve(rootDir, baseUrl);
-
   const tsconfigPathsMatcher =
-    baseDir && paths && tsconfigPaths.createMatchPath(baseDir, paths);
-
-  const addExport = (
-    exportName: string,
-    file: ts.SourceFile,
-    node: ts.Node,
-  ): void => {
-    exports.push(exportName);
-
-    const location = file.getLineAndCharacterOfPosition(node.getStart());
-
-    exportLocations.push({
-      line: location.line + 1,
-      character: location.character,
-    });
-  };
+    (!!baseDir && !!paths && tsconfigPaths.createMatchPath(baseDir, paths)) ||
+    undefined;
 
   const addImport = (fw: FromWhat): string | undefined => {
-    const { from, what } = fw;
+    return addImportCore(
+      fw,
+      rootDir,
+      path,
+      imports,
+      tsconfigPathsMatcher,
+      baseDir,
+      baseUrl,
+    );
+  };
 
-    const getKey = (from: string): string | undefined => {
-      if (from[0] == '.') {
-        // An undefined return indicates the import is from 'index.ts' or similar == '.'
-        return relativeTo(rootDir, path, from) || '.';
-      } else if (baseDir && baseUrl) {
-        let matchedPath;
-
-        return isRelativeToBaseDir(baseDir, from)
-          ? baseUrl && join(baseUrl, from)
-          : tsconfigPathsMatcher &&
-            (matchedPath = tsconfigPathsMatcher(
-              from,
-              undefined,
-              undefined,
-              EXTENSIONS,
-            ))
-          ? matchedPath.replace(`${baseDir}${sep}`, '')
-          : undefined;
-      }
-
-      return undefined;
-    };
-
-    const key = getKey(from);
-    if (!key) return undefined;
-    const items = imports[key] || [];
-    imports[key] = items.concat(what);
-    return key;
+  const addExport = (exportName: string, node: ts.Node): void => {
+    addExportCore(exportName, file, node, exportLocations, exports);
   };
 
   ts.forEachChild(file, (node: ts.Node) => {
-    const comments = ts.getLeadingCommentRanges(
-      file.getFullText(),
-      node.getFullStart(),
-    );
-
-    if (comments) {
-      const commentRange = comments[comments.length - 1];
-      const commentText = file
-        .getFullText()
-        .substring(commentRange.pos, commentRange.end);
-      if (commentText === '// ts-unused-exports:disable-next-line') {
-        return;
-      }
+    if (isNodeDisabledViaComment(node, file)) {
+      return;
     }
 
     const { kind } = node;
@@ -207,16 +244,15 @@ const mapFile = (
     }
 
     if (kind === ts.SyntaxKind.ExportAssignment) {
-      addExport('default', file, node);
+      addExport('default', node);
       return;
     }
+
     if (kind === ts.SyntaxKind.ExportDeclaration) {
       const exportDecl = node as ts.ExportDeclaration;
       const { moduleSpecifier } = exportDecl;
       if (moduleSpecifier === undefined) {
-        extractExportStatement(exportDecl).forEach(e =>
-          addExport(e, file, node),
-        );
+        extractExportStatement(exportDecl).forEach(e => addExport(e, node));
         return;
       } else {
         const fw = extractExportFromImport(exportDecl, moduleSpecifier);
@@ -224,7 +260,7 @@ const mapFile = (
         if (key) {
           const { what } = fw;
           if (what == star) {
-            addExport(`*:${key}`, file, node);
+            addExport(`*:${key}`, node);
           } else {
             exports = exports.concat(what);
           }
@@ -235,13 +271,13 @@ const mapFile = (
 
     if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
       if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
-        addExport('default', file, node);
+        addExport('default', node);
         return;
       }
       const decl = node as ts.DeclarationStatement;
       const name = decl.name ? decl.name.text : extractExport(path, node);
 
-      if (name) addExport(name, file, node);
+      if (name) addExport(name, node);
     }
   });
 
