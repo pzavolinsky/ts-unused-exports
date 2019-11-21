@@ -11,20 +11,12 @@ import {
 } from './types';
 import { dirname, join, relative, resolve, sep } from 'path';
 import { existsSync, readFileSync } from 'fs';
-
-const TRIM_QUOTES = /^['"](.*)['"]$/;
+import { getFromText, FromWhat } from './parser.common';
+import { addDynamicImports, mayContainDynamicImports } from './parser.dynamic';
 
 const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
 
-interface FromWhat {
-  from: string;
-  what: string[];
-}
-
 const star = ['*'];
-
-const getFromText = (moduleSpecifier: string): string =>
-  moduleSpecifier.replace(TRIM_QUOTES, '$1').replace(/\/index$/, '');
 
 const getFrom = (moduleSpecifier: ts.Expression): string =>
   getFromText(moduleSpecifier.getText());
@@ -197,68 +189,6 @@ const isNodeDisabledViaComment = (
 
   return false;
 };
-type WithExpression = ts.Node & {
-  expression: ts.Expression;
-};
-
-export function isWithExpression(node: ts.Node): node is WithExpression {
-  const myInterface = node as WithExpression;
-  return !!myInterface.expression;
-}
-
-type WithArguments = ts.Node & {
-  arguments: ts.NodeArray<ts.Expression>;
-};
-
-export function isWithArguments(node: ts.Node): node is WithArguments {
-  const myInterface = node as WithArguments;
-  return !!myInterface.arguments;
-}
-
-const addDynamicImports = (
-  node: ts.Node,
-  addImport: (fw: FromWhat) => void,
-): void => {
-  const addImportsInAnyExpression = (node: ts.Node): void => {
-    const getArgumentFrom = (node: ts.Node): string | undefined => {
-      if (isWithArguments(node)) {
-        return node.arguments[0].getText();
-      }
-    };
-
-    if (isWithExpression(node)) {
-      let expr = node;
-      while (isWithExpression(expr)) {
-        const newExpr = expr.expression;
-
-        if (newExpr.getText() === 'import') {
-          const importing = getArgumentFrom(expr);
-
-          if (!!importing) {
-            addImport({
-              from: getFromText(importing),
-              what: ['default'],
-            });
-          }
-        }
-
-        if (isWithExpression(newExpr)) {
-          expr = newExpr;
-        } else {
-          break;
-        }
-      }
-    }
-  };
-
-  const recurseIntoChildren = (next: ts.Node): void => {
-    addImportsInAnyExpression(next);
-
-    next.getChildren().forEach(recurseIntoChildren);
-  };
-
-  recurseIntoChildren(node);
-};
 
 const mapFile = (
   rootDir: string,
@@ -333,8 +263,7 @@ const mapFile = (
 
     // Searching for dynamic imports requires inspecting statements in the file,
     // so for performance should only be done when necessary.
-    const mightContainDynamicImports = node.getText().indexOf('import(') > -1;
-    if (mightContainDynamicImports) {
+    if (mayContainDynamicImports(node)) {
       addDynamicImports(node, addImport);
     }
 
