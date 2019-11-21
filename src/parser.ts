@@ -197,25 +197,39 @@ const isNodeDisabledViaComment = (
 
   return false;
 };
+type WithExpression = ts.Node & {
+  expression: ts.Expression;
+};
+
+export function isWithExpression(node: ts.Node): node is WithExpression {
+  const myInterface = node as WithExpression;
+  return !!myInterface.expression;
+}
+
+type WithArguments = ts.Node & {
+  arguments: ts.NodeArray<ts.Expression>;
+};
+
+export function isWithArguments(node: ts.Node): node is WithArguments {
+  const myInterface = node as WithArguments;
+  return !!myInterface.arguments;
+}
+
 const addDynamicImports = (
   node: ts.Node,
   addImport: (fw: FromWhat) => void,
 ): void => {
   const addImportsInAnyExpression = (node: ts.Node): void => {
-    const hasExpression = (node: ts.Node): boolean => {
-      return !!(node as any)['expression'];
-    };
-    const getExpressionFrom = (node: ts.Node): any => {
-      return !!node && (node as any)['expression'];
-    };
-    const getArgumentFrom = (node: any): string | undefined => {
-      return node.arguments && node.arguments[0].getText();
+    const getArgumentFrom = (node: ts.Node): string | undefined => {
+      if (isWithArguments(node)) {
+        return node.arguments[0].getText();
+      }
     };
 
-    if (hasExpression(node)) {
+    if (isWithExpression(node)) {
       let expr = node;
-      while (hasExpression(expr)) {
-        const newExpr = getExpressionFrom(expr);
+      while (isWithExpression(expr)) {
+        const newExpr = expr.expression;
 
         if (newExpr.getText() === 'import') {
           const importing = getArgumentFrom(expr);
@@ -227,7 +241,12 @@ const addDynamicImports = (
             });
           }
         }
-        expr = newExpr;
+
+        if (isWithExpression(newExpr)) {
+          expr = newExpr;
+        } else {
+          break;
+        }
       }
     }
   };
