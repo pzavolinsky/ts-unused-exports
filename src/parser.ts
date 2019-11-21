@@ -20,6 +20,7 @@ import {
   extractExportFromImport,
   extractExport,
 } from './parser.export';
+import { isNodeDisabledViaComment } from './parser.comment';
 
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
@@ -35,28 +36,6 @@ const extractFilename = (rootDir: string, path: string): string => {
   }
 
   return name;
-};
-
-const isNodeDisabledViaComment = (
-  node: ts.Node,
-  file: ts.SourceFile,
-): boolean => {
-  const comments = ts.getLeadingCommentRanges(
-    file.getFullText(),
-    node.getFullStart(),
-  );
-
-  if (comments) {
-    const commentRange = comments[comments.length - 1];
-    const commentText = file
-      .getFullText()
-      .substring(commentRange.pos, commentRange.end);
-    if (commentText === '// ts-unused-exports:disable-next-line') {
-      return true;
-    }
-  }
-
-  return false;
 };
 
 const mapFile = (
