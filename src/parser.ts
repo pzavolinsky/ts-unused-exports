@@ -9,90 +9,17 @@ import {
   TsConfigPaths,
   ExtraCommandLineOptions,
 } from './types';
-import { dirname, join, relative, resolve, sep } from 'path';
-import { existsSync, readFileSync } from 'fs';
-import { getFromText, FromWhat } from './parser.common';
+import { relative, resolve } from 'path';
+import { readFileSync } from 'fs';
+import { FromWhat, star } from './parser.common';
 import { addDynamicImports, mayContainDynamicImports } from './parser.dynamic';
-
-const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
-
-const star = ['*'];
-
-const getFrom = (moduleSpecifier: ts.Expression): string =>
-  getFromText(moduleSpecifier.getText());
-
-const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
-  const from = getFrom(decl.moduleSpecifier);
-  const { importClause } = decl;
-  if (!importClause)
-    return {
-      from,
-      what: star,
-    };
-
-  const { namedBindings } = importClause;
-  const importDefault = !!importClause.name ? ['default'] : [];
-  const importStar =
-    namedBindings && !!(namedBindings as ts.NamespaceImport).name ? star : [];
-  const importNames =
-    namedBindings && !importStar.length
-      ? (namedBindings as ts.NamedImports).elements.map(
-          e => (e.propertyName || e.name).text,
-        )
-      : [];
-
-  return {
-    from,
-    what: importDefault.concat(importStar, importNames),
-  };
-};
-
-const extractExportStatement = (decl: ts.ExportDeclaration): string[] => {
-  return decl.exportClause
-    ? decl.exportClause.elements.map(e => (e.name || e.propertyName).text)
-    : [];
-};
-
-const extractExportFromImport = (
-  decl: ts.ExportDeclaration,
-  moduleSpecifier: ts.Expression,
-): FromWhat => {
-  const { exportClause } = decl;
-  const what = exportClause
-    ? exportClause.elements.map(e => (e.propertyName || e.name).text)
-    : star;
-
-  return {
-    from: getFrom(moduleSpecifier),
-    what,
-  };
-};
-
-const extractExport = (path: string, node: ts.Node): string => {
-  switch (node.kind) {
-    case ts.SyntaxKind.VariableStatement:
-      return (node as ts.VariableStatement).declarationList.declarations[0].name.getText();
-    case ts.SyntaxKind.FunctionDeclaration:
-      const { name } = node as ts.FunctionDeclaration;
-      return name ? name.text : 'default';
-    default: {
-      console.warn(`WARN: ${path}: unknown export node (kind:${node.kind})`);
-      break;
-    }
-  }
-  return '';
-};
-
-const relativeTo = (rootDir: string, file: string, path: string): string =>
-  relative(rootDir, resolve(dirname(file), path));
-
-const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
-  existsSync(resolve(baseDir, `${from}.js`)) ||
-  existsSync(resolve(baseDir, `${from}.ts`)) ||
-  existsSync(resolve(baseDir, `${from}.tsx`)) ||
-  existsSync(resolve(baseDir, from, 'index.js')) ||
-  existsSync(resolve(baseDir, from, 'index.ts')) ||
-  existsSync(resolve(baseDir, from, 'index.tsx'));
+import { extractImport, addImportCore } from './parser.import';
+import {
+  addExportCore,
+  extractExportStatement,
+  extractExportFromImport,
+  extractExport,
+} from './parser.export';
 
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
@@ -108,64 +35,6 @@ const extractFilename = (rootDir: string, path: string): string => {
   }
 
   return name;
-};
-
-const addExportCore = (
-  exportName: string,
-  file: ts.SourceFile,
-  node: ts.Node,
-  exportLocations: LocationInFile[],
-  exports: string[],
-): void => {
-  exports.push(exportName);
-
-  const location = file.getLineAndCharacterOfPosition(node.getStart());
-
-  exportLocations.push({
-    line: location.line + 1,
-    character: location.character,
-  });
-};
-
-const addImportCore = (
-  fw: FromWhat,
-  rootDir: string,
-  path: string,
-  imports: Imports,
-  tsconfigPathsMatcher?: tsconfigPaths.MatchPath,
-  baseDir?: string,
-  baseUrl?: string,
-): string | undefined => {
-  const { from, what } = fw;
-
-  const getKey = (from: string): string | undefined => {
-    if (from[0] == '.') {
-      // An undefined return indicates the import is from 'index.ts' or similar == '.'
-      return relativeTo(rootDir, path, from) || '.';
-    } else if (baseDir && baseUrl) {
-      let matchedPath;
-
-      return isRelativeToBaseDir(baseDir, from)
-        ? baseUrl && join(baseUrl, from)
-        : tsconfigPathsMatcher &&
-          (matchedPath = tsconfigPathsMatcher(
-            from,
-            undefined,
-            undefined,
-            EXTENSIONS,
-          ))
-        ? matchedPath.replace(`${baseDir}${sep}`, '')
-        : undefined;
-    }
-
-    return undefined;
-  };
-
-  const key = getKey(from);
-  if (!key) return undefined;
-  const items = imports[key] || [];
-  imports[key] = items.concat(what);
-  return key;
 };
 
 const isNodeDisabledViaComment = (
