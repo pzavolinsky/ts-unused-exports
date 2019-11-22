@@ -4,8 +4,6 @@
 
 - Include `.d.ts` files when searching for unused exports. This can be disabled via the --excludeDeclarationFiles option.
 
-### Changed
-
 ## [4.0.0] - 07 Nov 2019
 
 ### Changed
