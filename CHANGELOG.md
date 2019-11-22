@@ -1,4 +1,4 @@
-## [Unreleased] - ReleaseDate
+## [5.0.0] - Thu Nov 22 2019
 
 ### Added
 
