@@ -1,6 +1,6 @@
 export const USAGE = `
-    usage: ts-unused-exports path/to/tsconfig.json [file1.ts file2.ts] [--exitWithCount][--ignorePaths=path1;path2][--showLineNumber]
-
+    usage: ts-unused-exports path/to/tsconfig.json [file1.ts file2.ts] [--exitWithCount][--ignorePaths=path1;path2][--excludeDeclarationFiles][--showLineNumber]
+  
     Note: if no file is specified after tsconfig, the files will be read from the
     tsconfig's "files" key which must be present.
 

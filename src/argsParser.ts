@@ -37,6 +37,9 @@ function processOptions(
           });
         }
         break;
+      case '--excludeDeclarationFiles':
+        newOptions.excludeDeclarationFiles = true;
+        break;
       case '--showLineNumber':
         newOptions.showLineNumber = true;
         break;
