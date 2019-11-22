@@ -1,4 +1,4 @@
-## [5.0.0] - Thu Nov 22 2019
+## [5.0.0] - 22 Nov 2019
 
 ### Added
 
@@ -6,7 +6,7 @@
 
 ### Changed
 
-## [4.0.0] - Thu Nov 07 2019
+## [4.0.0] - 07 Nov 2019
 
 ### Changed
 
@@ -17,7 +17,7 @@
 - Limit max exit code when --exitWithCount option is used (max is 127, a signed byte)
 - (Internal) add badges including: code coverage, npm package version, license, dependency status.
 
-## [3.0.3] - 30 October 2019
+## [3.0.3] - 30 Oct 2019
 
 ### Changed
 
