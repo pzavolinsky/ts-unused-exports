@@ -84,13 +84,10 @@ const setup: SetupFn = ({
         fileNames ? JSON.parse(fileNames).map(pathFor) : undefined,
       );
       const tmp = `${getCtx('DIR')}/`;
-      const withoutTmpDir = Object.keys(result).reduce(
-        (acc, k) => {
-          acc[fixDot(k.replace(tmp, ''))] = result[k];
-          return acc;
-        },
-        {} as typeof result,
-      );
+      const withoutTmpDir = Object.keys(result).reduce((acc, k) => {
+        acc[fixDot(k.replace(tmp, ''))] = result[k];
+        return acc;
+      }, {} as typeof result);
       setCtx('$result', withoutTmpDir);
     },
     { optional: 'with files' },
@@ -130,13 +127,10 @@ const setup: SetupFn = ({
       // Note: when `raw` is not set, we are only asserting for symbol names
       const actual = raw
         ? result
-        : Object.keys(result).reduce(
-            (acc, k) => {
-              acc[k] = result[k].map(item => item.exportName);
-              return acc;
-            },
-            {} as Record<string, string[]>,
-          );
+        : Object.keys(result).reduce((acc, k) => {
+            acc[k] = result[k].map(item => item.exportName);
+            return acc;
+          }, {} as Record<string, string[]>);
       compare(fixDot(op), actual, fixDot(payload));
     },
     { inline: true },
