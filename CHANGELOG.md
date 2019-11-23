@@ -1,5 +1,8 @@
 ## [5.2.0] - 23 Dec 2019
 
+### Added
+- Handle exports from within a namespace
+
 ### Changed
 - Find exports from within namespaces (for performance, this feature is disabled by default. To enable, use the option --enableSearchNamespaces.)
 - (Internal) Update dependency TypeScript to 3.7.3

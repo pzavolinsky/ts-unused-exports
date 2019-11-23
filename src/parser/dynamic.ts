@@ -10,7 +10,7 @@ type WithExpression = ts.Node & {
   expression: ts.Expression;
 };
 
-export function isWithExpression(node: ts.Node): node is WithExpression {
+function isWithExpression(node: ts.Node): node is WithExpression {
   const myInterface = node as WithExpression;
   return !!myInterface.expression;
 }
@@ -19,7 +19,7 @@ type WithArguments = ts.Node & {
   arguments: ts.NodeArray<ts.Expression>;
 };
 
-export function isWithArguments(node: ts.Node): node is WithArguments {
+function isWithArguments(node: ts.Node): node is WithArguments {
   const myInterface = node as WithArguments;
   return !!myInterface.arguments;
 }
