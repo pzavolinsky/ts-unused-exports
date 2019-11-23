@@ -3,6 +3,7 @@
 ### Added
 
 - Detect dynamic imports, to avoid false reports of unused exports
+- Handle the alias from 'export default as', to avoid false positives.
 
 ### Changed
 
