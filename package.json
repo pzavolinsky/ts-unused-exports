@@ -54,6 +54,6 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.6.4"
   }
 }
