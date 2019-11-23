@@ -1,3 +1,11 @@
+## [Unreleased] - ReleaseDate
+
+### Added
+
+### Changed
+
+- (Internal) Update dependencies (except for TypeScript)
+
 ## [5.0.0] - 22 Nov 2019
 
 ### Added
