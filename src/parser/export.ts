@@ -16,15 +16,28 @@ export const extractExportStatement = (
 export const extractExportFromImport = (
   decl: ts.ExportDeclaration,
   moduleSpecifier: ts.Expression,
-): FromWhat => {
+): { exported: FromWhat; imported: FromWhat } => {
   const { exportClause } = decl;
-  const what = exportClause
-    ? exportClause.elements.map(e => (e.propertyName || e.name).text)
+
+  const whatExported = exportClause
+    ? // The alias 'name' or the original type is exported
+      exportClause.elements.map(e => (e.name || e.propertyName).text)
+    : star;
+
+  const whatImported = exportClause
+    ? // The original type 'propertyName' is imported
+      exportClause.elements.map(e => (e.propertyName || e.name).text)
     : star;
 
   return {
-    from: getFrom(moduleSpecifier),
-    what,
+    exported: {
+      from: getFrom(moduleSpecifier),
+      what: whatExported,
+    },
+    imported: {
+      from: getFrom(moduleSpecifier),
+      what: whatImported,
+    },
   };
 };
 

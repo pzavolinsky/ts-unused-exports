@@ -95,10 +95,13 @@ const mapFile = (
         extractExportStatement(exportDecl).forEach(e => addExport(e, node));
         return;
       } else {
-        const fw = extractExportFromImport(exportDecl, moduleSpecifier);
-        const key = addImport(fw);
+        const { exported, imported } = extractExportFromImport(
+          exportDecl,
+          moduleSpecifier,
+        );
+        const key = addImport(imported);
         if (key) {
-          const { what } = fw;
+          const { what } = exported;
           if (what == star) {
             addExport(`*:${key}`, node);
           } else {
