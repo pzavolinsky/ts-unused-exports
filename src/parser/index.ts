@@ -21,6 +21,10 @@ import {
   extractExport,
 } from './export';
 import { isNodeDisabledViaComment } from './comment';
+import {
+  mayContainImportsFromNamespace,
+  addImportsFromNamespace,
+} from './imports-from-namespace';
 
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
@@ -70,7 +74,7 @@ const mapFile = (
     addExportCore(exportName, file, node, exportLocations, exports);
   };
 
-  ts.forEachChild(file, (node: ts.Node) => {
+  const processNode = (node: ts.Node, prefix = ''): void => {
     if (isNodeDisabledViaComment(node, file)) {
       return;
     }
@@ -117,6 +121,12 @@ const mapFile = (
       addDynamicImports(node, addImport);
     }
 
+    // Searching for use of types in namespace requires inspecting statements in the file,
+    // so for performance should only be done when necessary.
+    if (mayContainImportsFromNamespace(node, imports)) {
+      addImportsFromNamespace(node, imports, addImport);
+    }
+
     if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
       if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
         addExport('default', node);
@@ -125,8 +135,32 @@ const mapFile = (
       const decl = node as ts.DeclarationStatement;
       const name = decl.name ? decl.name.text : extractExport(path, node);
 
-      if (name) addExport(name, node);
+      if (name) {
+        addExport(prefix + name, node);
+
+        const isNamespace = node
+          .getChildren()
+          .some(c => c.getText() === 'namespace');
+        if (isNamespace) {
+          node.getChildren().forEach(c => {
+            processNode(c, prefix + name + '.');
+          });
+
+          prefix = prefix + name + '.';
+        }
+      }
     }
+
+    if (prefix.length > 0) {
+      // in namespace: need to process children
+      node.getChildren().forEach(c => {
+        processNode(c, prefix);
+      });
+    }
+  };
+
+  ts.forEachChild(file, (node: ts.Node) => {
+    processNode(node);
   });
 
   return {
