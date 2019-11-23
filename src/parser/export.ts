@@ -5,11 +5,15 @@ import { FromWhat, star, getFrom } from './common';
 
 // Parse Exports
 
+const extractAliasFirstFromElements = (
+  elements: ts.NodeArray<ts.ExportSpecifier>,
+): string[] => elements.map(e => e.name.text);
+
 export const extractExportStatement = (
   decl: ts.ExportDeclaration,
 ): string[] => {
   return decl.exportClause
-    ? decl.exportClause.elements.map(e => (e.name || e.propertyName).text)
+    ? extractAliasFirstFromElements(decl.exportClause.elements)
     : [];
 };
 
@@ -21,7 +25,7 @@ export const extractExportFromImport = (
 
   const whatExported = exportClause
     ? // The alias 'name' or the original type is exported
-      exportClause.elements.map(e => (e.name || e.propertyName).text)
+      extractAliasFirstFromElements(exportClause.elements)
     : star;
 
   const whatImported = exportClause
