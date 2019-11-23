@@ -70,7 +70,7 @@ const mapFile = (
     addExportCore(exportName, file, node, exportLocations, exports);
   };
 
-  ts.forEachChild(file, (node: ts.Node) => {
+  const processNode = (node: ts.Node, prefix = ''): void => {
     if (isNodeDisabledViaComment(node, file)) {
       return;
     }
@@ -79,6 +79,9 @@ const mapFile = (
 
     if (kind === ts.SyntaxKind.ImportDeclaration) {
       addImport(extractImport(node as ts.ImportDeclaration));
+      // TODO xxx if extractImport() returns namespace(s),
+      // then check all children of this node, for *use* of that namespace.
+      // Add imports 'ns.x' for each.
       return;
     }
 
@@ -125,8 +128,30 @@ const mapFile = (
       const decl = node as ts.DeclarationStatement;
       const name = decl.name ? decl.name.text : extractExport(path, node);
 
-      if (name) addExport(name, node);
+      if (name) {
+        addExport(prefix + name, node);
+
+        const isNamespace = node
+          .getChildren()
+          .some(c => c.getText() === 'namespace');
+        if (isNamespace) {
+          node.getChildren().forEach(c => {
+            processNode(c, prefix + name + '.');
+          });
+        }
+      }
     }
+
+    if (prefix.length > 0) {
+      // in namespace: need to process children
+      node.getChildren().forEach(c => {
+        processNode(c, prefix);
+      });
+    }
+  };
+
+  ts.forEachChild(file, (node: ts.Node) => {
+    processNode(node);
   });
 
   return {

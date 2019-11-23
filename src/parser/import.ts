@@ -48,6 +48,11 @@ export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
         e => (e.propertyName || e.name).text,
       );
 
+  // TODO xxx if importNames has namespaces, then need to scan for use of 'x.y' -> addImport('x.y')
+  // need to remember that From (file) has exported namespace 'x'?
+  // so return 2nd value: importedNamespaces: FromWhat
+  // then file needs to be scanned for *uses* from that namespace (not imports!)
+
   return {
     from,
     what: importDefault.concat(importNames),
