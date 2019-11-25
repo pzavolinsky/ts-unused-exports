@@ -21,6 +21,10 @@ import {
   extractExport,
 } from './export';
 import { isNodeDisabledViaComment } from './comment';
+import {
+  mayContainImportsFromNamespace,
+  addImportsFromNamespace,
+} from './imports-from-namespace';
 
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
@@ -79,9 +83,6 @@ const mapFile = (
 
     if (kind === ts.SyntaxKind.ImportDeclaration) {
       addImport(extractImport(node as ts.ImportDeclaration));
-      // TODO xxx if extractImport() returns namespace(s),
-      // then check all children of this node, for *use* of that namespace.
-      // Add imports 'ns.x' for each.
       return;
     }
 
@@ -118,6 +119,12 @@ const mapFile = (
     // so for performance should only be done when necessary.
     if (mayContainDynamicImports(node)) {
       addDynamicImports(node, addImport);
+    }
+
+    // Searching for use of types in namespace requires inspecting statements in the file,
+    // so for performance should only be done when necessary.
+    if (mayContainImportsFromNamespace(node, imports)) {
+      addImportsFromNamespace(node, imports, addImport);
     }
 
     if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
