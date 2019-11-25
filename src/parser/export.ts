@@ -1,7 +1,9 @@
 import * as ts from 'typescript';
 
-import { LocationInFile } from './types';
-import { FromWhat, star, getFrom } from './parser.common';
+import { LocationInFile } from '../types';
+import { FromWhat, star, getFrom } from './common';
+
+// Parse Exports
 
 export const extractExportStatement = (
   decl: ts.ExportDeclaration,

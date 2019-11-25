@@ -3,8 +3,10 @@ import { existsSync } from 'fs';
 import * as tsconfigPaths from 'tsconfig-paths';
 import * as ts from 'typescript';
 
-import { getFrom, FromWhat, star } from './parser.common';
-import { Imports } from './types';
+import { getFrom, FromWhat, star } from './common';
+import { Imports } from '../types';
+
+// Parse Imports
 
 const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
 

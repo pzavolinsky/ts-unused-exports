@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { FromWhat, getFromText } from './parser.common';
+import { FromWhat, getFromText } from './common';
 
 // Parse Dynamic Imports
 

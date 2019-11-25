@@ -8,19 +8,19 @@ import {
   TsConfig,
   TsConfigPaths,
   ExtraCommandLineOptions,
-} from './types';
+} from '../types';
 import { relative, resolve } from 'path';
 import { readFileSync } from 'fs';
-import { FromWhat, star } from './parser.common';
-import { addDynamicImports, mayContainDynamicImports } from './parser.dynamic';
-import { extractImport, addImportCore } from './parser.import';
+import { FromWhat, star } from './common';
+import { addDynamicImports, mayContainDynamicImports } from './dynamic';
+import { extractImport, addImportCore } from './import';
 import {
   addExportCore,
   extractExportStatement,
   extractExportFromImport,
   extractExport,
-} from './parser.export';
-import { isNodeDisabledViaComment } from './parser.comment';
+} from './export';
+import { isNodeDisabledViaComment } from './comment';
 
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;

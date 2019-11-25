@@ -2,6 +2,8 @@
 
 ### Added
 
+- Detect dynamic imports, to avoid false reports of unused exports
+
 ### Changed
 
 - (Internal) Update dependencies (except for TypeScript)

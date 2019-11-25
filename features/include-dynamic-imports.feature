@@ -16,7 +16,6 @@ Scenario: Include dynamic import as promise
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
 
-# TODO xxx fix
 Scenario: Include dynamic import as promise - in a function
   Given file "a.ts" is
     """
@@ -35,7 +34,6 @@ Scenario: Include dynamic import as promise - in a function
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
 
-# TODO xxx fix
 Scenario: Include dynamic import via await - in a function,
   Given file "a.ts" is
     """

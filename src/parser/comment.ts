@@ -1,5 +1,7 @@
 import * as ts from 'typescript';
 
+// Parse Comments (that can disable ts-unused-exports)
+
 export const isNodeDisabledViaComment = (
   node: ts.Node,
   file: ts.SourceFile,
