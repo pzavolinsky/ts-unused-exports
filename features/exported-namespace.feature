@@ -25,11 +25,11 @@ Scenario: Import namespace only
 
 Scenario: Import namespace and use the inner type
   Given file "b.ts" is
-    """"
+    """
     import { A, constants } from './a';
 
     const b: constants.flag;
-    """"
+    """
   When analyzing "tsconfig.json"
   Then the result is { "a.ts": ["A_unused"] }
 
