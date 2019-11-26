@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {
   existsSync,
   mkdirSync,
@@ -11,6 +11,7 @@ import {
 import { tmpdir } from 'os';
 import { join } from 'path';
 import pickledCucumber, { SetupFn } from 'pickled-cucumber';
+
 import analyzeTsConfig from './app';
 import { runCli } from './cli';
 import { Analysis } from './types';
