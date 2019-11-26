@@ -140,7 +140,7 @@ const mapFile = (
 
         const isNamespace = node
           .getChildren()
-          .some(c => c.getText() === 'namespace');
+          .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
         if (isNamespace) {
           node.getChildren().forEach(c => {
             processNode(c, prefix + name + '.');
