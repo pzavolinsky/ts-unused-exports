@@ -44,13 +44,15 @@ Some things that will increase the chance that your pull request is accepted:
 
 # notes
 
-## Debugging `ts-unused-exports` VSCode
+## Debugging `ts-unused-exports` with Visual Code
 
-To debug with VSCode, make sure you run the following in a terminal:
+To debug, in **Visual Code**, press `CTRL + SHIFT + B`.
+
+Or make sure you run the following in a terminal:
 
     npm run watch
 
-Back in VSCode, open a file, add a breakpoint (`F9`).
+Back in **Visual Code**, open a file, add a breakpoint (`F9`).
 Open a `.feature` file, put the cursor over a `Scenario:` line and press `F5`.
 
 If you don't know where to put the breakpoint, you can always put it in the first line of the default export of `app.ts`.
