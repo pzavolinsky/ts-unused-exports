@@ -60,8 +60,8 @@ Scenario: Import from nested namespace and use the inner type
     """
     import { B_top } from './b';
 
-    const c1: B_top.b_inner_1;
-    const c2: B_top.b_inner.B_inner_2;
+    const c1: B_top.B_inner_1;
+    const c2: B_top.B_inner.B_inner_2;
     """
   When analyzing "tsconfig.json"
   Then the result is { "a.ts": ["A_unused"], "b.ts": [ "B_top.B_inner.B_inner_unused", "B_top.B_unused", "B_top.B_unused.B_unused_unused"] }
