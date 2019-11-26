@@ -1,8 +1,8 @@
-import { LocationInFile } from './types';
-import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
+import chalk = require('chalk');
 
 import analyzeTsConfig from './app';
-import chalk from 'chalk';
+import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
+import { LocationInFile } from './types';
 import { USAGE } from './usage';
 
 // eslint style exit code:
