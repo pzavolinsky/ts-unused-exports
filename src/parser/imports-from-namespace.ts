@@ -12,7 +12,6 @@ type ImportedNamespace = {
 };
 
 const getPossibleImportedNamespaces = (
-  node: ts.Node,
   imports: Imports,
 ): ImportedNamespace[] => {
   const keys = Object.keys(imports);
@@ -34,7 +33,7 @@ export const mayContainImportsFromNamespace = (
   imports: Imports,
 ): boolean => {
   const nodeText = node.getText();
-  return getPossibleImportedNamespaces(node, imports).some(possible => {
+  return getPossibleImportedNamespaces(imports).some(possible => {
     return possible.namespaces.some(ns => nodeText.includes(ns));
   });
 };
@@ -44,7 +43,7 @@ export const addImportsFromNamespace = (
   imports: Imports,
   addImport: (fw: FromWhat) => void,
 ): void => {
-  const possibles = getPossibleImportedNamespaces(node, imports);
+  const possibles = getPossibleImportedNamespaces(imports);
 
   // Scan elements in file, for use of any recognised 'namespace.type'
   const addImportsInAnyExpression = (node: ts.Node): void => {

@@ -5,6 +5,7 @@ import * as ts from 'typescript';
 
 import { getFrom, FromWhat, STAR } from './common';
 import { Imports } from '../types';
+import { isUnique } from './util';
 
 // Parse Imports
 
@@ -92,6 +93,7 @@ export const addImportCore = (
   const key = getKey(from) || from;
   if (!key) return undefined;
   const items = imports[key] || [];
-  imports[key] = items.concat(what);
+
+  imports[key] = items.concat(what).filter(isUnique);
   return key;
 };
