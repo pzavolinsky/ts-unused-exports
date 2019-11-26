@@ -145,6 +145,8 @@ const mapFile = (
           node.getChildren().forEach(c => {
             processNode(c, prefix + name + '.');
           });
+
+          prefix = prefix + name + '.';
         }
       }
     }
