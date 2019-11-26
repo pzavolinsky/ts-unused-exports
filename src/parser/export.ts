@@ -5,26 +5,43 @@ import { FromWhat, star, getFrom } from './common';
 
 // Parse Exports
 
+const extractAliasFirstFromElements = (
+  elements: ts.NodeArray<ts.ExportSpecifier>,
+): string[] => elements.map(e => e.name.text);
+
 export const extractExportStatement = (
   decl: ts.ExportDeclaration,
 ): string[] => {
   return decl.exportClause
-    ? decl.exportClause.elements.map(e => (e.name || e.propertyName).text)
+    ? extractAliasFirstFromElements(decl.exportClause.elements)
     : [];
 };
 
 export const extractExportFromImport = (
   decl: ts.ExportDeclaration,
   moduleSpecifier: ts.Expression,
-): FromWhat => {
+): { exported: FromWhat; imported: FromWhat } => {
   const { exportClause } = decl;
-  const what = exportClause
-    ? exportClause.elements.map(e => (e.propertyName || e.name).text)
+
+  const whatExported = exportClause
+    ? // The alias 'name' or the original type is exported
+      extractAliasFirstFromElements(exportClause.elements)
+    : star;
+
+  const whatImported = exportClause
+    ? // The original type 'propertyName' is imported
+      exportClause.elements.map(e => (e.propertyName || e.name).text)
     : star;
 
   return {
-    from: getFrom(moduleSpecifier),
-    what,
+    exported: {
+      from: getFrom(moduleSpecifier),
+      what: whatExported,
+    },
+    imported: {
+      from: getFrom(moduleSpecifier),
+      what: whatImported,
+    },
   };
 };
 
