@@ -7,7 +7,7 @@ export interface FromWhat {
   what: string[];
 }
 
-export const TRIM_QUOTES = /^['"](.*)['"]$/;
+const TRIM_QUOTES = /^['"](.*)['"]$/;
 
 export const getFromText = (moduleSpecifier: string): string =>
   moduleSpecifier.replace(TRIM_QUOTES, '$1').replace(/\/index$/, '');

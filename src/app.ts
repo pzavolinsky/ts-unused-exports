@@ -40,7 +40,7 @@ const parseTsConfig = (tsconfigPath: string): TsConfig => {
   }
 };
 
-export const loadTsConfig = (
+const loadTsConfig = (
   tsconfigPath: string,
   explicitFiles?: string[],
 ): TsConfig => {

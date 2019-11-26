@@ -18,7 +18,7 @@ export interface LocationInFile {
   character: number;
 }
 
-export interface ExportNameAndLocation {
+interface ExportNameAndLocation {
   exportName: string;
   location: LocationInFile;
 }
