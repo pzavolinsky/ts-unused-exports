@@ -1,7 +1,8 @@
 ## [5.2.0] - 23 Dec 2019
 
 ### Added
-- Handle exports from within a namespace
+
+- Handle exports from within a namespace. Disabled by default, unless option --enableSearchNamespaces is given. Note: there is a performance cost when this is turned on (about 5x slower on large codebases).
 
 ### Changed
 - Find exports from within namespaces (for performance, this feature is disabled by default. To enable, use the option --enableSearchNamespaces.)
