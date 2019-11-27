@@ -47,12 +47,17 @@ export const addImportsFromNamespace = (
 
   // Scan elements in file, for use of any recognised 'namespace.type'
   const addImportsInAnyExpression = (node: ts.Node): void => {
+    const nodeText = node.getText();
+    if (hasWhiteSpace(nodeText)) {
+      return;
+    }
+
     possibles.forEach(p => {
       p.namespaces.forEach(ns => {
-        if (node.getText().startsWith(ns) && !hasWhiteSpace(node.getText())) {
+        if (nodeText.startsWith(ns)) {
           addImport({
             from: p.file,
-            what: [node.getText()],
+            what: [nodeText],
           });
         }
       });

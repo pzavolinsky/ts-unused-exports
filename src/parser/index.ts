@@ -2,29 +2,30 @@ import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
 
 import {
+  ExtraCommandLineOptions,
   File,
   Imports,
   LocationInFile,
   TsConfig,
   TsConfigPaths,
-  ExtraCommandLineOptions,
 } from '../types';
-import { relative, resolve } from 'path';
-import { readFileSync } from 'fs';
 import { FromWhat, STAR } from './common';
 import { addDynamicImports, mayContainDynamicImports } from './dynamic';
-import { extractImport, addImportCore } from './import';
 import {
   addExportCore,
-  extractExportStatement,
-  extractExportFromImport,
   extractExport,
+  extractExportFromImport,
+  extractExportStatement,
 } from './export';
-import { isNodeDisabledViaComment } from './comment';
+import { addImportCore, extractImport } from './import';
 import {
-  mayContainImportsFromNamespace,
   addImportsFromNamespace,
+  mayContainImportsFromNamespace,
 } from './imports-from-namespace';
+import { relative, resolve } from 'path';
+
+import { isNodeDisabledViaComment } from './comment';
+import { readFileSync } from 'fs';
 
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
@@ -74,7 +75,7 @@ const mapFile = (
     addExportCore(exportName, file, node, exportLocations, exports);
   };
 
-  const processNode = (node: ts.Node, prefix = ''): void => {
+  const processNode = (node: ts.Node, namespace = ''): void => {
     if (isNodeDisabledViaComment(node, file)) {
       return;
     }
@@ -136,25 +137,29 @@ const mapFile = (
       const name = decl.name ? decl.name.text : extractExport(path, node);
 
       if (name) {
-        addExport(prefix + name, node);
+        addExport(namespace + name, node);
 
         const isNamespace = node
           .getChildren()
           .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
-        if (isNamespace) {
-          node.getChildren().forEach(c => {
-            processNode(c, prefix + name + '.');
-          });
 
-          prefix = prefix + name + '.';
+        if (isNamespace) {
+          node
+            .getChildren()
+            .filter(c => c.kind === ts.SyntaxKind.Identifier)
+            .forEach(c => {
+              processNode(c, namespace + name + '.');
+            });
+
+          namespace = namespace + name + '.';
         }
       }
     }
 
-    if (prefix.length > 0) {
+    if (namespace.length > 0) {
       // in namespace: need to process children
       node.getChildren().forEach(c => {
-        processNode(c, prefix);
+        processNode(c, namespace);
       });
     }
   };
