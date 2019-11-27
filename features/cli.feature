@@ -1,5 +1,44 @@
 Feature: CLI
 
+Scenario: Search Namespaces ON
+  Given file "a.ts" is
+    """
+    // This is line 1
+    export namespace ns
+    {
+    export const ns_unused = 1;
+    }
+    """
+  And file "b.ts" is
+    """
+    import { ns } from './a';
+    export const B_unused = 2;
+    """
+  When running ts-unused-exports "tsconfig.json" --enableSearchNamespaces
+  Then the CLI result at status is 1
+  And the CLI result at stdout contains "a.ts: ns.ns_unused"
+  And the CLI result at stdout contains "b.ts: B_unused"
+
+Scenario: Search Namespaces OFF
+  Given file "a.ts" is
+    """
+    // This is line 1
+    export namespace ns
+    {
+    export const ns_unused = 1;
+    }
+    export const A_unused = 2;
+    """
+  And file "b.ts" is
+    """
+    import { ns } from './a';
+    export const B_unused = 2;
+    """
+  When running ts-unused-exports "tsconfig.json"
+  Then the CLI result at status is 1
+  And the CLI result at stdout contains "a.ts: A_unused"
+  And the CLI result at stdout contains "b.ts: B_unused"
+
 Scenario: Line numbers
   Given file "a.ts" is
     """
