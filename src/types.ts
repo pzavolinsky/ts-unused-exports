@@ -41,5 +41,6 @@ export interface ExtraCommandLineOptions {
   exitWithCount?: boolean;
   excludeDeclarationFiles?: boolean;
   pathsToIgnore?: string[];
+  disableSearchNamespaces?: boolean;
   showLineNumber?: boolean;
 }

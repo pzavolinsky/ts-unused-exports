@@ -40,6 +40,9 @@ function processOptions(
       case '--excludeDeclarationFiles':
         newOptions.excludeDeclarationFiles = true;
         break;
+      case '--disableSearchNamespaces':
+        newOptions.disableSearchNamespaces = true;
+        break;
       case '--showLineNumber':
         newOptions.showLineNumber = true;
         break;

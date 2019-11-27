@@ -49,6 +49,7 @@ const mapFile = (
   file: ts.SourceFile,
   baseUrl: string,
   paths?: TsConfigPaths,
+  extraOptions?: ExtraCommandLineOptions,
 ): File => {
   const imports: Imports = {};
   let exports: string[] = [];
@@ -124,7 +125,11 @@ const mapFile = (
 
     // Searching for use of types in namespace requires inspecting statements in the file,
     // so for performance should only be done when necessary.
-    if (mayContainImportsFromNamespace(node, imports)) {
+    if (
+      extraOptions &&
+      !extraOptions.disableSearchNamespaces &&
+      mayContainImportsFromNamespace(node, imports)
+    ) {
       addImportsFromNamespace(node, imports, addImport);
     }
 
@@ -139,9 +144,12 @@ const mapFile = (
       if (name) {
         addExport(namespace + name, node);
 
-        const isNamespace = node
-          .getChildren()
-          .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
+        const isNamespace =
+          extraOptions &&
+          !extraOptions.disableSearchNamespaces &&
+          node
+            .getChildren()
+            .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
 
         if (isNamespace) {
           node
@@ -182,6 +190,7 @@ const parseFile = (
   path: string,
   baseUrl: string,
   paths?: TsConfigPaths,
+  extraOptions?: ExtraCommandLineOptions,
 ): File =>
   mapFile(
     rootDir,
@@ -194,6 +203,7 @@ const parseFile = (
     ),
     baseUrl,
     paths,
+    extraOptions,
   );
 
 const parsePaths = (
@@ -205,7 +215,9 @@ const parsePaths = (
 
   const files = filePaths
     .filter(p => includeDeclarationFiles || p.indexOf('.d.') === -1)
-    .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl, paths));
+    .map(path =>
+      parseFile(rootDir, resolve(rootDir, path), baseUrl, paths, extraOptions),
+    );
 
   return files;
 };
