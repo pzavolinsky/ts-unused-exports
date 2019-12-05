@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import * as tsconfigPaths from 'tsconfig-paths';
 import * as ts from 'typescript';
 
-import { getFrom, FromWhat, star } from './common';
+import { getFrom, FromWhat, STAR } from './common';
 import { Imports } from '../types';
 
 // Parse Imports
@@ -27,19 +27,26 @@ export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   if (!importClause)
     return {
       from,
-      what: star,
+      what: STAR,
     };
 
   const { namedBindings } = importClause;
   const importDefault = !!importClause.name ? ['default'] : [];
-  const importStar =
-    namedBindings && !!(namedBindings as ts.NamespaceImport).name ? star : [];
-  const importNames =
-    namedBindings && !importStar.length
-      ? (namedBindings as ts.NamedImports).elements.map(
-          e => (e.propertyName || e.name).text,
-        )
-      : [];
+
+  if (!namedBindings) {
+    return {
+      from,
+      what: importDefault,
+    };
+  }
+
+  const isStar = !!(namedBindings as ts.NamespaceImport).name;
+  const importStar = isStar ? STAR : [];
+  const importNames = isStar
+    ? []
+    : (namedBindings as ts.NamedImports).elements.map(
+        e => (e.propertyName || e.name).text,
+      );
 
   return {
     from,

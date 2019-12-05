@@ -11,7 +11,7 @@ import {
 } from '../types';
 import { relative, resolve } from 'path';
 import { readFileSync } from 'fs';
-import { FromWhat, star } from './common';
+import { FromWhat, STAR } from './common';
 import { addDynamicImports, mayContainDynamicImports } from './dynamic';
 import { extractImport, addImportCore } from './import';
 import {
@@ -102,7 +102,7 @@ const mapFile = (
         const key = addImport(imported);
         if (key) {
           const { what } = exported;
-          if (what == star) {
+          if (what == STAR) {
             addExport(`*:${key}`, node);
           } else {
             exports = exports.concat(what);
