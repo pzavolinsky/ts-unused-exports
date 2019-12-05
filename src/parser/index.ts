@@ -143,13 +143,7 @@ const mapFile = (
       if (name) {
         addExport(namespace + name, node);
 
-        const isNamespace =
-          extraOptions?.enableSearchNamespaces &&
-          node
-            .getChildren()
-            .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
-
-        if (isNamespace) {
+        if (extraOptions?.enableSearchNamespaces) {
           node
             .getChildren()
             .filter(c => c.kind === ts.SyntaxKind.Identifier)
