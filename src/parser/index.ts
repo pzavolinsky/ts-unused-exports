@@ -163,8 +163,7 @@ const parsePaths = (
   { baseUrl, files: filePaths, paths }: TsConfig,
   extraOptions?: ExtraCommandLineOptions,
 ): File[] => {
-  const includeDeclarationFiles =
-    extraOptions && !extraOptions.excludeDeclarationFiles;
+  const includeDeclarationFiles = !extraOptions?.excludeDeclarationFiles;
 
   const files = filePaths
     .filter(p => includeDeclarationFiles || p.indexOf('.d.') === -1)

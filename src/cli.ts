@@ -47,7 +47,7 @@ export const runCli = (
     };
 
     const options = extractOptionsFromFiles(tsFiles).options;
-    if (options && options.showLineNumber) {
+    if (options?.showLineNumber) {
       files.forEach(path => {
         analysis[path].forEach(unusedExport => {
           showMessage(
@@ -67,7 +67,7 @@ export const runCli = (
       );
     }
 
-    if (options && options.exitWithCount) {
+    if (options?.exitWithCount) {
       // Max allowed exit code is 127 (single signed byte)
       return exitWith(Math.min(127, files.length));
     }
