@@ -18,10 +18,7 @@ import {
   extractExportStatement,
 } from './export';
 import { addImportCore, extractImport } from './import';
-import {
-  addImportsFromNamespace,
-  mayContainImportsFromNamespace,
-} from './imports-from-namespace';
+import { addImportsFromNamespace } from './imports-from-namespace';
 import { relative, resolve } from 'path';
 
 import { isNodeDisabledViaComment } from './comment';
@@ -125,10 +122,7 @@ const mapFile = (
 
     // Searching for use of types in namespace requires inspecting statements in the file,
     // so for performance should only be done when necessary.
-    if (
-      extraOptions?.enableSearchNamespaces &&
-      mayContainImportsFromNamespace(node, imports)
-    ) {
+    if (extraOptions?.enableSearchNamespaces) {
       addImportsFromNamespace(node, imports, addImport);
     }
 
