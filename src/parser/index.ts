@@ -42,7 +42,7 @@ const mapFile = (
   rootDir: string,
   path: string,
   file: ts.SourceFile,
-  baseUrl?: string,
+  baseUrl: string,
   paths?: TsConfigPaths,
 ): File => {
   const imports: Imports = {};
@@ -50,10 +50,9 @@ const mapFile = (
   const exportLocations: LocationInFile[] = [];
   const name = extractFilename(rootDir, path);
 
-  const baseDir = baseUrl && resolve(rootDir, baseUrl);
+  const baseDir = resolve(rootDir, baseUrl);
   const tsconfigPathsMatcher =
-    (!!baseDir && !!paths && tsconfigPaths.createMatchPath(baseDir, paths)) ||
-    undefined;
+    (!!paths && tsconfigPaths.createMatchPath(baseDir, paths)) || undefined;
 
   const addImport = (fw: FromWhat): string | undefined => {
     return addImportCore(
@@ -61,9 +60,9 @@ const mapFile = (
       rootDir,
       path,
       imports,
-      tsconfigPathsMatcher,
       baseDir,
       baseUrl,
+      tsconfigPathsMatcher,
     );
   };
 
@@ -142,7 +141,7 @@ const mapFile = (
 const parseFile = (
   rootDir: string,
   path: string,
-  baseUrl?: string,
+  baseUrl: string,
   paths?: TsConfigPaths,
 ): File =>
   mapFile(

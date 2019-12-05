@@ -59,9 +59,9 @@ export const addImportCore = (
   rootDir: string,
   path: string,
   imports: Imports,
+  baseDir: string,
+  baseUrl: string,
   tsconfigPathsMatcher?: tsconfigPaths.MatchPath,
-  baseDir?: string,
-  baseUrl?: string,
 ): string | undefined => {
   const { from, what } = fw;
 
@@ -69,11 +69,11 @@ export const addImportCore = (
     if (from[0] == '.') {
       // An undefined return indicates the import is from 'index.ts' or similar == '.'
       return relativeTo(rootDir, path, from) || '.';
-    } else if (baseDir && baseUrl) {
+    } else {
       let matchedPath;
 
       return isRelativeToBaseDir(baseDir, from)
-        ? baseUrl && join(baseUrl, from)
+        ? join(baseUrl, from)
         : tsconfigPathsMatcher &&
           (matchedPath = tsconfigPathsMatcher(
             from,
@@ -84,8 +84,6 @@ export const addImportCore = (
         ? matchedPath.replace(`${baseDir}${sep}`, '')
         : undefined;
     }
-
-    return undefined;
   };
 
   const key = getKey(from);

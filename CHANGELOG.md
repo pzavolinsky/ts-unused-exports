@@ -1,3 +1,10 @@
+## [Unreleased] - ReleaseDate
+
+### Changed
+- (Internal) Update dependency TypeScript to 3.7.3
+- (Internal) Simplify some logic, using the new optional chaining operator (?.)
+- (Internal) Increase code coverage and simplify code (baseUrl defaults to '.')
+
 ## [5.1.0] - 26 Nov 2019
 
 ### Added

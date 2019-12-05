@@ -27,7 +27,7 @@ const parseTsConfig = (tsconfigPath: string): TsConfig => {
     if (result.errors.length) throw result.errors;
 
     return {
-      baseUrl: result.raw?.compilerOptions?.baseUrl,
+      baseUrl: result.raw?.compilerOptions?.baseUrl || '.',
       paths: result.raw?.compilerOptions?.paths,
       files: result.fileNames,
     };
