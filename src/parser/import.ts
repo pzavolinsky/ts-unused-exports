@@ -91,7 +91,6 @@ export const addImportCore = (
   };
 
   const key = getKey(from) || from;
-  if (!key) return undefined;
   const items = imports[key] || [];
 
   imports[key] = items.concat(what).filter(isUnique);
