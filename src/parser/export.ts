@@ -54,10 +54,9 @@ export const extractExport = (path: string, node: ts.Node): string => {
       return name ? name.text : 'default';
     default: {
       console.warn(`WARN: ${path}: unknown export node (kind:${node.kind})`);
-      break;
+      return '';
     }
   }
-  return '';
 };
 
 export const addExportCore = (
