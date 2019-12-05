@@ -40,6 +40,109 @@ const extractFilename = (rootDir: string, path: string): string => {
   return name;
 };
 
+const processNode = (
+  node: ts.Node,
+  path: string,
+  addImport: (fw: FromWhat) => string | undefined,
+  addExport: (exportName: string, node: ts.Node) => void,
+  imports: Imports,
+  exports: string[],
+  extraOptions?: ExtraCommandLineOptions,
+  namespace = '',
+): void => {
+  const { kind } = node;
+
+  const processSubNode = (subNode: ts.Node, namespace: string): void => {
+    processNode(
+      subNode,
+      path,
+      addImport,
+      addExport,
+      imports,
+      exports,
+      extraOptions,
+      namespace,
+    );
+  };
+
+  if (kind === ts.SyntaxKind.ImportDeclaration) {
+    addImport(extractImport(node as ts.ImportDeclaration));
+    return;
+  }
+
+  if (kind === ts.SyntaxKind.ExportAssignment) {
+    addExport('default', node);
+    return;
+  }
+
+  if (kind === ts.SyntaxKind.ExportDeclaration) {
+    const exportDecl = node as ts.ExportDeclaration;
+    const { moduleSpecifier } = exportDecl;
+    if (moduleSpecifier === undefined) {
+      extractExportStatement(exportDecl).forEach(e => addExport(e, node));
+      return;
+    } else {
+      const { exported, imported } = extractExportFromImport(
+        exportDecl,
+        moduleSpecifier,
+      );
+      const key = addImport(imported);
+      if (key) {
+        const { what } = exported;
+        if (what == STAR) {
+          addExport(`*:${key}`, node);
+        } else {
+          what.forEach(w => exports.push(w));
+        }
+      }
+      return;
+    }
+  }
+
+  // Searching for dynamic imports requires inspecting statements in the file,
+  // so for performance should only be done when necessary.
+  if (mayContainDynamicImports(node)) {
+    addDynamicImports(node, addImport);
+  }
+
+  // Searching for use of types in namespace requires inspecting statements in the file,
+  // so for performance should only be done when necessary.
+  if (extraOptions?.enableSearchNamespaces) {
+    addImportsFromNamespace(node, imports, addImport);
+  }
+
+  if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
+    if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
+      addExport('default', node);
+      return;
+    }
+    const decl = node as ts.DeclarationStatement;
+    const name = decl.name ? decl.name.text : extractExport(path, node);
+
+    if (name) {
+      addExport(namespace + name, node);
+
+      if (extraOptions?.enableSearchNamespaces) {
+        node
+          .getChildren()
+          .filter(c => c.kind === ts.SyntaxKind.Identifier)
+          .forEach(c => {
+            processSubNode(c, namespace + name + '.');
+          });
+
+        namespace = namespace + name + '.';
+      }
+    }
+  }
+
+  if (namespace.length > 0) {
+    // in namespace: need to process children
+    node.getChildren().forEach(c => {
+      processSubNode(c, namespace);
+    });
+  }
+};
+
 const mapFile = (
   rootDir: string,
   path: string,
@@ -49,7 +152,7 @@ const mapFile = (
   extraOptions?: ExtraCommandLineOptions,
 ): File => {
   const imports: Imports = {};
-  let exports: string[] = [];
+  const exports: string[] = [];
   const exportLocations: LocationInFile[] = [];
   const name = extractFilename(rootDir, path);
 
@@ -73,93 +176,20 @@ const mapFile = (
     addExportCore(exportName, file, node, exportLocations, exports);
   };
 
-  const processNode = (node: ts.Node, namespace = ''): void => {
+  ts.forEachChild(file, (node: ts.Node) => {
     if (isNodeDisabledViaComment(node, file)) {
       return;
     }
 
-    const { kind } = node;
-
-    if (kind === ts.SyntaxKind.ImportDeclaration) {
-      addImport(extractImport(node as ts.ImportDeclaration));
-      return;
-    }
-
-    if (kind === ts.SyntaxKind.ExportAssignment) {
-      addExport('default', node);
-      return;
-    }
-
-    if (kind === ts.SyntaxKind.ExportDeclaration) {
-      const exportDecl = node as ts.ExportDeclaration;
-      const { moduleSpecifier } = exportDecl;
-      if (moduleSpecifier === undefined) {
-        extractExportStatement(exportDecl).forEach(e => addExport(e, node));
-        return;
-      } else {
-        const { exported, imported } = extractExportFromImport(
-          exportDecl,
-          moduleSpecifier,
-        );
-        const key = addImport(imported);
-        if (key) {
-          const { what } = exported;
-          if (what == STAR) {
-            addExport(`*:${key}`, node);
-          } else {
-            exports = exports.concat(what);
-          }
-        }
-        return;
-      }
-    }
-
-    // Searching for dynamic imports requires inspecting statements in the file,
-    // so for performance should only be done when necessary.
-    if (mayContainDynamicImports(node)) {
-      addDynamicImports(node, addImport);
-    }
-
-    // Searching for use of types in namespace requires inspecting statements in the file,
-    // so for performance should only be done when necessary.
-    if (extraOptions?.enableSearchNamespaces) {
-      addImportsFromNamespace(node, imports, addImport);
-    }
-
-    if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
-      if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
-        addExport('default', node);
-        return;
-      }
-      const decl = node as ts.DeclarationStatement;
-      const name = decl.name ? decl.name.text : extractExport(path, node);
-
-      if (name) {
-        addExport(namespace + name, node);
-
-        if (extraOptions?.enableSearchNamespaces) {
-          node
-            .getChildren()
-            .filter(c => c.kind === ts.SyntaxKind.Identifier)
-            .forEach(c => {
-              processNode(c, namespace + name + '.');
-            });
-
-          namespace = namespace + name + '.';
-        }
-      }
-    }
-
-    if (namespace.length > 0) {
-      // in namespace: need to process children
-      node.getChildren().forEach(c => {
-        processNode(c, namespace);
-      });
-    }
-  };
-
-  ts.forEachChild(file, (node: ts.Node) => {
-    processNode(node);
+    processNode(
+      node,
+      path,
+      addImport,
+      addExport,
+      imports,
+      exports,
+      extraOptions,
+    );
   });
 
   return {
