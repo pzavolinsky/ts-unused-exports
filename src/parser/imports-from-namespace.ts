@@ -46,7 +46,7 @@ export const addImportsFromNamespace = (
   const possibles = getPossibleImportedNamespaces(imports);
 
   // Scan elements in file, for use of any recognised 'namespace.type'
-  const addImportsInAnyExpression = (node: ts.Node): void => {
+  const findImportUsagesWithin = (node: ts.Node): void => {
     const nodeText = node.getText();
     if (hasWhiteSpace(nodeText)) {
       return;
@@ -65,7 +65,7 @@ export const addImportsFromNamespace = (
   };
 
   const recurseIntoChildren = (next: ts.Node): void => {
-    addImportsInAnyExpression(next);
+    findImportUsagesWithin(next);
 
     next.getChildren().forEach(recurseIntoChildren);
   };
