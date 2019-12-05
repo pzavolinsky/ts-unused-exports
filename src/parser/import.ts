@@ -41,16 +41,16 @@ export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   }
 
   const isStar = !!(namedBindings as ts.NamespaceImport).name;
-  const importStar = isStar ? STAR : [];
+
   const importNames = isStar
-    ? []
+    ? STAR
     : (namedBindings as ts.NamedImports).elements.map(
         e => (e.propertyName || e.name).text,
       );
 
   return {
     from,
-    what: importDefault.concat(importStar, importNames),
+    what: importDefault.concat(importNames),
   };
 };
 
