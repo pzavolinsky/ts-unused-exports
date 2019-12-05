@@ -14,7 +14,7 @@ Scenario: Search Namespaces ON
     import { ns } from './a';
     export const B_unused = 2;
     """
-  When running ts-unused-exports "tsconfig.json"
+  When running ts-unused-exports "tsconfig.json" --enableSearchNamespaces
   Then the CLI result at status is 1
   And the CLI result at stdout contains "a.ts: ns.ns_unused"
   And the CLI result at stdout contains "b.ts: B_unused"
@@ -34,7 +34,7 @@ Scenario: Search Namespaces OFF
     import { ns } from './a';
     export const B_unused = 2;
     """
-  When running ts-unused-exports "tsconfig.json" --disableSearchNamespaces
+  When running ts-unused-exports "tsconfig.json"
   Then the CLI result at status is 1
   And the CLI result at stdout contains "a.ts: A_unused"
   And the CLI result at stdout contains "b.ts: B_unused"

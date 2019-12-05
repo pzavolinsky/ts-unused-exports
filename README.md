@@ -55,7 +55,7 @@ Options:
 
 | Option name               | Description                                                                  | Example                     |
 | ------------------------- | ---------------------------------------------------------------------------- | --------------------------- |
-| ` --disableSearchNamespaces` | Disable searching for unused exports within namespaces. Note: this can improve performance (about 5 x faster on large codebases). | `--disableSearchNamespaces` |
+| ` --enableSearchNamespaces` | Enable searching for unused exports within namespaces. Note: this can affect performance (about 5 x slower on large codebases). | `--enableSearchNamespaces` |
 | `excludeDeclarationFiles` | Exclude `.d.ts` files when looking for unused exports.                       | `--excludeDeclarationFiles` |
 | `exitWithCount`           | Set the process exit code to be the count of files that have unused exports. | `--exitWithCount`           |
 | `ignorePaths`             | Exclude files that match the given path segments.                            | `--ignorePaths=math;utils`  |

@@ -126,8 +126,7 @@ const mapFile = (
     // Searching for use of types in namespace requires inspecting statements in the file,
     // so for performance should only be done when necessary.
     if (
-      extraOptions &&
-      !extraOptions.disableSearchNamespaces &&
+      extraOptions?.enableSearchNamespaces &&
       mayContainImportsFromNamespace(node, imports)
     ) {
       addImportsFromNamespace(node, imports, addImport);
@@ -145,8 +144,7 @@ const mapFile = (
         addExport(namespace + name, node);
 
         const isNamespace =
-          extraOptions &&
-          !extraOptions.disableSearchNamespaces &&
+          extraOptions?.enableSearchNamespaces &&
           node
             .getChildren()
             .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
