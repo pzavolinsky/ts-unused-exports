@@ -28,13 +28,23 @@ const getPossibleImportedNamespaces = (
   return imported;
 };
 
+const mayContainImportsFromNamespace = (
+  node: ts.Node,
+  imports: ImportedNamespace[],
+): boolean => {
+  const nodeText = node.getText();
+  return imports.some(possible => {
+    return possible.namespaces.some(ns => nodeText.includes(ns));
+  });
+};
+
 export const addImportsFromNamespace = (
   node: ts.Node,
   imports: Imports,
   addImport: (fw: FromWhat) => void,
 ): void => {
   const possibles = getPossibleImportedNamespaces(imports);
-  if (possibles.length === 0) {
+  if (!mayContainImportsFromNamespace(node, possibles)) {
     return;
   }
 
