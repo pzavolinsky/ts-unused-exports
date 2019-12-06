@@ -129,6 +129,7 @@ const processNode = (
           .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
 
         if (isNamespace) {
+          // Process the children, in case they *export* any types:
           node
             .getChildren()
             .filter(c => c.kind === ts.SyntaxKind.Identifier)
@@ -143,7 +144,7 @@ const processNode = (
   }
 
   if (namespace.length > 0) {
-    // in namespace: need to process children
+    // In namespace: need to process children, in case they *import* any types
     node.getChildren().forEach(c => {
       processSubNode(c, namespace);
     });
