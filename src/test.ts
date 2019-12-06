@@ -1,4 +1,5 @@
 import chalk = require('chalk');
+
 import {
   existsSync,
   mkdirSync,
@@ -8,13 +9,13 @@ import {
   unlinkSync,
   writeFileSync,
 } from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
 import pickledCucumber, { SetupFn } from 'pickled-cucumber';
 
-import analyzeTsConfig from './app';
-import { runCli } from './cli';
 import { Analysis } from './types';
+import analyzeTsConfig from './app';
+import { join } from 'path';
+import { runCli } from './cli';
+import { tmpdir } from 'os';
 
 // No colors
 chalk.level = 0;
@@ -30,7 +31,7 @@ const setup: SetupFn = ({
   When,
 }) => {
   const pathFor = (fileName: string): string =>
-    !fileName || fileName.indexOf('--') === 0
+    !fileName || fileName.startsWith('--')
       ? fileName
       : join(getCtx('DIR'), fileName);
   const createFile = (path: string, content: string): void => {
@@ -52,7 +53,7 @@ const setup: SetupFn = ({
   After(() => {
     if (process.env.KEEP_DATA) return;
     const tmp = getCtx<string>('DIR');
-    if (tmp.indexOf(tmpdir()) !== 0) {
+    if (!tmp.startsWith(tmpdir())) {
       throw new Error(`
       I cannot run a tear down on an non-temporary dir.
 
@@ -65,7 +66,7 @@ const setup: SetupFn = ({
       );
       const files = items.filter(f => !!f.match(/\.(json|ts|tsx|js|jsx)$/));
       files.forEach(f => unlinkSync(join(path, f)));
-      const dirs = items.filter(i => files.indexOf(i) === -1);
+      const dirs = items.filter(i => !files.includes(i));
       dirs.forEach(d => removeDir(join(path, d)));
       rmdirSync(path);
     };
