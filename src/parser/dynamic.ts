@@ -1,10 +1,11 @@
 import * as ts from 'typescript';
+
 import { FromWhat, getFromText } from './common';
 
 // Parse Dynamic Imports
 
 export const mayContainDynamicImports = (node: ts.Node): boolean =>
-  node.getText().indexOf('import(') > -1;
+  node.getText().includes('import(');
 
 type WithExpression = ts.Node & {
   expression: ts.Expression;

@@ -61,7 +61,7 @@ export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
   };
 
   const isOption = (opt: string): boolean => {
-    return opt.indexOf('--') === 0;
+    return opt.startsWith('--');
   };
 
   if (files) {
