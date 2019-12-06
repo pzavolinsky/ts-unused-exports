@@ -18,9 +18,9 @@ import {
   extractExportStatement,
 } from './export';
 import { addImportCore, extractImport } from './import';
-import { addImportsFromNamespace } from './imports-from-namespace';
 import { relative, resolve } from 'path';
 
+import { addImportsFromNamespace } from './imports-from-namespace';
 import { isNodeDisabledViaComment } from './comment';
 import { readFileSync } from 'fs';
 
@@ -123,14 +123,21 @@ const processNode = (
       addExport(namespace + name, node);
 
       if (extraOptions?.enableSearchNamespaces) {
-        node
+        // performance: halves the time taken on large codebase (150k loc)
+        const isNamespace = node
           .getChildren()
-          .filter(c => c.kind === ts.SyntaxKind.Identifier)
-          .forEach(c => {
-            processSubNode(c, namespace + name + '.');
-          });
+          .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
 
-        namespace = namespace + name + '.';
+        if (isNamespace) {
+          node
+            .getChildren()
+            .filter(c => c.kind === ts.SyntaxKind.Identifier)
+            .forEach(c => {
+              processSubNode(c, namespace + name + '.');
+            });
+
+          namespace = namespace + name + '.';
+        }
       }
     }
   }
