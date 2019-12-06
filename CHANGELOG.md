@@ -1,11 +1,11 @@
-## [5.2.0] - 23 Dec 2019
+[Unreleased] - ReleaseDate
 
 ### Added
+- Handle exports from within a namespace. Disabled by default, unless option --searchNamespaces is given. Note: this can affect performance on large codebases.
 
-- Handle exports from within a namespace. Disabled by default, unless option --enableSearchNamespaces is given. Note: there is a performance cost when this is turned on (about 5x slower on large codebases).
+## [5.2.0] - 23 Dec 2019
 
 ### Changed
-- Find exports from within namespaces (for performance, this feature is disabled by default. To enable, use the option --enableSearchNamespaces.)
 - (Internal) Update dependency TypeScript to 3.7.3
 - (Internal) Simplify some logic, using the new optional chaining operator (?.)
 - (Internal) Increase code coverage and simplify code (baseUrl defaults to '.')

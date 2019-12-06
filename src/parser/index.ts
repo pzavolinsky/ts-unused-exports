@@ -18,9 +18,9 @@ import {
   extractExportStatement,
 } from './export';
 import { addImportCore, extractImport } from './import';
-import { addImportsFromNamespace } from './imports-from-namespace';
 import { relative, resolve } from 'path';
 
+import { addImportsFromNamespace } from './imports-from-namespace';
 import { isNodeDisabledViaComment } from './comment';
 import { readFileSync } from 'fs';
 
@@ -107,7 +107,7 @@ const processNode = (
 
   // Searching for use of types in namespace requires inspecting statements in the file,
   // so for performance should only be done when necessary.
-  if (extraOptions?.enableSearchNamespaces) {
+  if (extraOptions?.searchNamespaces) {
     addImportsFromNamespace(node, imports, addImport);
   }
 
@@ -122,21 +122,29 @@ const processNode = (
     if (name) {
       addExport(namespace + name, node);
 
-      if (extraOptions?.enableSearchNamespaces) {
-        node
+      if (extraOptions?.searchNamespaces) {
+        // performance: halves the time taken on large codebase (150k loc)
+        const isNamespace = node
           .getChildren()
-          .filter(c => c.kind === ts.SyntaxKind.Identifier)
-          .forEach(c => {
-            processSubNode(c, namespace + name + '.');
-          });
+          .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
 
-        namespace = namespace + name + '.';
+        if (isNamespace) {
+          // Process the children, in case they *export* any types:
+          node
+            .getChildren()
+            .filter(c => c.kind === ts.SyntaxKind.Identifier)
+            .forEach(c => {
+              processSubNode(c, namespace + name + '.');
+            });
+
+          namespace = namespace + name + '.';
+        }
       }
     }
   }
 
   if (namespace.length > 0) {
-    // in namespace: need to process children
+    // In namespace: need to process children, in case they *import* any types
     node.getChildren().forEach(c => {
       processSubNode(c, namespace);
     });
