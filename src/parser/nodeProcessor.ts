@@ -12,6 +12,10 @@ import {
 import { addImportsFromNamespace } from './imports-from-namespace';
 import { extractImport } from './import';
 
+type NamespaceHolder = {
+  namespace: string;
+};
+
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
 
@@ -41,6 +45,45 @@ const processExportDeclaration = (
       }
     }
     return;
+  }
+};
+
+const processExportKeyword = (
+  node: ts.Node,
+  path: string,
+  addExport: (exportName: string, node: ts.Node) => void,
+  namespace: NamespaceHolder,
+  processSubNode: (subNode: ts.Node, namespace: string) => void,
+  extraOptions?: ExtraCommandLineOptions,
+): void => {
+  if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
+    addExport('default', node);
+    return;
+  }
+  const decl = node as ts.DeclarationStatement;
+  const name = decl.name ? decl.name.text : extractExport(path, node);
+
+  if (name) {
+    addExport(namespace.namespace + name, node);
+
+    if (extraOptions?.searchNamespaces) {
+      // performance: halves the time taken on large codebase (150k loc)
+      const isNamespace = node
+        .getChildren()
+        .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
+
+      if (isNamespace) {
+        // Process the children, in case they *export* any types:
+        node
+          .getChildren()
+          .filter(c => c.kind === ts.SyntaxKind.Identifier)
+          .forEach(c => {
+            processSubNode(c, namespace.namespace + name + '.');
+          });
+
+        namespace.namespace += name + '.';
+      }
+    }
   }
 };
 
@@ -96,35 +139,18 @@ export const processNode = (
   }
 
   if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
-    if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
-      addExport('default', node);
-      return;
-    }
-    const decl = node as ts.DeclarationStatement;
-    const name = decl.name ? decl.name.text : extractExport(path, node);
-
-    if (name) {
-      addExport(namespace + name, node);
-
-      if (extraOptions?.searchNamespaces) {
-        // performance: halves the time taken on large codebase (150k loc)
-        const isNamespace = node
-          .getChildren()
-          .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
-
-        if (isNamespace) {
-          // Process the children, in case they *export* any types:
-          node
-            .getChildren()
-            .filter(c => c.kind === ts.SyntaxKind.Identifier)
-            .forEach(c => {
-              processSubNode(c, namespace + name + '.');
-            });
-
-          namespace = namespace + name + '.';
-        }
-      }
-    }
+    const nsHolder = {
+      namespace,
+    };
+    processExportKeyword(
+      node,
+      path,
+      addExport,
+      nsHolder,
+      processSubNode,
+      extraOptions,
+    );
+    namespace = nsHolder.namespace;
   }
 
   if (namespace.length > 0) {
