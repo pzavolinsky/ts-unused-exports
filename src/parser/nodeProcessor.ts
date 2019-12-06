@@ -15,6 +15,35 @@ import { extractImport } from './import';
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
   node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
 
+const processExportDeclaration = (
+  node: ts.Node,
+  addImport: (fw: FromWhat) => string | undefined,
+  addExport: (exportName: string, node: ts.Node) => void,
+  exportNames: string[],
+): void => {
+  const exportDecl = node as ts.ExportDeclaration;
+  const { moduleSpecifier } = exportDecl;
+  if (moduleSpecifier === undefined) {
+    extractExportStatement(exportDecl).forEach(e => addExport(e, node));
+    return;
+  } else {
+    const { exported, imported } = extractExportFromImport(
+      exportDecl,
+      moduleSpecifier,
+    );
+    const key = addImport(imported);
+    if (key) {
+      const { what } = exported;
+      if (what == STAR) {
+        addExport(`*:${key}`, node);
+      } else {
+        what.forEach(w => exportNames.push(w));
+      }
+    }
+    return;
+  }
+};
+
 export const processNode = (
   node: ts.Node,
   path: string,
@@ -51,27 +80,7 @@ export const processNode = (
   }
 
   if (kind === ts.SyntaxKind.ExportDeclaration) {
-    const exportDecl = node as ts.ExportDeclaration;
-    const { moduleSpecifier } = exportDecl;
-    if (moduleSpecifier === undefined) {
-      extractExportStatement(exportDecl).forEach(e => addExport(e, node));
-      return;
-    } else {
-      const { exported, imported } = extractExportFromImport(
-        exportDecl,
-        moduleSpecifier,
-      );
-      const key = addImport(imported);
-      if (key) {
-        const { what } = exported;
-        if (what == STAR) {
-          addExport(`*:${key}`, node);
-        } else {
-          what.forEach(w => exportNames.push(w));
-        }
-      }
-      return;
-    }
+    processExportDeclaration(node, addImport, addExport, exportNames);
   }
 
   // Searching for dynamic imports requires inspecting statements in the file,
