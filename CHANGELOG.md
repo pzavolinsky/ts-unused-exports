@@ -2,7 +2,7 @@
 
 ### Added
 
-- Handle exports from within a namespace. Disabled by default, unless option --enableSearchNamespaces is given. Note: there is a performance cost when this is turned on (about 5x slower on large codebases).
+- Handle exports from within a namespace. Disabled by default, unless option --searchNamespaces is given. Note: there is a performance cost when this is turned on (about 5x slower on large codebases).
 
 ### Changed
 - (Internal) Update dependency TypeScript to 3.7.3

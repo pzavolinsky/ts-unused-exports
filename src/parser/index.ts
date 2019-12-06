@@ -107,7 +107,7 @@ const processNode = (
 
   // Searching for use of types in namespace requires inspecting statements in the file,
   // so for performance should only be done when necessary.
-  if (extraOptions?.enableSearchNamespaces) {
+  if (extraOptions?.searchNamespaces) {
     addImportsFromNamespace(node, imports, addImport);
   }
 
@@ -122,7 +122,7 @@ const processNode = (
     if (name) {
       addExport(namespace + name, node);
 
-      if (extraOptions?.enableSearchNamespaces) {
+      if (extraOptions?.searchNamespaces) {
         // performance: halves the time taken on large codebase (150k loc)
         const isNamespace = node
           .getChildren()
