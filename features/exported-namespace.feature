@@ -15,12 +15,12 @@ Background:
 
 Scenario: Import A only
   Given file "b.ts" is import { A } from './a';
-  When analyzing "tsconfig.json" with files ["--enableSearchNamespaces"]
+  When analyzing "tsconfig.json" with files ["--searchNamespaces"]
   Then the result is { "a.ts": ["constants", "constants.flag", "A_unused"] }
 
 Scenario: Import namespace only
   Given file "b.ts" is import { A, constants } from './a';
-  When analyzing "tsconfig.json" with files ["--enableSearchNamespaces"]
+  When analyzing "tsconfig.json" with files ["--searchNamespaces"]
   Then the result is { "a.ts": ["constants.flag", "A_unused"] }
 
 Scenario: Import namespace and use the inner type
@@ -30,8 +30,13 @@ Scenario: Import namespace and use the inner type
 
     const b: constants.flag;
     """
-  When analyzing "tsconfig.json" with files ["--enableSearchNamespaces"]
+  When analyzing "tsconfig.json" with files ["--searchNamespaces"]
   Then the result is { "a.ts": ["A_unused"] }
+
+# note: TypeScript cannot export default with or from within a namespace:
+# "A default export can only be used in an ECMAScript-style module."
+#
+# So - no need for a test like "Dynamically import namespace and use the inner type"
 
 Scenario: Import from nested namespace and use the inner type
   Given file "b.ts" is
@@ -63,5 +68,5 @@ Scenario: Import from nested namespace and use the inner type
     const c1: B_top.B_inner_1;
     const c2: B_top.B_inner.B_inner_2;
     """
-  When analyzing "tsconfig.json" with files ["--enableSearchNamespaces"]
+  When analyzing "tsconfig.json" with files ["--searchNamespaces"]
   Then the result is { "a.ts": ["A_unused"], "b.ts": [ "B_top.B_inner.B_inner_unused", "B_top.B_unused", "B_top.B_unused.B_unused_unused"] }
