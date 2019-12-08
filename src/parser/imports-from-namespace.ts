@@ -3,6 +3,7 @@ import * as ts from 'typescript';
 import { FromWhat } from './common';
 import { Imports } from '../types';
 import { hasWhiteSpace } from './util';
+import { getNamespaceBlacklist } from './namespaceBlacklist';
 
 // Parse use of imports from namespace
 
@@ -70,7 +71,10 @@ export const addImportsFromNamespace = (
   const recurseIntoChildren = (next: ts.Node): void => {
     findImportUsagesWithin(next);
 
-    next.getChildren().forEach(recurseIntoChildren);
+    next
+      .getChildren()
+      .filter(c => !getNamespaceBlacklist().includes(c.kind))
+      .forEach(recurseIntoChildren);
   };
 
   recurseIntoChildren(node);
