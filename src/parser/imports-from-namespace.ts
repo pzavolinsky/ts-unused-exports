@@ -2,11 +2,9 @@ import * as ts from 'typescript';
 
 import { FromWhat } from './common';
 import { Imports } from '../types';
-import { getNamespaceBlacklist } from './namespaceBlacklist';
+import { namespaceBlacklist } from './namespaceBlacklist';
 
 // Parse use of imports from namespace
-
-const namespaceBlacklist = getNamespaceBlacklist();
 
 type ImportedNamespace = {
   file: string;

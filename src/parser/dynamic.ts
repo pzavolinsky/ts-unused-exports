@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 
 import { FromWhat, getFromText } from './common';
+import { namespaceBlacklist } from './namespaceBlacklist';
 
 // Parse Dynamic Imports
 
@@ -64,7 +65,10 @@ export const addDynamicImports = (
   const recurseIntoChildren = (next: ts.Node): void => {
     addImportsInAnyExpression(next);
 
-    next.getChildren().forEach(recurseIntoChildren);
+    next
+      .getChildren()
+      .filter(c => !namespaceBlacklist.includes(c.kind))
+      .forEach(recurseIntoChildren);
   };
 
   recurseIntoChildren(node);
