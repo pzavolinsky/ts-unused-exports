@@ -159,7 +159,7 @@ export const namespaceBlacklist: ReadonlyArray<ts.SyntaxKind> = [
   ts.SyntaxKind.GlobalKeyword,
   ts.SyntaxKind.BigIntKeyword,
   ts.SyntaxKind.OfKeyword,
-  // ts.SyntaxKind.QualifiedName, // bug in TypeScript! same value as FirstNode
+  // ts.SyntaxKind.QualifiedName, // same value as FirstNode (there are other such duplicates) - this seems to be intentional - see https://github.com/microsoft/TypeScript/blob/master/src/compiler/types.ts
   ts.SyntaxKind.ComputedPropertyName,
   ts.SyntaxKind.TypeParameter,
   ts.SyntaxKind.Parameter,
