@@ -11,7 +11,7 @@ import {
 
 import { addImportsFromNamespace } from './imports-from-namespace';
 import { extractImport } from './import';
-import { getNamespaceBlacklist } from './namespaceBlacklist';
+import { namespaceBlacklist } from './namespaceBlacklist';
 
 type NamespaceHolder = {
   namespace: string;
@@ -158,7 +158,7 @@ export const processNode = (
     // In namespace: need to process children, in case they *import* any types
     node
       .getChildren()
-      .filter(c => !getNamespaceBlacklist().includes(c.kind))
+      .filter(c => !namespaceBlacklist.includes(c.kind))
       .forEach(c => {
         processSubNode(c, namespace);
       });

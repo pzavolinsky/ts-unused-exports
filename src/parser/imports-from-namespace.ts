@@ -2,8 +2,7 @@ import * as ts from 'typescript';
 
 import { FromWhat } from './common';
 import { Imports } from '../types';
-import { hasWhiteSpace } from './util';
-import { getNamespaceBlacklist } from './namespaceBlacklist';
+import { namespaceBlacklist } from './namespaceBlacklist';
 
 // Parse use of imports from namespace
 
@@ -52,9 +51,6 @@ export const addImportsFromNamespace = (
   // Scan elements in file, for use of any recognised 'namespace.type'
   const findImportUsagesWithin = (node: ts.Node): void => {
     const nodeText = node.getText();
-    if (hasWhiteSpace(nodeText)) {
-      return;
-    }
 
     possibles.forEach(p => {
       p.namespaces.forEach(ns => {
@@ -73,7 +69,7 @@ export const addImportsFromNamespace = (
 
     next
       .getChildren()
-      .filter(c => !getNamespaceBlacklist().includes(c.kind))
+      .filter(c => !namespaceBlacklist.includes(c.kind))
       .forEach(recurseIntoChildren);
   };
 
