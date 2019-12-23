@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 
 import { LocationInFile } from '../types';
-import { FromWhat, star, getFrom } from './common';
+import { FromWhat, STAR, getFrom } from './common';
 
 // Parse Exports
 
@@ -26,12 +26,12 @@ export const extractExportFromImport = (
   const whatExported = exportClause
     ? // The alias 'name' or the original type is exported
       extractAliasFirstFromElements(exportClause.elements)
-    : star;
+    : STAR;
 
   const whatImported = exportClause
     ? // The original type 'propertyName' is imported
       exportClause.elements.map(e => (e.propertyName || e.name).text)
-    : star;
+    : STAR;
 
   return {
     exported: {
@@ -54,10 +54,9 @@ export const extractExport = (path: string, node: ts.Node): string => {
       return name ? name.text : 'default';
     default: {
       console.warn(`WARN: ${path}: unknown export node (kind:${node.kind})`);
-      break;
+      return '';
     }
   }
-  return '';
 };
 
 export const addExportCore = (

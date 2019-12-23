@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 
-export const star = ['*'];
+export const STAR = ['*'];
 
 export interface FromWhat {
   from: string;

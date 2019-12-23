@@ -11,7 +11,7 @@ import {
 } from '../types';
 import { relative, resolve } from 'path';
 import { readFileSync } from 'fs';
-import { FromWhat, star } from './common';
+import { FromWhat, STAR } from './common';
 import { addDynamicImports, mayContainDynamicImports } from './dynamic';
 import { extractImport, addImportCore } from './import';
 import {
@@ -42,7 +42,7 @@ const mapFile = (
   rootDir: string,
   path: string,
   file: ts.SourceFile,
-  baseUrl?: string,
+  baseUrl: string,
   paths?: TsConfigPaths,
 ): File => {
   const imports: Imports = {};
@@ -50,10 +50,9 @@ const mapFile = (
   const exportLocations: LocationInFile[] = [];
   const name = extractFilename(rootDir, path);
 
-  const baseDir = baseUrl && resolve(rootDir, baseUrl);
+  const baseDir = resolve(rootDir, baseUrl);
   const tsconfigPathsMatcher =
-    (!!baseDir && !!paths && tsconfigPaths.createMatchPath(baseDir, paths)) ||
-    undefined;
+    (!!paths && tsconfigPaths.createMatchPath(baseDir, paths)) || undefined;
 
   const addImport = (fw: FromWhat): string | undefined => {
     return addImportCore(
@@ -61,9 +60,9 @@ const mapFile = (
       rootDir,
       path,
       imports,
-      tsconfigPathsMatcher,
       baseDir,
       baseUrl,
+      tsconfigPathsMatcher,
     );
   };
 
@@ -102,7 +101,7 @@ const mapFile = (
         const key = addImport(imported);
         if (key) {
           const { what } = exported;
-          if (what == star) {
+          if (what == STAR) {
             addExport(`*:${key}`, node);
           } else {
             exports = exports.concat(what);
@@ -142,7 +141,7 @@ const mapFile = (
 const parseFile = (
   rootDir: string,
   path: string,
-  baseUrl?: string,
+  baseUrl: string,
   paths?: TsConfigPaths,
 ): File =>
   mapFile(
@@ -163,8 +162,7 @@ const parsePaths = (
   { baseUrl, files: filePaths, paths }: TsConfig,
   extraOptions?: ExtraCommandLineOptions,
 ): File[] => {
-  const includeDeclarationFiles =
-    extraOptions && !extraOptions.excludeDeclarationFiles;
+  const includeDeclarationFiles = !extraOptions?.excludeDeclarationFiles;
 
   const files = filePaths
     .filter(p => includeDeclarationFiles || p.indexOf('.d.') === -1)

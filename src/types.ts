@@ -32,7 +32,7 @@ export interface TsConfigPaths {
 }
 
 export interface TsConfig {
-  baseUrl?: string;
+  baseUrl: string;
   paths?: TsConfigPaths;
   files: string[];
 }

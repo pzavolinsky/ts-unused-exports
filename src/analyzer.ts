@@ -54,7 +54,7 @@ const processImports = (imports: Imports, exportMap: ExportMap): void => {
       const indexCandidates = ['index', 'index.ts', 'index.tsx'];
       for (let c = 0; c < indexCandidates.length; c++) {
         const indexKey = indexCandidates[c];
-        ex = exportMap[indexKey] && exportMap[indexKey].exports;
+        ex = exportMap[indexKey]?.exports || undefined;
         if (ex) break;
       }
     }

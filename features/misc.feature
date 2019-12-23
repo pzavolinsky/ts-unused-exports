@@ -18,6 +18,11 @@ Scenario: Import non-existent symbol (not valid TS!)
   When analyzing "tsconfig.json"
   Then the result is { "a.ts": ["a"] }
 
+Scenario: Import non-existent file (not valid TS - but tests robustness)
+  Given file "b.ts" is import { b } from './non-existent';
+  When analyzing "tsconfig.json"
+  Then the result is { }
+
 Scenario: Disable with comments
   Given file "a.ts" is
     """

@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import * as tsconfigPaths from 'tsconfig-paths';
 import * as ts from 'typescript';
 
-import { getFrom, FromWhat, star } from './common';
+import { getFrom, FromWhat, STAR } from './common';
 import { Imports } from '../types';
 
 // Parse Imports
@@ -27,23 +27,30 @@ export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   if (!importClause)
     return {
       from,
-      what: star,
+      what: STAR,
     };
 
   const { namedBindings } = importClause;
   const importDefault = !!importClause.name ? ['default'] : [];
-  const importStar =
-    namedBindings && !!(namedBindings as ts.NamespaceImport).name ? star : [];
-  const importNames =
-    namedBindings && !importStar.length
-      ? (namedBindings as ts.NamedImports).elements.map(
-          e => (e.propertyName || e.name).text,
-        )
-      : [];
+
+  if (!namedBindings) {
+    return {
+      from,
+      what: importDefault,
+    };
+  }
+
+  const isStar = !!(namedBindings as ts.NamespaceImport).name;
+
+  const importNames = isStar
+    ? STAR
+    : (namedBindings as ts.NamedImports).elements.map(
+        e => (e.propertyName || e.name).text,
+      );
 
   return {
     from,
-    what: importDefault.concat(importStar, importNames),
+    what: importDefault.concat(importNames),
   };
 };
 
@@ -52,9 +59,9 @@ export const addImportCore = (
   rootDir: string,
   path: string,
   imports: Imports,
+  baseDir: string,
+  baseUrl: string,
   tsconfigPathsMatcher?: tsconfigPaths.MatchPath,
-  baseDir?: string,
-  baseUrl?: string,
 ): string | undefined => {
   const { from, what } = fw;
 
@@ -62,11 +69,11 @@ export const addImportCore = (
     if (from[0] == '.') {
       // An undefined return indicates the import is from 'index.ts' or similar == '.'
       return relativeTo(rootDir, path, from) || '.';
-    } else if (baseDir && baseUrl) {
+    } else {
       let matchedPath;
 
       return isRelativeToBaseDir(baseDir, from)
-        ? baseUrl && join(baseUrl, from)
+        ? join(baseUrl, from)
         : tsconfigPathsMatcher &&
           (matchedPath = tsconfigPathsMatcher(
             from,
@@ -77,8 +84,6 @@ export const addImportCore = (
         ? matchedPath.replace(`${baseDir}${sep}`, '')
         : undefined;
     }
-
-    return undefined;
   };
 
   const key = getKey(from);
