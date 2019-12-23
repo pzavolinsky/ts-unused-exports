@@ -34,7 +34,7 @@ Scenario: Include dynamic import as promise - in a function
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
 
-Scenario: Include dynamic import via await - in a function,
+Scenario: Include dynamic import via await - in a function
   Given file "a.ts" is
     """
     export default type A = 1;
@@ -50,3 +50,18 @@ Scenario: Include dynamic import via await - in a function,
     """
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+
+Scenario: Dynamically import default function
+  Given file "a.ts" is
+    """
+    export default function iAmDefault() { return 2; };
+    """
+  And file "b.ts" is
+    """
+    import("./a").then(A_imported => {
+    console.log(A_imported);
+    });
+    export const B_unused: A = 0
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "b.ts": ["B_unused"] }

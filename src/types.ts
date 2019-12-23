@@ -18,7 +18,7 @@ export interface LocationInFile {
   character: number;
 }
 
-export interface ExportNameAndLocation {
+interface ExportNameAndLocation {
   exportName: string;
   location: LocationInFile;
 }
@@ -41,5 +41,6 @@ export interface ExtraCommandLineOptions {
   exitWithCount?: boolean;
   excludeDeclarationFiles?: boolean;
   pathsToIgnore?: string[];
+  searchNamespaces?: boolean;
   showLineNumber?: boolean;
 }

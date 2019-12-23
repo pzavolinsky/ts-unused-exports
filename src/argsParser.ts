@@ -40,6 +40,9 @@ function processOptions(
       case '--excludeDeclarationFiles':
         newOptions.excludeDeclarationFiles = true;
         break;
+      case '--searchNamespaces':
+        newOptions.searchNamespaces = true;
+        break;
       case '--showLineNumber':
         newOptions.showLineNumber = true;
         break;
@@ -58,7 +61,7 @@ export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
   };
 
   const isOption = (opt: string): boolean => {
-    return opt.indexOf('--') === 0;
+    return opt.startsWith('--');
   };
 
   if (files) {

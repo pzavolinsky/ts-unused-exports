@@ -2,28 +2,21 @@ import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
 
 import {
+  ExtraCommandLineOptions,
   File,
   Imports,
   LocationInFile,
   TsConfig,
   TsConfigPaths,
-  ExtraCommandLineOptions,
 } from '../types';
 import { relative, resolve } from 'path';
-import { readFileSync } from 'fs';
-import { FromWhat, STAR } from './common';
-import { addDynamicImports, mayContainDynamicImports } from './dynamic';
-import { extractImport, addImportCore } from './import';
-import {
-  addExportCore,
-  extractExportStatement,
-  extractExportFromImport,
-  extractExport,
-} from './export';
-import { isNodeDisabledViaComment } from './comment';
 
-const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
-  node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
+import { FromWhat } from './common';
+import { addExportCore } from './export';
+import { addImportCore } from './import';
+import { isNodeDisabledViaComment } from './comment';
+import { processNode } from './nodeProcessor';
+import { readFileSync } from 'fs';
 
 const extractFilename = (rootDir: string, path: string): string => {
   let name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
@@ -44,9 +37,10 @@ const mapFile = (
   file: ts.SourceFile,
   baseUrl: string,
   paths?: TsConfigPaths,
+  extraOptions?: ExtraCommandLineOptions,
 ): File => {
   const imports: Imports = {};
-  let exports: string[] = [];
+  const exportNames: string[] = [];
   const exportLocations: LocationInFile[] = [];
   const name = extractFilename(rootDir, path);
 
@@ -67,7 +61,7 @@ const mapFile = (
   };
 
   const addExport = (exportName: string, node: ts.Node): void => {
-    addExportCore(exportName, file, node, exportLocations, exports);
+    addExportCore(exportName, file, node, exportLocations, exportNames);
   };
 
   ts.forEachChild(file, (node: ts.Node) => {
@@ -75,65 +69,22 @@ const mapFile = (
       return;
     }
 
-    const { kind } = node;
-
-    if (kind === ts.SyntaxKind.ImportDeclaration) {
-      addImport(extractImport(node as ts.ImportDeclaration));
-      return;
-    }
-
-    if (kind === ts.SyntaxKind.ExportAssignment) {
-      addExport('default', node);
-      return;
-    }
-
-    if (kind === ts.SyntaxKind.ExportDeclaration) {
-      const exportDecl = node as ts.ExportDeclaration;
-      const { moduleSpecifier } = exportDecl;
-      if (moduleSpecifier === undefined) {
-        extractExportStatement(exportDecl).forEach(e => addExport(e, node));
-        return;
-      } else {
-        const { exported, imported } = extractExportFromImport(
-          exportDecl,
-          moduleSpecifier,
-        );
-        const key = addImport(imported);
-        if (key) {
-          const { what } = exported;
-          if (what == STAR) {
-            addExport(`*:${key}`, node);
-          } else {
-            exports = exports.concat(what);
-          }
-        }
-        return;
-      }
-    }
-
-    // Searching for dynamic imports requires inspecting statements in the file,
-    // so for performance should only be done when necessary.
-    if (mayContainDynamicImports(node)) {
-      addDynamicImports(node, addImport);
-    }
-
-    if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
-      if (hasModifier(node, ts.SyntaxKind.DefaultKeyword)) {
-        addExport('default', node);
-        return;
-      }
-      const decl = node as ts.DeclarationStatement;
-      const name = decl.name ? decl.name.text : extractExport(path, node);
-
-      if (name) addExport(name, node);
-    }
+    processNode(
+      node,
+      path,
+      addImport,
+      addExport,
+      imports,
+      exportNames,
+      extraOptions,
+    );
   });
 
   return {
     path: name,
     fullPath: path,
     imports,
-    exports,
+    exports: exportNames,
     exportLocations,
   };
 };
@@ -143,6 +94,7 @@ const parseFile = (
   path: string,
   baseUrl: string,
   paths?: TsConfigPaths,
+  extraOptions?: ExtraCommandLineOptions,
 ): File =>
   mapFile(
     rootDir,
@@ -155,6 +107,7 @@ const parseFile = (
     ),
     baseUrl,
     paths,
+    extraOptions,
   );
 
 const parsePaths = (
@@ -165,8 +118,10 @@ const parsePaths = (
   const includeDeclarationFiles = !extraOptions?.excludeDeclarationFiles;
 
   const files = filePaths
-    .filter(p => includeDeclarationFiles || p.indexOf('.d.') === -1)
-    .map(path => parseFile(rootDir, resolve(rootDir, path), baseUrl, paths));
+    .filter(p => includeDeclarationFiles || !p.includes('.d.'))
+    .map(path =>
+      parseFile(rootDir, resolve(rootDir, path), baseUrl, paths, extraOptions),
+    );
 
   return files;
 };

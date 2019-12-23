@@ -66,6 +66,10 @@ export const addExportCore = (
   exportLocations: LocationInFile[],
   exports: string[],
 ): void => {
+  if (exports.includes(exportName)) {
+    return;
+  }
+
   exports.push(exportName);
 
   const location = file.getLineAndCharacterOfPosition(node.getStart());

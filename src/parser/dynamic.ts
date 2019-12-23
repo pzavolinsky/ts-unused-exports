@@ -1,16 +1,19 @@
 import * as ts from 'typescript';
+
 import { FromWhat, getFromText } from './common';
+
+import { namespaceBlacklist } from './namespaceBlacklist';
 
 // Parse Dynamic Imports
 
 export const mayContainDynamicImports = (node: ts.Node): boolean =>
-  node.getText().indexOf('import(') > -1;
+  !namespaceBlacklist.includes(node.kind) && node.getText().includes('import(');
 
 type WithExpression = ts.Node & {
   expression: ts.Expression;
 };
 
-export function isWithExpression(node: ts.Node): node is WithExpression {
+function isWithExpression(node: ts.Node): node is WithExpression {
   const myInterface = node as WithExpression;
   return !!myInterface.expression;
 }
@@ -19,7 +22,7 @@ type WithArguments = ts.Node & {
   arguments: ts.NodeArray<ts.Expression>;
 };
 
-export function isWithArguments(node: ts.Node): node is WithArguments {
+function isWithArguments(node: ts.Node): node is WithArguments {
   const myInterface = node as WithArguments;
   return !!myInterface.arguments;
 }
@@ -63,7 +66,10 @@ export const addDynamicImports = (
   const recurseIntoChildren = (next: ts.Node): void => {
     addImportsInAnyExpression(next);
 
-    next.getChildren().forEach(recurseIntoChildren);
+    next
+      .getChildren()
+      .filter(c => !namespaceBlacklist.includes(c.kind))
+      .forEach(recurseIntoChildren);
   };
 
   recurseIntoChildren(node);

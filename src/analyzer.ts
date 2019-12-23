@@ -94,7 +94,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
   files.forEach(file => {
     const fileExports = exportMap[file.path];
     file.exports
-      .filter(ex => ex.indexOf('*:') === 0)
+      .filter(ex => ex.startsWith('*:'))
       .forEach(ex => {
         delete fileExports.exports[ex];
 
@@ -123,7 +123,7 @@ const shouldPathBeIgnored = (
     return false;
   }
 
-  return extraOptions.pathsToIgnore.some(ignore => path.indexOf(ignore) >= 0);
+  return extraOptions.pathsToIgnore.some(ignore => path.includes(ignore));
 };
 
 export default (

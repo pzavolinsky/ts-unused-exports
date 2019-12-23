@@ -5,6 +5,7 @@ import * as ts from 'typescript';
 
 import { getFrom, FromWhat, STAR } from './common';
 import { Imports } from '../types';
+import { isUnique } from './util';
 
 // Parse Imports
 
@@ -48,6 +49,9 @@ export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
         e => (e.propertyName || e.name).text,
       );
 
+  // note on namespaces: when importing a namespace, we cannot differentiate that from another element.
+  // (we differentiate on *export*)
+
   return {
     from,
     what: importDefault.concat(importNames),
@@ -86,9 +90,9 @@ export const addImportCore = (
     }
   };
 
-  const key = getKey(from);
-  if (!key) return undefined;
+  const key = getKey(from) || from;
   const items = imports[key] || [];
-  imports[key] = items.concat(what);
+
+  imports[key] = items.concat(what).filter(isUnique);
   return key;
 };
