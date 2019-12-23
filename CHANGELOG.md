@@ -1,6 +1,7 @@
-## [Unreleased] - ReleaseDate
+## [5.2.0] - 23 Dec 2019
 
 ### Changed
+- Find exports from within namespaces (for performance, this feature is disabled by default. To enable, use the option --enableSearchNamespaces.)
 - (Internal) Update dependency TypeScript to 3.7.3
 - (Internal) Simplify some logic, using the new optional chaining operator (?.)
 - (Internal) Increase code coverage and simplify code (baseUrl defaults to '.')

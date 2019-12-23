@@ -1,6 +1,6 @@
 {
   "name": "ts-unused-exports",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "description": "ts-unused-exports finds unused exported symbols in your Typescript project",
   "main": "lib/app.js",
   "repository": {
@@ -22,16 +22,17 @@
   "scripts": {
     "build": "tsc",
     "exec": "bin/ts-unused-exports",
-    "lint": "./node_modules/.bin/eslint --ext .ts src",
     "lint:fix": "./node_modules/.bin/eslint --ext .ts src --fix",
-    "watch": "tsc -w",
+    "lint": "./node_modules/.bin/eslint --ext .ts src",
+    "pack": "docker build -t ts-unused-exports .",
     "report-coverage-to-coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test": "npm run lint && npm run build && npm run test:cc && npm run test:itest",
     "test:cc": "nyc npm run test:unit:raw",
-    "test:unit": "VERBOSE=1 npm run test:unit:raw",
-    "test:unit:raw": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags 'not @ignore'",
+    "test:itest": "cd ispec && bash ./run.sh",
     "test:unit:only": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags '@only'",
-    "test:itest": "cd ispec && bash ./run.sh"
+    "test:unit:raw": "TS_NODE_FILES=true cucumber-js --require-module ts-node/register --exit -r src/test.ts --tags 'not @ignore'",
+    "test:unit": "VERBOSE=1 npm run test:unit:raw",
+    "test": "npm run lint && npm run build && npm run test:cc && npm run test:itest",
+    "watch": "tsc -w"
   },
   "bin": {
     "ts-unused-exports": "bin/ts-unused-exports"
