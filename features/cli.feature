@@ -19,6 +19,32 @@ Scenario: Search Namespaces ON
   And the CLI result at stdout contains "a.ts: ns.ns_unused"
   And the CLI result at stdout contains "b.ts: B_unused"
 
+Scenario: Search Namespaces ON - duplicate namespace names
+  Given file "ns-a.ts" is
+    """
+    export namespace ns
+    {
+    export const ns_unused_a = 1;
+    }
+    """
+  And file "ns-b.ts" is
+    """
+    // This is the same namespace name, but a different file!
+    export namespace ns
+    {
+    export const ns_unused_b = 1;
+    }
+    """
+  And file "c.ts" is
+    """
+    import { ns } from './ns-a';
+    export const C_unused = 1;
+    """
+  When running ts-unused-exports "tsconfig.json" --searchNamespaces
+  Then the CLI result at status is 1
+  And the CLI result at stdout contains "ns-a.ts: ns.ns_unused_a"
+  And the CLI result at stdout contains "ns-b.ts: ns, ns.ns_unused_b"
+
 Scenario: Search Namespaces OFF
   Given file "a.ts" is
     """
