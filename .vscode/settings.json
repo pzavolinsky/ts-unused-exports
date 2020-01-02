@@ -34,5 +34,8 @@
   "prettier.useTabs": false,
   "files.exclude": {
     "lib": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
   }
 }
