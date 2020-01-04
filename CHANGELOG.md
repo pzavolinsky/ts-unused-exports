@@ -1,4 +1,4 @@
-[Unreleased] - ReleaseDate
+## [5.3.0] - 04 Jan 2020
 
 ### Added
 - Handle exports from within a namespace. Disabled by default, unless option --searchNamespaces is given. Note: this can affect performance on large codebases.
