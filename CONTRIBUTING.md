@@ -1,6 +1,8 @@
 # Contributing
 
-Contributions to `ts-unused-exports` are always welcome - for inspiration, see our [open issues](https://github.com/pzavolinsky/ts-unused-exports/issues) or our [roadmap](https://github.com/pzavolinsky/ts-unused-exports/wiki).
+`ts-unused-exports` is maintained by volunteers, working in their free time. If you'd like to help out, contributions to `ts-unused-exports` are always welcome.
+
+For inspiration, see our [open issues](https://github.com/pzavolinsky/ts-unused-exports/issues) or our [roadmap](https://github.com/pzavolinsky/ts-unused-exports/wiki).
 
 Required tools:
 
@@ -39,6 +41,7 @@ Some things that will increase the chance that your pull request is accepted:
 - Try not to introduce new dependencies
 - Try to follow the style of the existing code
 - Write a [good commit message][commit].
+- Try to squash the branch down to 1 commit.
 
 [commit]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 
