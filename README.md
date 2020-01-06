@@ -156,7 +156,7 @@ To see what has changed in each version, please see our [CHANGELOG.md](https://g
 
 # Contributing
 
-Please see [CONTRIBUTING.md](https://github.com/pzavolinsky/ts-unused-exports/blob/master/CONTRIBUTING.md).
+`ts-unused-exports` is maintained by volunteers, working in their free time. If you'd like to help out, please see [CONTRIBUTING.md](https://github.com/pzavolinsky/ts-unused-exports/blob/master/CONTRIBUTING.md).
 
 `ts-unused-exports` was created by Patricio Zavolinsky. Improvements were contributed by the [open source
 community](https://github.com/pzavolinsky/ts-unused-exports/graphs/contributors).
