@@ -3,14 +3,32 @@ echo "== Integration Tests =="
 # Exit on error:
 set -e;
 
+function run_itest()
+{
+    ../../ispec/_run-and-check-exit-code.sh
+}
+
+function install_and_run_itest()
+{
+    npm i > /dev/null && run_itest
+}
+
 pushd ../example/simple
-../../ispec/_run-and-check-exit-code.sh
+run_itest
 popd
 
 pushd ../example/tsx
-npm i > /dev/null && ../../ispec/_run-and-check-exit-code.sh
+install_and_run_itest
 popd
 
 pushd ../example/with-paths
-npm i > /dev/null && ../../ispec/_run-and-check-exit-code.sh
+install_and_run_itest
+popd
+
+pushd ../example/absolute-paths-simple
+install_and_run_itest
+popd
+
+pushd ../example/absolute-paths-2-tsconfigs
+install_and_run_itest
 popd
