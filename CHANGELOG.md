@@ -1,11 +1,19 @@
+## [Unreleased] - ReleaseDate
+
+### Added
+
+- Support exports destructured from array (issue #31)
+
 ## [5.3.0] - 04 Jan 2020
 
 ### Added
+
 - Handle exports from within a namespace. Disabled by default, unless option --searchNamespaces is given. Note: this can affect performance on large codebases.
 
 ## [5.2.0] - 23 Dec 2019
 
 ### Changed
+
 - (Internal) Update dependency TypeScript to 3.7.3
 - (Internal) Simplify some logic, using the new optional chaining operator (?.)
 - (Internal) Increase code coverage and simplify code (baseUrl defaults to '.')
