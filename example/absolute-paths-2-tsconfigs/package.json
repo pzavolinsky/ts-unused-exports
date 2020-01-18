@@ -1,0 +1,19 @@
+{
+  "description": "Example used by integration tests (ispec)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pzavolinsky/ts-unused-exports.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json",
+    "test": "npm i && npm run build && npm run test:test",
+    "test:test": "../../bin/ts-unused-exports ./tsconfig.json"
+  },
+  "dependencies": {
+    "typescript": "^3.6.4"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
+  }
+}

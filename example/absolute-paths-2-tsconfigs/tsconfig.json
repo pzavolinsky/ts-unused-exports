@@ -1,0 +1,21 @@
+{
+  "baseDir": ".",
+  "compilerOptions": {
+    "allowJs": true,
+    "moduleResolution": "node",
+    "baseUrl": "src/config",
+    "lib": ["es6", "es2017", "dom"],
+    "strict": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
+    "module": "commonjs",
+    "types": ["node", "jest"],
+    "jsx": "react",
+    "target": "es5",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
+}
