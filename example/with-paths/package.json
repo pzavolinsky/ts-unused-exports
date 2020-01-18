@@ -1,15 +1,15 @@
 {
-    "description": "Example used by integration tests (ispec)",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/pzavolinsky/ts-unused-exports.git"
-    },
-    "license": "MIT",
-    "scripts": {
-        "build": "tsc",
-        "test": "npm i && npm run build && ../../bin/ts-unused-exports ./tsconfig.json --ignorePaths=to-ignore"
-    },
-    "dependencies": {
-        "typescript": "^3.6.4"
-    }
+  "description": "Example used by integration tests (ispec)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pzavolinsky/ts-unused-exports.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm i && npm run build && ../../bin/ts-unused-exports ./tsconfig.json --excludePathsFromReport=to-ignore"
+  },
+  "dependencies": {
+    "typescript": "^3.6.4"
+  }
 }

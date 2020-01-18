@@ -41,7 +41,8 @@ export interface ExtraCommandLineOptions {
   allowUnusedTypes?: boolean;
   exitWithCount?: boolean;
   excludeDeclarationFiles?: boolean;
-  pathsToIgnore?: string[];
+  ignoreFilesRegex?: string[];
+  pathsToExcludeFromReport?: string[];
   searchNamespaces?: boolean;
   showLineNumber?: boolean;
 }

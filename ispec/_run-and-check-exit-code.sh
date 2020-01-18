@@ -2,7 +2,7 @@
 set +e;
 
 function run {
-    node ../../bin/ts-unused-exports tsconfig.json --exitWithCount --ignorePaths=to-ignore $1
+    node ../../bin/ts-unused-exports tsconfig.json --exitWithCount --excludePathsFromReport=to-ignore $1
     ERROR_COUNT=$?
     if [ $ERROR_COUNT -ne 2 ]
     then
