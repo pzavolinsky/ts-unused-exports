@@ -11,9 +11,11 @@ function processOptions(
   filesAndOptions: TsFilesAndOptions,
   options: string[],
 ): TsFilesAndOptions {
-  const pathsToIgnore: string[] = [];
+  const pathsToExcludeFromReport: string[] = [];
+  const ignoreFilesRegex: string[] = [];
   const newOptions: ExtraCommandLineOptions = {
-    pathsToIgnore: pathsToIgnore,
+    pathsToExcludeFromReport,
+    ignoreFilesRegex,
   };
   const newFilesAndOptions: TsFilesAndOptions = {
     options: newOptions,
@@ -28,20 +30,34 @@ function processOptions(
     switch (optionName) {
       case '--allowUnusedTypes':
         newOptions.allowUnusedTypes = true;
+      case '--excludeDeclarationFiles':
+        newOptions.excludeDeclarationFiles = true;
+        break;
+      case '--excludePathsFromReport':
+        {
+          const paths = optionValue.split(';');
+          paths.forEach(path => {
+            pathsToExcludeFromReport.push(path);
+          });
+        }
         break;
       case '--exitWithCount':
         newOptions.exitWithCount = true;
         break;
-      case '--ignorePaths':
+      case '--ignoreFiles':
         {
-          const paths = optionValue.split(';');
-          paths.forEach(path => {
-            pathsToIgnore.push(path);
-          });
+          ignoreFilesRegex.push(optionValue);
         }
         break;
-      case '--excludeDeclarationFiles':
-        newOptions.excludeDeclarationFiles = true;
+      case '--ignoreProductionFiles':
+        {
+          ignoreFilesRegex.push(`^(?!.*(test|Test)).*$`);
+        }
+        break;
+      case '--ignoreTestFiles':
+        {
+          ignoreFilesRegex.push(`(spec|test|Test)`);
+        }
         break;
       case '--searchNamespaces':
         newOptions.searchNamespaces = true;
@@ -60,7 +76,9 @@ function processOptions(
 export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
   const filesAndOptions: TsFilesAndOptions = {
     tsFiles: undefined,
-    options: {},
+    options: {
+      ignoreFilesRegex: [],
+    },
   };
 
   const isOption = (opt: string): boolean => {

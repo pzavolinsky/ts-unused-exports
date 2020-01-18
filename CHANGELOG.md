@@ -1,3 +1,13 @@
+## [Unreleased] - ReleaseDate
+
+### Added
+
+- Add options to ignore imports from certain files: --ignoreFiles, --ignoreProductionFiles, --ignoreTestFiles
+
+### Changed
+
+- BREAKING CHANGE: renamed the option --ignorePaths to be --excludePathsFromReport
+
 ## [5.5.0] - 20 Jan 2020
 
 ### Added

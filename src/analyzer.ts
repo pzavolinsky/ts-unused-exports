@@ -2,7 +2,6 @@ import {
   Analysis,
   ExtraCommandLineOptions,
   File,
-  Imports,
   LocationInFile,
 } from './types';
 export { Analysis } from './types';
@@ -66,8 +65,8 @@ const getExportMap = (files: File[]): ExportMap => {
   return map;
 };
 
-const processImports = (imports: Imports, exportMap: ExportMap): void => {
-  Object.keys(imports).forEach(key => {
+const processImports = (file: File, exportMap: ExportMap): void => {
+  Object.keys(file.imports).forEach(key => {
     let ex = exportMap[key] && exportMap[key].exports;
 
     // Handle imports from an index file
@@ -101,7 +100,7 @@ const processImports = (imports: Imports, exportMap: ExportMap): void => {
       ex[imp].usageCount++;
     };
 
-    imports[key].forEach(imp =>
+    file.imports[key].forEach(imp =>
       imp === '*'
         ? Object.keys(ex)
             .filter(e => e != 'default')
@@ -135,25 +134,48 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
   });
 };
 
-// Allow disabling of results, by path from command line (useful for large projects)
-const shouldPathBeIgnored = (
+// Allow disabling of *results*, by path from command line (useful for large projects)
+const shouldPathBeExcludedFromResults = (
   path: string,
   extraOptions?: ExtraCommandLineOptions,
 ): boolean => {
-  if (!extraOptions || !extraOptions.pathsToIgnore) {
+  if (!extraOptions || !extraOptions.pathsToExcludeFromReport) {
     return false;
   }
 
-  return extraOptions.pathsToIgnore.some(ignore => path.includes(ignore));
+  return extraOptions.pathsToExcludeFromReport.some(ignore =>
+    path.includes(ignore),
+  );
+};
+
+const filterFiles = (
+  files: File[],
+  extraOptions?: ExtraCommandLineOptions,
+): File[] => {
+  if (!extraOptions?.ignoreFilesRegex) {
+    return files;
+  }
+
+  const regexes = extraOptions.ignoreFilesRegex?.map(rex => new RegExp(rex));
+
+  const shouldIgnoreFile = (fileName: string): boolean => {
+    return regexes.some(reg => {
+      return reg.test(fileName);
+    });
+  };
+
+  return files.filter(f => !shouldIgnoreFile(f.path));
 };
 
 export default (
   files: File[],
   extraOptions?: ExtraCommandLineOptions,
 ): Analysis => {
-  const exportMap = getExportMap(files);
-  expandExportFromStar(files, exportMap);
-  files.forEach(file => processImports(file.imports, exportMap));
+  const filteredFiles = filterFiles(files, extraOptions);
+
+  const exportMap = getExportMap(filteredFiles);
+  expandExportFromStar(filteredFiles, exportMap);
+  filteredFiles.forEach(file => processImports(file, exportMap));
 
   const analysis: Analysis = {};
 
@@ -161,7 +183,7 @@ export default (
     const expItem = exportMap[file];
     const { exports, path } = expItem;
 
-    if (shouldPathBeIgnored(path, extraOptions)) return;
+    if (shouldPathBeExcludedFromResults(path, extraOptions)) return;
 
     const unusedExports = Object.keys(exports).filter(
       k => exports[k].usageCount === 0,

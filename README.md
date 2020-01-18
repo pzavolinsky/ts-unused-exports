@@ -41,7 +41,7 @@ or, as a library:
 import analyzeTsConfig from 'ts-unused-exports';
 const result = analyzeTsConfig('path/to/tsconfig.json');
 // or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts']);
-// or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts', '--ignorePaths=math']);
+// or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts', '--excludePathsFromReport=math']);
 
 // result : { [index:string] : ExportNameAndLocation[] }
 // where the keys are file paths and the values are a structure descibing unused symbols:
@@ -53,14 +53,17 @@ const result = analyzeTsConfig('path/to/tsconfig.json');
 
 Options:
 
-| Option name               | Description                                                                                                  | Example                     |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------- |
-| `allowUnusedTypes`        | Allow unused `type` or `interface`.                                                                          | `--allowUnusedTypes`        |
-| `excludeDeclarationFiles` | Exclude `.d.ts` files when looking for unused exports.                                                       | `--excludeDeclarationFiles` |
-| `exitWithCount`           | Set the process exit code to be the count of files that have unused exports.                                 | `--exitWithCount`           |
-| `ignorePaths`             | Exclude files that match the given path segments.                                                            | `--ignorePaths=math;utils`  |
-| `--searchNamespaces`      | Enable searching for unused exports within namespaces. Note: this can affect performance on large codebases. | `--searchNamespaces`        |
-| `showLineNumber`          | Show the line number and column of the unused export.                                                        | `--showLineNumber`          |
+| Option name               | Description                                                                                                                                                                                                                                                                                                                                            | Example                               |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
+| `allowUnusedTypes`        | Allow unused `type` or `interface`.                                                                                                                                                                                                                                                                                                                    | `--allowUnusedTypes`                  |
+| `excludeDeclarationFiles` | Exclude `.d.ts` files when looking for unused exports.                                                                                                                                                                                                                                                                                                 | `--excludeDeclarationFiles`           |
+| `exitWithCount`           | Set the process exit code to be the count of files that have unused exports.                                                                                                                                                                                                                                                                           | `--exitWithCount`                     |
+| `ignoreFiles`             | Ignore files with filenames that match the given regex. Use this to exclude groups of files - for example test files and their utilities.                                                                                                                                                                                                              | `--ignoreFiles=\.(spec|test)`         |
+| `ignoreProductionFiles`   | Only scan **test** files (so ignore non-test 'production' files).                                                                                                                                                                                                                                                                                      | `--ignoreProductionFiles`             |
+| `ignoreTestFiles`         | Only scan **production** files (ignore all test files, like `spec.ts(x)` or `test.ts(x)` or `TestUtils.ts`). Use this to detect production code that is only used in tests (so is dead code). Note: this will NOT detect unused exports in test code - for that, you can run `ts-unused-exports` separately with the `--ignoreProductionFiles` option. | `--ignoreTestFiles`                   |
+| `excludePathsFromReport`  | Exclude files from the _output_ that match the given path segments.                                                                                                                                                                                                                                                                                    | `--excludePathsFromReport=math;utils` |
+| `searchNamespaces`        | Enable searching for unused exports within namespaces. Note: this can affect performance on large codebases.                                                                                                                                                                                                                                           | `--searchNamespaces`                  |
+| `showLineNumber`          | Show the line number and column of the unused export.                                                                                                                                                                                                                                                                                                  | `--showLineNumber`                    |
 
 Note that if `ts-unused-exports` is called without files, the files will be read from the tsconfig's `files` or `include` key which must be present. If called with files, then those file paths should be relative to the `tsconfig.json`, just like you would specify them in your tsconfig's `files` key.
 
