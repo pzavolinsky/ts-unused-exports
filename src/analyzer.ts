@@ -25,13 +25,34 @@ interface ExportMap {
   [index: string]: ExportItem;
 }
 
+const isExportArray = (e: string): boolean => {
+  return e.startsWith('[') && e.endsWith(']');
+};
+
+const parseExportArray = (e: string): string[] => {
+  return e
+    .replace('[', '')
+    .replace(']', '')
+    .split(',')
+    .map(e => e.trim());
+};
+
 const getFileExports = (file: File): ExportItem => {
   const exports: FileExports = {};
   file.exports.forEach((e, index) => {
-    exports[e] = {
-      usageCount: 0,
-      location: file.exportLocations[index],
+    const addExport = (exportName: string): void => {
+      exports[exportName] = {
+        usageCount: 0,
+        location: file.exportLocations[index],
+      };
     };
+
+    if (isExportArray(e)) {
+      const exportArray = parseExportArray(e);
+      exportArray.forEach(addExport);
+    } else {
+      addExport(e);
+    }
   });
 
   return { exports, path: file.fullPath };
