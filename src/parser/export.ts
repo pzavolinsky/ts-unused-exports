@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 
-import { LocationInFile } from '../types';
+import { LocationInFile, ExtraCommandLineOptions } from '../types';
 import { FromWhat, STAR, getFrom } from './common';
 
 // Parse Exports
@@ -59,14 +59,33 @@ export const extractExport = (path: string, node: ts.Node): string => {
   }
 };
 
+const TYPE_NODE_KINDS = [
+  ts.SyntaxKind.InterfaceDeclaration,
+  ts.SyntaxKind.TypeAliasDeclaration,
+];
+
+const shouldNodeTypeBeIgnored = (
+  node: ts.Node,
+  extraOptions?: ExtraCommandLineOptions,
+): boolean => {
+  const allowUnusedTypes = !!extraOptions?.allowUnusedTypes;
+  if (!allowUnusedTypes) return false;
+
+  return TYPE_NODE_KINDS.includes(node.kind);
+};
+
 export const addExportCore = (
   exportName: string,
   file: ts.SourceFile,
   node: ts.Node,
   exportLocations: LocationInFile[],
   exports: string[],
+  extraOptions?: ExtraCommandLineOptions,
 ): void => {
-  if (exports.includes(exportName)) {
+  if (
+    exports.includes(exportName) ||
+    shouldNodeTypeBeIgnored(node, extraOptions)
+  ) {
     return;
   }
 

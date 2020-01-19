@@ -26,6 +26,9 @@ function processOptions(
     const optionValue = parts[1];
 
     switch (optionName) {
+      case '--allowUnusedTypes':
+        newOptions.allowUnusedTypes = true;
+        break;
       case '--exitWithCount':
         newOptions.exitWithCount = true;
         break;

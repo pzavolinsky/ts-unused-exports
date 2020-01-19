@@ -1,3 +1,9 @@
+## [Unreleased] - ReleaseDate
+
+### Added
+
+- Add option --allowUnusedTypes to skip unused types or interfaces.
+
 ## [5.4.0] - 19 Jan 2020
 
 ### Added
