@@ -38,6 +38,7 @@ export interface TsConfig {
 }
 
 export interface ExtraCommandLineOptions {
+  allowUnusedTypes?: boolean;
   exitWithCount?: boolean;
   excludeDeclarationFiles?: boolean;
   pathsToIgnore?: string[];

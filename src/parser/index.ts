@@ -61,7 +61,14 @@ const mapFile = (
   };
 
   const addExport = (exportName: string, node: ts.Node): void => {
-    addExportCore(exportName, file, node, exportLocations, exportNames);
+    addExportCore(
+      exportName,
+      file,
+      node,
+      exportLocations,
+      exportNames,
+      extraOptions,
+    );
   };
 
   ts.forEachChild(file, (node: ts.Node) => {
