@@ -1,6 +1,6 @@
 Feature: import * / export *
 
-Scenario: Import * marks `default` as unused
+Scenario: Import * marks 'default' as unused
   Given file "a.ts" is
     """
     export const a = 1;
@@ -9,6 +9,7 @@ Scenario: Import * marks `default` as unused
   And file "b.ts" is import * as all from './a';
   When analyzing "tsconfig.json"
   Then the result at a.ts is ["default"]
+# note: default could still be used, as all.default
 
 Scenario: Import * and default
   Given file "a.ts" is

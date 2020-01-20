@@ -1,0 +1,15 @@
+{
+  "name": "absolute-paths-simple",
+  "version": "1.0.0",
+  "description": "Test harness",
+  "main": "main.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm i && npm run build && ../../bin/ts-unused-exports ./tsconfig.json --ignorePaths=to-ignore"
+  },
+  "dependencies": {
+    "typescript": "^3.7.4"
+  },
+  "author": "",
+  "license": "MIT"
+}

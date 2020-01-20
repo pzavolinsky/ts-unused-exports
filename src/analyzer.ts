@@ -102,7 +102,7 @@ const processImports = (imports: Imports, exportMap: ExportMap): void => {
     };
 
     imports[key].forEach(imp =>
-      imp == '*'
+      imp === '*'
         ? Object.keys(ex)
             .filter(e => e != 'default')
             .forEach(addUsage)
