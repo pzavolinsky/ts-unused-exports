@@ -1,4 +1,4 @@
-## [Unreleased] - ReleaseDate
+## [6.0.0] - 24 Jan 2020
 
 ### Added
 
