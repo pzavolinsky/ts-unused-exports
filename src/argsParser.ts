@@ -13,9 +13,11 @@ function processOptions(
 ): TsFilesAndOptions {
   const pathsToExcludeFromReport: string[] = [];
   const ignoreFilesRegex: string[] = [];
+  const maxIssues = 0;
   const newOptions: ExtraCommandLineOptions = {
     pathsToExcludeFromReport,
     ignoreFilesRegex,
+    maxIssues,
   };
   const newFilesAndOptions: TsFilesAndOptions = {
     options: newOptions,
@@ -59,6 +61,14 @@ function processOptions(
           ignoreFilesRegex.push(`(spec|test|Test)`);
         }
         break;
+      case '--maxIssues':
+        {
+          newFilesAndOptions.options = {
+            ...newFilesAndOptions.options,
+            maxIssues: parseInt(optionValue, 10) || 0,
+          };
+        }
+        break;
       case '--searchNamespaces':
         newOptions.searchNamespaces = true;
         break;
@@ -78,6 +88,7 @@ export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
     tsFiles: undefined,
     options: {
       ignoreFilesRegex: [],
+      maxIssues: 0,
     },
   };
 
