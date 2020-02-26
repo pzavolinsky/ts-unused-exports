@@ -42,7 +42,7 @@ export interface ExtraCommandLineOptions {
   exitWithCount?: boolean;
   excludeDeclarationFiles?: boolean;
   ignoreFilesRegex?: string[];
-  maxIssues: number;
+  maxIssues?: number;
   pathsToExcludeFromReport?: string[];
   searchNamespaces?: boolean;
   showLineNumber?: boolean;
