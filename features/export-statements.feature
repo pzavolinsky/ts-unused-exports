@@ -76,3 +76,18 @@ Scenario: Include files indirectly from sub-folder, without error
     """
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.ts": ["A_unused"] }
+
+Scenario: Import a destructured export
+  Given file "a.ts" is
+    """
+    const complex = { a: "1", b: "2" };
+    export const { a, b } = complex;
+    export const A_unused = 1;
+    """
+  And file "b.ts" is
+    """
+    import { a, b } from "./a";
+    export const B_unused = 1;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }

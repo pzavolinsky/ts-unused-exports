@@ -1,3 +1,7 @@
+### Changed
+
+- Fix to support destructuerd exports like 'export const { a, b }'
+
 ## [6.0.0] - 24 Jan 2020
 
 ### Added

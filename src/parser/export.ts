@@ -45,16 +45,28 @@ export const extractExportFromImport = (
   };
 };
 
-export const extractExport = (path: string, node: ts.Node): string => {
+// Can be a name like 'a' or else a destructured set like '{ a, b }'
+const parseExportNames = (exportName: string): string[] => {
+  if (exportName.startsWith('{')) {
+    const names = exportName.substring(1, exportName.length - 2);
+    return names.split(',').map(n => n.trim());
+  }
+
+  return [exportName];
+};
+
+export const extractExportNames = (path: string, node: ts.Node): string[] => {
   switch (node.kind) {
     case ts.SyntaxKind.VariableStatement:
-      return (node as ts.VariableStatement).declarationList.declarations[0].name.getText();
+      return parseExportNames(
+        (node as ts.VariableStatement).declarationList.declarations[0].name.getText(),
+      );
     case ts.SyntaxKind.FunctionDeclaration:
       const { name } = node as ts.FunctionDeclaration;
-      return name ? name.text : 'default';
+      return [name ? name.text : 'default'];
     default: {
       console.warn(`WARN: ${path}: unknown export node (kind:${node.kind})`);
-      return '';
+      return [''];
     }
   }
 };
