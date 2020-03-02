@@ -72,8 +72,10 @@ export const runCli = (
       return exitWith(Math.min(127, files.length));
     }
 
+    const maxIssues = options?.maxIssues || 0;
+
     return exitWith(
-      files.length === 0
+      files.length <= maxIssues
         ? ExitCode.NoUnusedExportsFound
         : ExitCode.UnusedExportsFound,
     );

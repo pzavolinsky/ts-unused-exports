@@ -87,6 +87,19 @@ Scenario: Exit with count (success)
   When running ts-unused-exports "tsconfig.json"
   Then the CLI result at status is 0
 
+Scenario: Allow maxIssues (errors)
+  Given file "a.ts" is export const a = 1;
+  And file "b.ts" is export const b = 1;
+  And file "c.ts" is export const c = 1;
+  When running ts-unused-exports "tsconfig.json" --maxIssues=2
+  Then the CLI result at status is 1
+
+Scenario: Allow maxIssues (success)
+  Given file "a.ts" is export const a = 1;
+  And file "b.ts" is export const b = 1;
+  When running ts-unused-exports "tsconfig.json" --maxIssues=2
+  Then the CLI result at status is 0
+
 Scenario: Invalid tsconfig path
   When running ts-unused-exports "invalid.json"
   Then the CLI result at status is 2

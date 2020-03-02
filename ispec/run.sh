@@ -6,6 +6,7 @@ set -e;
 function run_itest()
 {
     ../../ispec/_run-and-check-exit-code.sh
+    ../../ispec/_run-and-check-maximum-issues.sh
 }
 
 function install_and_run_itest()

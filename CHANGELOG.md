@@ -1,3 +1,7 @@
+### Added
+
+- Add an option to allow maximum number of issues: --maxIssues
+
 ### Changed
 
 - Fix to support destructuerd exports like 'export const { a, b }'
