@@ -4,7 +4,7 @@ import { ExtraCommandLineOptions, Imports } from '../types';
 import { FromWhat, STAR } from './common';
 import { addDynamicImports, mayContainDynamicImports } from './dynamic';
 import {
-  extractExport,
+  extractExportNames,
   extractExportFromImport,
   extractExportStatement,
 } from './export';
@@ -62,30 +62,32 @@ const processExportKeyword = (
     return;
   }
   const decl = node as ts.DeclarationStatement;
-  const name = decl.name ? decl.name.text : extractExport(path, node);
+  const names = decl.name ? [decl.name.text] : extractExportNames(path, node);
 
-  if (name) {
-    addExport(namespace.namespace + name, node);
+  names
+    .filter(name => !!name)
+    .forEach(name => {
+      addExport(namespace.namespace + name, node);
 
-    if (extraOptions?.searchNamespaces) {
-      // performance: halves the time taken on large codebase (150k loc)
-      const isNamespace = node
-        .getChildren()
-        .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
-
-      if (isNamespace) {
-        // Process the children, in case they *export* any types:
-        node
+      if (extraOptions?.searchNamespaces) {
+        // performance: halves the time taken on large codebase (150k loc)
+        const isNamespace = node
           .getChildren()
-          .filter(c => c.kind === ts.SyntaxKind.Identifier)
-          .forEach(c => {
-            processSubNode(c, namespace.namespace + name + '.');
-          });
+          .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
 
-        namespace.namespace += name + '.';
+        if (isNamespace) {
+          // Process the children, in case they *export* any types:
+          node
+            .getChildren()
+            .filter(c => c.kind === ts.SyntaxKind.Identifier)
+            .forEach(c => {
+              processSubNode(c, namespace.namespace + name + '.');
+            });
+
+          namespace.namespace += name + '.';
+        }
       }
-    }
-  }
+    });
 };
 
 export const processNode = (
