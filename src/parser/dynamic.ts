@@ -27,6 +27,50 @@ function isWithArguments(node: ts.Node): node is WithArguments {
   return !!myInterface.arguments;
 }
 
+const recurseIntoChildren = (
+  next: ts.Node,
+  fun: (node: ts.Node) => void,
+): void => {
+  fun(next);
+
+  next
+    .getChildren()
+    .filter(c => !namespaceBlacklist.includes(c.kind))
+    .forEach(node => recurseIntoChildren(node, fun));
+};
+
+/* Handle lambdas where the content uses imported types, via dereferencing.
+ * example:
+ * A_imported => {
+ *   console.log(A_imported.A);
+ * }
+ */
+const findLambdasWithDereferencing = (node: ts.Node): string[] => {
+  const what: string[] = [];
+
+  const processLambda = (lambda: ts.Node): void => {
+    if (lambda.getChildCount() === 3) {
+      const paramName = lambda.getChildren()[0].getText();
+
+      const usagePrefix = `${paramName}.`;
+      recurseIntoChildren(lambda, child => {
+        if (child.getText().startsWith(usagePrefix)) {
+          const usage = child.getText().substring(usagePrefix.length);
+          what.push(usage);
+        }
+      });
+    }
+  };
+
+  recurseIntoChildren(node, child => {
+    if (child.kind === ts.SyntaxKind.ArrowFunction) {
+      processLambda(child);
+    }
+  });
+
+  return what;
+};
+
 export const addDynamicImports = (
   node: ts.Node,
   addImport: (fw: FromWhat) => void,
@@ -47,9 +91,11 @@ export const addDynamicImports = (
           const importing = getArgumentFrom(expr);
 
           if (!!importing) {
+            const what = ['default'].concat(findLambdasWithDereferencing(node));
+
             addImport({
               from: getFromText(importing),
-              what: ['default'],
+              what,
             });
           }
         }
@@ -63,14 +109,6 @@ export const addDynamicImports = (
     }
   };
 
-  const recurseIntoChildren = (next: ts.Node): void => {
-    addImportsInAnyExpression(next);
-
-    next
-      .getChildren()
-      .filter(c => !namespaceBlacklist.includes(c.kind))
-      .forEach(recurseIntoChildren);
-  };
-
-  recurseIntoChildren(node);
+  // Recurse, since dynamic imports can occur at nested levels within the code
+  recurseIntoChildren(node, addImportsInAnyExpression);
 };

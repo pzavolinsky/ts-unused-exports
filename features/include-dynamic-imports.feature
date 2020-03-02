@@ -65,3 +65,19 @@ Scenario: Dynamically import default function
     """
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"] }
+
+Scenario: Dynamically import with dereference
+  Given file "a.ts" is
+    """
+    export const A = 1;
+    export const A_unused = 2;
+    """
+  And file "b.ts" is
+    """
+    import("./a").then(A_imported => {
+    console.log(A_imported.A);
+    });
+    export const B_unused = 0;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }

@@ -1,6 +1,7 @@
 ### Changed
 
 - Fix to support destructuerd exports like 'export const { a, b }'
+- Handle dynamic imports that use dereferencing
 
 ## [6.0.0] - 24 Jan 2020
 
