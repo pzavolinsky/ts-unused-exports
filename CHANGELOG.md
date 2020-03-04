@@ -1,3 +1,5 @@
+## [6.1.0] - 4 Mar 2020
+
 ### Added
 
 - Add an option to allow maximum number of issues: --maxIssues
