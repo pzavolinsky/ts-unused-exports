@@ -49,7 +49,10 @@ export const extractExportFromImport = (
 const parseExportNames = (exportName: string): string[] => {
   if (exportName.startsWith('{')) {
     const names = exportName.substring(1, exportName.length - 2);
-    return names.split(',').map(n => n.trim());
+    return names
+      .split(',')
+      .map(n => (n.includes(':') ? n.split(':')[1] : n))
+      .map(n => n.trim());
   }
 
   return [exportName];
