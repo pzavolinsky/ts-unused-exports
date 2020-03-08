@@ -81,3 +81,60 @@ Scenario: Dynamically import with dereference
     """
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+
+Scenario: Dynamically import inside a class
+  Given file "a.ts" is
+    """
+    export const A = 1;
+    export const A_unused = 2;
+    """
+  And file "b.ts" is
+    """
+    class C {
+    F() {
+    import("./a").then(A_imported => console.log(A_imported.A));
+    }
+    }
+
+    export const B_unused = 0;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+
+Scenario: Dynamically import with other lambda with same member name
+  Given file "a.ts" is
+    """
+    export const A = 1;
+    export const A_unused = 2;
+    """
+  And file "b.ts" is
+    """
+    class C {
+    F() {
+    import("./a").then(A_imported => {
+    console.log(A_imported.A);
+    const otherFun = x => console.log(x.A_unused); // This is *not* referencing a.ts
+    });
+    }
+    }
+    export const B_unused = 0;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+
+Scenario: Dynamically import with destructuring and renaming
+  Given file "a.ts" is
+    """
+    export const A = 1;
+    export const A2 = 1;
+    export const A_unused = 2;
+    """
+  And file "b.ts" is
+    """
+    import('./a').then(({ A, A2: a2renamed }) => {
+    console.log(A, a2renamed);
+    });
+    export const B_unused = 1;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
