@@ -1,3 +1,7 @@
+### Added
+
+- Handle dynamic imports within a TSX div or fragment
+
 ## [6.1.2] - 1 Apr 2020
 
 ### Changed
