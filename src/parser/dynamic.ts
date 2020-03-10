@@ -1,6 +1,11 @@
 import * as ts from 'typescript';
 
 import { FromWhat, getFromText } from './common';
+import {
+  findAllChildrenOfKind,
+  findFirstChildOfKind,
+  recurseIntoChildren,
+} from './util';
 
 import { namespaceBlacklist } from './namespaceBlacklist';
 
@@ -17,45 +22,6 @@ function isWithExpression(node: ts.Node): node is WithExpression {
   const myInterface = node as WithExpression;
   return !!myInterface.expression;
 }
-
-type WithArguments = ts.Node & {
-  arguments: ts.NodeArray<ts.Expression>;
-};
-
-function isWithArguments(node: ts.Node): node is WithArguments {
-  const myInterface = node as WithArguments;
-  return !!myInterface.arguments;
-}
-
-// A whitelist, to over-ride namespaceBlacklist.
-//
-// We need to search some structures that would not have a namespace.
-const whitelist = [ts.SyntaxKind.MethodDeclaration];
-
-const runForChildren = (
-  next: ts.Node,
-  fun: (node: ts.Node) => boolean,
-): void => {
-  next
-    .getChildren()
-    .filter(
-      c => !namespaceBlacklist.includes(c.kind) || whitelist.includes(c.kind),
-    )
-    .forEach(node => fun(node));
-};
-
-const recurseIntoChildren = (
-  next: ts.Node,
-  fun: (node: ts.Node) => boolean,
-): boolean => {
-  const alsoProcessChildren = fun(next);
-
-  if (alsoProcessChildren) {
-    runForChildren(next, (node: ts.Node) => recurseIntoChildren(node, fun));
-  }
-
-  return alsoProcessChildren;
-};
 
 const parseDereferencedLambdaParamsToTypes = (
   paramName: string,
@@ -117,16 +83,118 @@ const findLambdasWithDereferencing = (node: ts.Node): string[] => {
     }
   };
 
-  recurseIntoChildren(node, child => {
-    if (child.kind === ts.SyntaxKind.ArrowFunction) {
-      processLambda(child);
+  const firstArrow = findFirstChildOfKind(node, ts.SyntaxKind.ArrowFunction);
+  if (firstArrow) {
+    processLambda(firstArrow);
+  }
+
+  return what;
+};
+
+const addImportViaLambda = (
+  node: ts.Node,
+  from: string,
+  addImport: (fw: FromWhat) => void,
+): boolean => {
+  const whatFromLambda = findLambdasWithDereferencing(node);
+  const what = ['default'].concat(whatFromLambda);
+
+  addImport({
+    from: getFromText(from),
+    what,
+  });
+
+  return whatFromLambda.length !== 0;
+};
+
+const tryParseExpression = (
+  expr: ts.Expression,
+  addImport: (fw: FromWhat) => void,
+): boolean => {
+  if (expr.getText().startsWith('import')) {
+    const callExpression = findFirstChildOfKind(
+      expr,
+      ts.SyntaxKind.CallExpression,
+    );
+    if (!callExpression?.getText().startsWith('import')) {
       return false;
     }
 
-    return true;
-  });
+    const syntaxListWithFrom = findFirstChildOfKind(
+      callExpression,
+      ts.SyntaxKind.SyntaxList,
+    );
+    if (!syntaxListWithFrom) {
+      return false;
+    }
 
-  return what;
+    const from = syntaxListWithFrom.getText();
+
+    return addImportViaLambda(expr, from, addImport);
+  }
+
+  return false;
+};
+
+const handleImportWithJsxAttributes = (
+  attributes: ts.JsxAttributes,
+  addImport: (fw: FromWhat) => void,
+): void => {
+  attributes.properties.forEach(prop => {
+    if (ts.isJsxAttribute(prop)) {
+      if (
+        prop.initializer &&
+        ts.isJsxExpression(prop.initializer) &&
+        prop.initializer.expression
+      ) {
+        tryParseExpression(prop.initializer.expression, addImport);
+      }
+    }
+  });
+};
+
+const handleImportWithinExpression = (
+  node: ts.Node,
+  addImport: (fw: FromWhat) => void,
+): void => {
+  let expr = node;
+
+  while (isWithExpression(expr)) {
+    const newExpr = expr.expression;
+
+    if (!tryParseExpression(newExpr, addImport)) {
+      if (ts.isJsxElement(newExpr) || ts.isJsxFragment(newExpr)) {
+        const jsxExpressions = findAllChildrenOfKind(
+          newExpr,
+          ts.SyntaxKind.JsxExpression,
+        );
+
+        jsxExpressions.forEach(j => {
+          const jsxExpr = j as ts.JsxExpression;
+          if (jsxExpr.expression) {
+            tryParseExpression(jsxExpr.expression, addImport);
+          }
+        });
+      }
+
+      const selfClosingElements = findAllChildrenOfKind(
+        newExpr,
+        ts.SyntaxKind.JsxSelfClosingElement,
+      );
+
+      selfClosingElements.forEach(elem => {
+        if (ts.isJsxSelfClosingElement(elem)) {
+          handleImportWithJsxAttributes(elem.attributes, addImport);
+        }
+      });
+    }
+
+    if (isWithExpression(newExpr)) {
+      expr = newExpr;
+    } else {
+      break;
+    }
+  }
 };
 
 export const addDynamicImports = (
@@ -134,36 +202,8 @@ export const addDynamicImports = (
   addImport: (fw: FromWhat) => void,
 ): void => {
   const addImportsInAnyExpression = (node: ts.Node): boolean => {
-    const getArgumentFrom = (node: ts.Node): string | undefined => {
-      if (isWithArguments(node)) {
-        return node.arguments[0].getText();
-      }
-    };
-
     if (isWithExpression(node)) {
-      let expr = node;
-      while (isWithExpression(expr)) {
-        const newExpr = expr.expression;
-
-        if (newExpr.getText() === 'import') {
-          const importing = getArgumentFrom(expr);
-
-          if (!!importing) {
-            const what = ['default'].concat(findLambdasWithDereferencing(node));
-
-            addImport({
-              from: getFromText(importing),
-              what,
-            });
-          }
-        }
-
-        if (isWithExpression(newExpr)) {
-          expr = newExpr;
-        } else {
-          break;
-        }
-      }
+      handleImportWithinExpression(node, addImport); // can be a ParenthesizedExpression with a JSX element inside it
     }
 
     return true;
