@@ -1,3 +1,5 @@
+## [6.1.1] - 22 Mar 2020
+
 ### Changed
 
 - Fix to support destructuerd exports with renaming, like 'export const { a: a2 }'
