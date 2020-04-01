@@ -118,18 +118,21 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
       .forEach(ex => {
         delete fileExports.exports[ex];
 
-        Object.keys(exportMap[ex.slice(2)].exports)
-          .filter(e => e != 'default')
-          .forEach(key => {
-            if (!fileExports.exports[key]) {
-              const export1 = exportMap[ex.slice(2)].exports[key];
-              fileExports.exports[key] = {
-                usageCount: 0,
-                location: export1.location,
-              };
-            }
-            fileExports.exports[key].usageCount = 0;
-          });
+        const exports = exportMap[ex.slice(2)]?.exports;
+        if (exports) {
+          Object.keys(exports)
+            .filter(e => e != 'default')
+            .forEach(key => {
+              if (!fileExports.exports[key]) {
+                const export1 = exports[key];
+                fileExports.exports[key] = {
+                  usageCount: 0,
+                  location: export1.location,
+                };
+              }
+              fileExports.exports[key].usageCount = 0;
+            });
+        }
       });
   });
 };
