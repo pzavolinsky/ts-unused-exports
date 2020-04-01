@@ -6,6 +6,10 @@ export function isUnique<T>(value: T, index: number, self: T[]): boolean {
   return self.indexOf(value) === index;
 }
 
+export function cleanRelativePath(path: string): string {
+  return path.slice(2);
+}
+
 // A whitelist, to over-ride namespaceBlacklist.
 //
 // We need to search some structures that would not have a namespace.

@@ -5,6 +5,7 @@ export const STAR = ['*'];
 export interface FromWhat {
   from: string;
   what: string[];
+  isExportStarAs?: boolean; // If true, then the 'what' is an export-namespace with exported contents of 'from'
 }
 
 const TRIM_QUOTES = /^['"](.*)['"]$/;
