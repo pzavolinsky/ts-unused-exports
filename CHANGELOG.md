@@ -1,3 +1,5 @@
+## [6.1.2] - 1 Apr 2020
+
 ### Changed
 
 - Fix to make the exports analyzer more robust
