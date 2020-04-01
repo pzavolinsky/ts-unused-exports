@@ -1,8 +1,12 @@
+### Changed
+
+- Fix to make the exports analyzer more robust
+
 ## [6.1.1] - 22 Mar 2020
 
 ### Changed
 
-- Fix to support destructuerd exports with renaming, like 'export const { a: a2 }'
+- Fix to support destructured exports with renaming, like 'export const { a: a2 }'
 - Fix: Dynamic import with destructuring and renaming
 - Fix: Do not classify other lambdas as using a dynamic import
 - Fix: Include methods when searching for dynamic imports
