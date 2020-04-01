@@ -1,10 +1,11 @@
-import { dirname, join, relative, resolve, sep } from 'path';
-import { existsSync } from 'fs';
-import * as tsconfigPaths from 'tsconfig-paths';
 import * as ts from 'typescript';
+import * as tsconfigPaths from 'tsconfig-paths';
 
-import { getFrom, FromWhat, STAR } from './common';
+import { FromWhat, STAR, getFrom } from './common';
+import { dirname, join, relative, resolve, sep } from 'path';
+
 import { Imports } from '../types';
+import { existsSync } from 'fs';
 import { isUnique } from './util';
 
 // Parse Imports

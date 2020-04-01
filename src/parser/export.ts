@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 
-import { LocationInFile, ExtraCommandLineOptions } from '../types';
+import { ExtraCommandLineOptions, LocationInFile } from '../types';
 import { FromWhat, STAR, getFrom } from './common';
 
 // Parse Exports
@@ -9,11 +9,39 @@ const extractAliasFirstFromElements = (
   elements: ts.NodeArray<ts.ExportSpecifier>,
 ): string[] => elements.map(e => e.name.text);
 
+const extractPropertyOrAliasFirstFromElements = (
+  elements: ts.NodeArray<ts.ExportSpecifier>,
+): string[] => elements.map(e => (e.propertyName || e.name).text);
+
+const extractFromBindingsWith = (
+  bindings: ts.NamedExportBindings,
+  extract: (elements: ts.NodeArray<ts.ExportSpecifier>) => string[],
+): string[] => {
+  if (ts.isNamedExports(bindings)) return extract(bindings.elements);
+
+  return [bindings.name.text];
+};
+
+const extractAliasFirstFromBindings = (
+  bindings: ts.NamedExportBindings,
+): string[] => {
+  return extractFromBindingsWith(bindings, extractAliasFirstFromElements);
+};
+
+const extractPropertyOrAliasFromBindings = (
+  bindings: ts.NamedExportBindings,
+): string[] => {
+  return extractFromBindingsWith(
+    bindings,
+    extractPropertyOrAliasFirstFromElements,
+  );
+};
+
 export const extractExportStatement = (
   decl: ts.ExportDeclaration,
 ): string[] => {
   return decl.exportClause
-    ? extractAliasFirstFromElements(decl.exportClause.elements)
+    ? extractAliasFirstFromBindings(decl.exportClause)
     : [];
 };
 
@@ -25,12 +53,12 @@ export const extractExportFromImport = (
 
   const whatExported = exportClause
     ? // The alias 'name' or the original type is exported
-      extractAliasFirstFromElements(exportClause.elements)
+      extractAliasFirstFromBindings(exportClause)
     : STAR;
 
   const whatImported = exportClause
     ? // The original type 'propertyName' is imported
-      exportClause.elements.map(e => (e.propertyName || e.name).text)
+      extractPropertyOrAliasFromBindings(exportClause)
     : STAR;
 
   return {
@@ -41,6 +69,7 @@ export const extractExportFromImport = (
     imported: {
       from: getFrom(moduleSpecifier),
       what: whatImported,
+      isExportStarAs: exportClause?.kind === ts.SyntaxKind.NamespaceExport,
     },
   };
 };

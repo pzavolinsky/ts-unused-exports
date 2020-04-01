@@ -106,27 +106,3 @@ Scenario: Import a destructured export with renamings
     """
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
-
-Scenario: export * from ./a/a.ts
-  Given file "a/a.ts" is
-    """
-    export const A = 1;
-    export const A_unused = 1;
-    """
-  And file "b.ts" is export * from './a/a';
-  And file "c.ts" is import { A } from './b';
-
-  When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["A_unused"] }
-
-Scenario: export * from ./a
-  Given file "a/index.ts" is
-    """
-    export const A = 1;
-    export const A_unused = 1;
-    """
-  And file "b.ts" is export * from './a';
-  And file "c.ts" is import { A } from './b';
-
-  When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["A_unused"] }

@@ -1,6 +1,11 @@
+### Changed
+
+- (Internal) Using TypeScript 3.8
+
 ### Added
 
 - Handle dynamic imports within a TSX div or fragment
+- Add basic support for export * as namespace.
 
 ## [6.1.2] - 1 Apr 2020
 
