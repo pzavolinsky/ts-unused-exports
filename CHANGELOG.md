@@ -1,3 +1,5 @@
+## [6.2.0] - 11 May 2020
+
 ### Changed
 
 - (Internal) Using TypeScript 3.8
