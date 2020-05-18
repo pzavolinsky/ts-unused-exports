@@ -18,6 +18,7 @@ const relativeTo = (rootDir: string, file: string, path: string): string =>
 const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
   existsSync(resolve(baseDir, `${from}.js`)) ||
   existsSync(resolve(baseDir, `${from}.ts`)) ||
+  existsSync(resolve(baseDir, `${from}.d.ts`)) ||
   existsSync(resolve(baseDir, `${from}.tsx`)) ||
   existsSync(resolve(baseDir, from, 'index.js')) ||
   existsSync(resolve(baseDir, from, 'index.ts')) ||
