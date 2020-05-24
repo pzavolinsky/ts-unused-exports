@@ -1,3 +1,10 @@
+### Changed
+
+- Fix: Dynamically import with destructuring and less whitespace
+- Fix: Dynamically import to a promise (Issue #139)
+- Fix: Dynamically import with lambda inside div (Issue #140)
+- (Internal) Add dynamic import tests involving ternary operator
+
 ## [6.2.0] - 11 May 2020
 
 ### Changed
