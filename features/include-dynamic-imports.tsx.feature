@@ -242,3 +242,115 @@ Scenario: Dynamically import multiple, nested inside div or div property - lambd
     """
   When analyzing "tsconfig.json"
   Then the result is { "a.ts": ["A_unused"], "b.ts": ["A", "B_unused"], "c.ts": ["A", "C_unused"], "d.ts": ["A", "D_unused"], "t.tsx": ["T_unused"] }
+
+Scenario: Dynamically import in div inside function
+  Given file "a.ts" is
+    """
+    export const A = 1;
+    export const A_unused = 2;
+    """
+  And file "b.tsx" is
+    """
+    function foo() {
+    return (
+    <div bar={() => {import("./a").then(a => a.A)} />
+    );
+    }
+    export const B_unused = 3;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+
+Scenario: Dynamically import in div inside function - no block on right hand side
+  Given file "a.ts" is
+    """
+    export const A = 1;
+    export const A_unused = 2;
+    """
+  And file "b.tsx" is
+    """
+    function foo() {
+    return (
+    <div bar={() => import("./a").then(a => a.A) />
+    );
+    }
+    export const B_unused = 3;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+
+Scenario: Dynamically import in div inside function - real example
+  Given file "./MyDynamicComponent.ts" is
+    """
+    export const MyDynamicMember = 1;
+    export const A_unused = 2;
+    """
+  And file "b.tsx" is
+    """
+    function foo() {
+    return (
+    <div
+    onClick={() =>
+    import("./MyDynamicComponent").then(m => m.MyDynamicMember)
+    }
+    children={{
+    otherKey: 123
+    }}
+    />
+    );
+    }
+    export const B_unused = 3;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+
+Scenario: Dynamically import in div inside function - real example - with comment on the import from, and with path
+  Given file "myPath/MyDynamicComponent.ts" is
+    """
+    export const MyDynamicMember = 1;
+    export const A_unused = 2;
+    """
+  And file "b.tsx" is
+    """
+    function foo() {
+    return (
+    <div
+    onClick={() =>
+    import(/* webpackChunkName: "myChunk" */ "myPath/MyDynamicComponent").then(m => m.MyDynamicMember)
+    }
+    children={{
+    otherKey: 123
+    }}
+    />
+    );
+    }
+    export const B_unused = 3;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "myPath/MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+
+Scenario: Dynamically import in div inside function - real example - with import that is buried inside a 'Promise.all'
+  Given file "myPath/MyDynamicComponent.ts" is
+    """
+    export const MyDynamicMember = 1;
+    export const A_unused = 2;
+    """
+  And file "b.tsx" is
+    """
+    function foo() {
+    return (
+    <div
+    myAttr={() =>
+    Promise.all[
+    import(/* webpackChunkName: "myChunk" */ "myPath/MyDynamicComponent").then(
+    m => m.MyDynamicMember
+    ),
+    myOtherPromise
+    ]}
+    />
+    );
+    }
+    export const B_unused = 3;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "myPath/MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }

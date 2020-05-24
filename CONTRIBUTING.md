@@ -59,3 +59,6 @@ Back in **Visual Code**, open a file, add a breakpoint (`F9`).
 Open a `.feature` file, put the cursor over a `Scenario:` line and press `F5`.
 
 If you don't know where to put the breakpoint, you can always put it in the first line of the default export of `app.ts`.
+
+Hint: to simplify debugging, you can comment out all the other tests in the file.
+In **Visual Code**, a quick way to do this, is to select the tests you want to skip, and press `CTRL + /`.

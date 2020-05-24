@@ -43,8 +43,8 @@ const parseDereferencedLambdaParamsToTypes = (
 };
 
 const parseDestructuredLambdaParamsToTypes = (paramList: string): string[] => {
-  if (paramList.startsWith('{')) {
-    const names = paramList.substring(1, paramList.length - 2);
+  if (paramList.startsWith('{') && paramList.endsWith('}')) {
+    const names = paramList.substring(1, paramList.length - 1);
 
     return names
       .split(',')
@@ -107,35 +107,102 @@ const addImportViaLambda = (
   return whatFromLambda.length !== 0;
 };
 
-const tryParseExpression = (
+const isLambaExpressionWith5Children = (node: ts.Node): boolean => {
+  return (
+    node.kind === ts.SyntaxKind.ArrowFunction && node.getChildCount() === 5
+  );
+};
+
+type ExpressionParser = (
+  expr: ts.Expression,
+  addImport: (fw: FromWhat) => void,
+) => boolean;
+
+const tryParseLambdaExpression = (
+  expr: ts.Expression,
+  addImport: (fw: FromWhat) => void,
+  expressionParser: ExpressionParser,
+): boolean => {
+  const rhs = expr.getChildAt(4);
+
+  const syntaxListWithFrom = findFirstChildOfKind(
+    rhs,
+    ts.SyntaxKind.SyntaxList,
+  );
+  if (!syntaxListWithFrom) {
+    return false;
+  }
+
+  let subExpr: ts.Expression | null = null;
+
+  if (ts.isBinaryExpression(rhs) || ts.isCallExpression(rhs)) {
+    subExpr = (rhs as object) as ts.Expression;
+  } else {
+    subExpr = findFirstChildOfKind(
+      syntaxListWithFrom,
+      ts.SyntaxKind.ExpressionStatement,
+    ) as ts.Expression;
+  }
+
+  if (!subExpr) {
+    return false;
+  }
+
+  return expressionParser(subExpr, addImport);
+};
+
+const tryParseImportExpression: ExpressionParser = (
   expr: ts.Expression,
   addImport: (fw: FromWhat) => void,
 ): boolean => {
-  if (expr.getText().startsWith('import')) {
-    const callExpression = findFirstChildOfKind(
-      expr,
-      ts.SyntaxKind.CallExpression,
-    );
-    if (!callExpression?.getText().startsWith('import')) {
-      return false;
-    }
-
-    const syntaxListWithFrom = findFirstChildOfKind(
-      callExpression,
-      ts.SyntaxKind.SyntaxList,
-    );
-    if (!syntaxListWithFrom) {
-      return false;
-    }
-
-    const from = syntaxListWithFrom.getText();
-
-    return addImportViaLambda(expr, from, addImport);
+  const callExpression = findFirstChildOfKind(
+    expr,
+    ts.SyntaxKind.CallExpression,
+  );
+  if (!callExpression?.getText().startsWith('import')) {
+    return false;
   }
+
+  const syntaxListWithFrom = findFirstChildOfKind(
+    callExpression,
+    ts.SyntaxKind.SyntaxList,
+  );
+  if (!syntaxListWithFrom) {
+    return false;
+  }
+
+  const from = syntaxListWithFrom.getText();
+
+  return addImportViaLambda(expr, from, addImport);
+};
+
+const tryParseExpression: ExpressionParser = (
+  expr: ts.Expression,
+  addImport: (fw: FromWhat) => void,
+): boolean => {
+  if (isLambaExpressionWith5Children(expr)) {
+    if (tryParseLambdaExpression(expr, addImport, tryParseExpression))
+      return true;
+  }
+
+  if (expr.getText().startsWith('import')) {
+    return tryParseImportExpression(expr, addImport);
+  }
+
+  // Handle complex expressions, where the 'import' is buried in a tree.
+  // Example: see test with Promise.all[]
+  recurseIntoChildren(expr, node => {
+    if (isWithExpression(node) && node.getText().startsWith('import')) {
+      tryParseImportExpression((node as object) as ts.Expression, addImport);
+    }
+
+    return true;
+  });
 
   return false;
 };
 
+// note: JSX Attributes do not show up as children.
 const handleImportWithJsxAttributes = (
   attributes: ts.JsxAttributes,
   addImport: (fw: FromWhat) => void,
@@ -157,15 +224,16 @@ const handleImportWithinExpression = (
   node: ts.Node,
   addImport: (fw: FromWhat) => void,
 ): void => {
-  let expr = node;
+  let expression1: ts.Expression | null = null;
+  if (node.kind === ts.SyntaxKind.CallExpression)
+    expression1 = node as ts.Expression;
+  else if (isWithExpression(node)) expression1 = node.expression;
 
-  while (isWithExpression(expr)) {
-    const newExpr = expr.expression;
-
-    if (!tryParseExpression(newExpr, addImport)) {
-      if (ts.isJsxElement(newExpr) || ts.isJsxFragment(newExpr)) {
+  while (!!expression1) {
+    if (!tryParseExpression(expression1, addImport)) {
+      if (ts.isJsxElement(expression1) || ts.isJsxFragment(expression1)) {
         const jsxExpressions = findAllChildrenOfKind(
-          newExpr,
+          expression1,
           ts.SyntaxKind.JsxExpression,
         );
 
@@ -178,7 +246,7 @@ const handleImportWithinExpression = (
       }
 
       const selfClosingElements = findAllChildrenOfKind(
-        newExpr,
+        expression1,
         ts.SyntaxKind.JsxSelfClosingElement,
       );
 
@@ -189,8 +257,8 @@ const handleImportWithinExpression = (
       });
     }
 
-    if (isWithExpression(newExpr)) {
-      expr = newExpr;
+    if (isWithExpression(expression1)) {
+      expression1 = expression1.expression;
     } else {
       break;
     }

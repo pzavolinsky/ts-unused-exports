@@ -138,3 +138,77 @@ Scenario: Dynamically import with destructuring and renaming
     """
   When analyzing "tsconfig.json"
   Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+
+Scenario: Dynamically import with destructuring and less whitespace
+  Given file "a.ts" is
+    """
+    export const A = 1;
+    export const A_unused = 2;
+    """
+  And file "b.ts" is
+    """
+    import('./a').then(({A}) => {console.log(A);});
+    export const B_unused = 1;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+
+Scenario: Dynamically import to a promise
+  Given file "a.ts" is
+    """
+    export class A {}
+    export const A_unused = 1;
+    """
+  And file "b.ts" is
+    """
+    const promise1 = import('./a').then(({ A }) => new A());
+    export const B_unused = 1;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "a.ts": ["A_unused"],  "b.ts": ["B_unused"] }
+
+Scenario: Dynamically import inside a ternary operator - classes
+  Given file "a.ts" is
+    """
+    export class A {}
+    export const A_unused = 1;
+    """
+  And file "b.ts" is
+    """
+    export class B {}
+    export const B_unused = 2;
+    """
+  And file "c.ts" is
+    """
+    const foo = true;
+    const promise1 = foo
+    ? import('./a').then(({ A }) => new A())
+    : import('./b').then(({ B }) => new B());
+
+    export const C_unused = 1;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "a.ts": ["A_unused"],  "b.ts": ["B_unused"], "c.ts": ["C_unused"] }
+
+Scenario: Dynamically import inside a ternary operator - functions
+  Given file "a.ts" is
+    """
+    export const DoA = () => 0;
+    export const A_unused = 1;
+    """
+  And file "b.ts" is
+    """
+    export const DoB = () => 0;
+    export const B_unused = 2;
+    """
+  And file "c.ts" is
+    """
+    const foo = true;
+    const promise2 = foo
+    ? import('./a').then(({ DoA }) => DoA())
+    : import('./b').then(({ DoB }) => DoB());
+
+    export const C_unused = 1;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "a.ts": ["A_unused"],  "b.ts": ["B_unused"], "c.ts": ["C_unused"] }
