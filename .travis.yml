@@ -2,7 +2,8 @@ language: node_js
 node_js:
   - 10
   - 12
-  # TODO - 14 when it is released
+  - 14
+  # TODO - 16 when it is released
 notifications:
     email: false
 script:
