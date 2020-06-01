@@ -1,3 +1,5 @@
+## [6.2.1] - 1 Jun 2020
+
 ### Changed
 
 - Fix: Dynamically import with destructuring and less whitespace
