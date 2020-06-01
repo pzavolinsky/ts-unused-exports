@@ -107,49 +107,10 @@ const addImportViaLambda = (
   return whatFromLambda.length !== 0;
 };
 
-const isLambaExpressionWith5Children = (node: ts.Node): boolean => {
-  return (
-    node.kind === ts.SyntaxKind.ArrowFunction && node.getChildCount() === 5
-  );
-};
-
 type ExpressionParser = (
   expr: ts.Expression,
   addImport: (fw: FromWhat) => void,
 ) => boolean;
-
-const tryParseLambdaExpression = (
-  expr: ts.Expression,
-  addImport: (fw: FromWhat) => void,
-  expressionParser: ExpressionParser,
-): boolean => {
-  const rhs = expr.getChildAt(4);
-
-  const syntaxListWithFrom = findFirstChildOfKind(
-    rhs,
-    ts.SyntaxKind.SyntaxList,
-  );
-  if (!syntaxListWithFrom) {
-    return false;
-  }
-
-  let subExpr: ts.Expression | null = null;
-
-  if (ts.isBinaryExpression(rhs) || ts.isCallExpression(rhs)) {
-    subExpr = (rhs as object) as ts.Expression;
-  } else {
-    subExpr = findFirstChildOfKind(
-      syntaxListWithFrom,
-      ts.SyntaxKind.ExpressionStatement,
-    ) as ts.Expression;
-  }
-
-  if (!subExpr) {
-    return false;
-  }
-
-  return expressionParser(subExpr, addImport);
-};
 
 const tryParseImportExpression: ExpressionParser = (
   expr: ts.Expression,
@@ -180,11 +141,6 @@ const tryParseExpression: ExpressionParser = (
   expr: ts.Expression,
   addImport: (fw: FromWhat) => void,
 ): boolean => {
-  if (isLambaExpressionWith5Children(expr)) {
-    if (tryParseLambdaExpression(expr, addImport, tryParseExpression))
-      return true;
-  }
-
   if (expr.getText().startsWith('import')) {
     return tryParseImportExpression(expr, addImport);
   }
