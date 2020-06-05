@@ -1,3 +1,9 @@
+## [6.2.2] - 1 Jun 2020
+
+### Changed
+
+- Fix: correctly check for `.d.ts` files when using absolute paths
+
 ## [6.2.1] - 1 Jun 2020
 
 ### Changed
