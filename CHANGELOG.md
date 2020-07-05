@@ -1,3 +1,6 @@
+### Changed
+- Fix: when dynamic import has curly braces around parameter
+
 ## [6.2.1] - 1 Jun 2020
 
 ### Changed
