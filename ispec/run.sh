@@ -18,6 +18,10 @@ pushd ../example/simple
 run_itest
 popd
 
+pushd ../example/definition-files-with-paths
+run_itest
+popd
+
 pushd ../example/tsx
 install_and_run_itest
 popd
