@@ -10,7 +10,7 @@ import { isUnique } from './util';
 
 // Parse Imports
 
-const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
+const EXTENSIONS = ['.d.ts', '.ts', '.tsx', '.js', '.jsx'];
 
 const relativeTo = (rootDir: string, file: string, path: string): string =>
   relative(rootDir, resolve(dirname(file), path));
