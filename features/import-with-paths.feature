@@ -4,11 +4,13 @@ Background:
     Given file "tsconfig.json" is
         """
         {
-            "baseDir": "src",
-            "paths": {
-              "components": ["src/nested/components/some"],
-              "components/*": ["src/nested/components/*"]
-            }
+            "baseDir": ".",
+            "compilerOptions": {
+              "paths": {
+                "components": ["src/nested/components/some"],
+                "components/*": ["src/nested/components/*"]
+              }
+            },
             "include": [
                 "./src"
             ]
