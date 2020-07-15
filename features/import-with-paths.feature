@@ -28,7 +28,7 @@ Scenario: Import component using path aliases for declaration files
         import {MyComponent1} from "components/MyComponent";
         """
     When analyzing "tsconfig.json"
-    Then the result is { "src/components/MyComponent.d.ts": ["UnusedComponent"] }
+    Then the result is { "src/nested/components/MyComponent.d.ts": ["UnusedComponent"] }
 
 Scenario: Import component using path aliases
     Given file "./src/nested/components/MyComponent.ts" is
