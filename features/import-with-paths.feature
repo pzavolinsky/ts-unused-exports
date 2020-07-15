@@ -7,7 +7,7 @@ Background:
             "baseDir": ".",
             "compilerOptions": {
               "paths": {
-                "components": ["src/nested/components/some"],
+                "components": ["src/nested/components"],
                 "components/*": ["src/nested/components/*"]
               }
             },
@@ -18,7 +18,7 @@ Background:
         """
 
 Scenario: Import component using path aliases for declaration files
-    Given file "./src/components/MyComponent.d.ts" is
+    Given file "./src/nested/components/MyComponent.d.ts" is
         """
         export interface MyComponent1 {};
         export interface UnusedComponent {};
@@ -28,10 +28,10 @@ Scenario: Import component using path aliases for declaration files
         import {MyComponent1} from "components/MyComponent";
         """
     When analyzing "tsconfig.json"
-    Then the result is { "src/components/MyComponent.ts": ["UnusedComponent"] }
+    Then the result is { "src/components/MyComponent.d.ts": ["UnusedComponent"] }
 
 Scenario: Import component using path aliases
-    Given file "./src/components/MyComponent.ts" is
+    Given file "./src/nested/components/MyComponent.ts" is
         """
         export class MyComponent1 {};
         export class UnusedComponent {};
@@ -41,4 +41,4 @@ Scenario: Import component using path aliases
         import {MyComponent1} from "components/MyComponent";
         """
     When analyzing "tsconfig.json"
-    Then the result is { "src/components/MyComponent.ts": ["UnusedComponent"] }
+    Then the result is { "src/nested/components/MyComponent.ts": ["UnusedComponent"] }
