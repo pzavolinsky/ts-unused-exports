@@ -59,6 +59,12 @@ export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   };
 };
 
+const declarationFilePatch = (matchedPath: string) => {
+  return matchedPath.endsWith('.d') && existsSync(`${matchedPath}.ts`) ?
+    matchedPath.slice(0, -2) :
+    matchedPath;
+}
+
 export const addImportCore = (
   fw: FromWhat,
   rootDir: string,
@@ -86,7 +92,7 @@ export const addImportCore = (
             undefined,
             EXTENSIONS,
           ))
-        ? matchedPath.replace(`${baseDir}${sep}`, '')
+        ? declarationFilePatch(matchedPath).replace(`${baseDir}${sep}`, '')
         : undefined;
     }
   };
