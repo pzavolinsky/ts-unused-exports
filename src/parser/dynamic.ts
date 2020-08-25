@@ -42,8 +42,16 @@ const parseDereferencedLambdaParamsToTypes = (
   return types;
 };
 
+const hasBracesLike = (
+  paramList: string,
+  openBrace: string,
+  closeBrace: string,
+): boolean => {
+  return paramList.startsWith(openBrace) && paramList.endsWith(closeBrace);
+};
+
 const parseDestructuredLambdaParamsToTypes = (paramList: string): string[] => {
-  if (paramList.startsWith('{') && paramList.endsWith('}')) {
+  if (hasBracesLike(paramList, '{', '}')) {
     const names = paramList.substring(1, paramList.length - 1);
 
     return names
@@ -77,9 +85,12 @@ const findLambdasWithDereferencing = (node: ts.Node): string[] => {
     ) {
       const paramNames = lambda.getChildren()[1].getText();
 
-      parseDestructuredLambdaParamsToTypes(paramNames).forEach(p =>
-        what.push(p),
-      );
+      parseDestructuredLambdaParamsToTypes(paramNames).forEach(p => {
+        what.push(p);
+        parseDereferencedLambdaParamsToTypes(p, lambda).forEach(t =>
+          what.push(t),
+        );
+      });
     }
   };
 

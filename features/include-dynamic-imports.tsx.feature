@@ -354,3 +354,47 @@ Scenario: Dynamically import in div inside function - real example - with import
     """
   When analyzing "tsconfig.json"
   Then the result is { "myPath/MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+
+Scenario: Dynamically import in div inside function - real example - onClick
+  Given file "./MyDynamicComponent.ts" is
+    """
+    export const MyDynamicMember = 1;
+    export const A_unused = 2;
+    """
+  And file "b.tsx" is
+    """
+    function foo() {
+    return (
+    <div
+    onClick={() =>
+        import("./MyDynamicComponent").then(m => m.MyDynamicMember)
+    }
+    />
+    );
+    }
+    export const B_unused = 3;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+
+Scenario: Dynamically import in div inside function - real example - onClick with braces around parameter
+  Given file "./MyDynamicComponent.ts" is
+    """
+    export const MyDynamicMember = 1;
+    export const A_unused = 2;
+    """
+  And file "b.tsx" is
+    """
+    function foo() {
+    return (
+<div
+    onClick={() =>
+        import("./MyDynamicComponent").then((m) => m.MyDynamicMember)
+    }
+/>
+    );
+    }
+    export const B_unused = 3;
+    """
+  When analyzing "tsconfig.json"
+  Then the result is { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
