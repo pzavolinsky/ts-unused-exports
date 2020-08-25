@@ -22,6 +22,10 @@ pushd ../example/definition-files-with-paths
 run_itest
 popd
 
+pushd ../example/definition-files-absolute-paths
+run_itest
+popd
+
 pushd ../example/tsx
 install_and_run_itest
 popd

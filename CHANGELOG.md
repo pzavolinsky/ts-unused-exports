@@ -1,6 +1,7 @@
 ### Changed
 
 - Fix: false positives if importing from a d.ts file, and tsconfig is set to use aliases (paths).
+- Fix: false positives if importing from a d.ts file, and tsconfig is set to use absolute paths (baseUrl).
 
 ## [6.2.1] - 1 Jun 2020
 
