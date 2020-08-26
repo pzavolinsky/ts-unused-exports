@@ -1,3 +1,5 @@
+## [6.2.2] - 25 Aug 2020
+
 ### Changed
 - Fix: when dynamic import has curly braces around parameter
 - Fix: false positives if importing from a d.ts file, and tsconfig is set to use either absolute paths (baseUrl) or aliases (paths).
