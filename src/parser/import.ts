@@ -10,7 +10,7 @@ import { isUnique } from './util';
 
 // Parse Imports
 
-const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
+const EXTENSIONS = ['.d.ts', '.ts', '.tsx', '.js', '.jsx'];
 
 const relativeTo = (rootDir: string, file: string, path: string): string =>
   relative(rootDir, resolve(dirname(file), path));
@@ -60,6 +60,12 @@ export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   };
 };
 
+const declarationFilePatch = (matchedPath: string): string => {
+  return matchedPath.endsWith('.d') && existsSync(`${matchedPath}.ts`)
+    ? matchedPath.slice(0, -2)
+    : matchedPath;
+};
+
 export const addImportCore = (
   fw: FromWhat,
   rootDir: string,
@@ -87,7 +93,7 @@ export const addImportCore = (
             undefined,
             EXTENSIONS,
           ))
-        ? matchedPath.replace(`${baseDir}${sep}`, '')
+        ? declarationFilePatch(matchedPath).replace(`${baseDir}${sep}`, '')
         : undefined;
     }
   };
