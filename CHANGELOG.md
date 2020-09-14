@@ -1,3 +1,9 @@
+## [6.2.4] - 14 Sep 2020
+
+### Changed
+
+- Dependency: update `node-fetch`.
+
 ## [6.2.3] - 27 Aug 2020
 
 ### Changed
