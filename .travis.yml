@@ -4,9 +4,13 @@ node_js:
   - 12
   - 14
   # TODO - 16 when it is released
+env:
+  - TYPESCRIPT_VERSION=3
+  - TYPESCRIPT_VERSION=4
 notifications:
-    email: false
+  email: false
 script:
+  - npm install --development typescript@$TYPESCRIPT_VERSION
   - npm test
 after_success:
   - npm run report-coverage-to-coveralls
