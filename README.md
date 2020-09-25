@@ -73,6 +73,8 @@ Note that if `ts-unused-exports` is called without files, the files will be read
 
 `ts-unused-exports` also resolves path aliases specified in tsconfig's `paths` object.
 
+As of version 7.0.0 the TypeScript compiler is a _peer dependency_ of `ts-unused-exports`. This means that if the TypeScript compiler is not already in the same spot as `ts-unused-exports`, you have to install it yourself (e.g. with `npm i -D typescript`).
+
 ## Why should I use this?
 
 If you've ever used `tslint`'s [no-unused-variable](http://palantir.github.io/tslint/rules/no-unused-variable/) rule you already known how awesome it is. What this rule does is detect code in your modules that is not being used so that you can remove it.

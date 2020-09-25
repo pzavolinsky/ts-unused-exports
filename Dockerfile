@@ -7,6 +7,7 @@ RUN apk add bash
 COPY ["package.json", "package-lock.json", "/usr/src/"]
 
 RUN CI=1 npm ci
+RUN npm install --development typescript
 
 COPY [".*", "*.json", "/usr/src/"]
 COPY ["bin/", "/usr/src/bin/"]
