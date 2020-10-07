@@ -31,6 +31,10 @@ export const runCli = (
 
     const files = Object.keys(analysis);
 
+    if (files.length === 0) {
+      return exitWith(ExitCode.NoUnusedExportsFound);
+    }
+
     showMessage(
       chalk.red(
         `${chalk.bold(files.length.toString())} module${
