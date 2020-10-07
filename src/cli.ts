@@ -34,6 +34,10 @@ export const runCli = (
       files.length == 1 ? '' : 's'
     } with unused exports`;
 
+    if (files.length === 0) {
+      return exitWith(ExitCode.NoUnusedExportsFound);
+    }
+
     showMessage(
       files.length ? chalk.red(filesCountMessage) : filesCountMessage,
     );
