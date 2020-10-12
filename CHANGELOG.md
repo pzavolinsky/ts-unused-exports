@@ -1,6 +1,7 @@
 ### Changed
 
 - if 0 issues (0 modules with unused exports) then use the default color. (Issue #164)
+- Add an option to stop writing to stdout on success: --silent
 
 ## [6.2.4] - 14 Sep 2020
 

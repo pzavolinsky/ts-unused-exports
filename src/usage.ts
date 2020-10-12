@@ -11,6 +11,7 @@ export const USAGE = `
       --ignoreTestFiles
       --searchNamespaces
       --showLineNumber
+      --silent
 
     Note: if no file is specified after tsconfig, the files will be read from the
     tsconfig's "files" key which must be present.
