@@ -100,6 +100,16 @@ Scenario: Allow maxIssues (success)
   When running ts-unused-exports "tsconfig.json" --maxIssues=2
   Then the CLI result at status is 0
 
+Scenario: No output with silent
+  Given file "a.ts" is const a = 1;
+  When running ts-unused-exports "tsconfig.json" --silent
+  And the CLI result at stdout is ""
+
+Scenario: Output with silent
+  Given file "a.ts" is const a = 1;
+  When running ts-unused-exports "tsconfig.json"
+  And the CLI result at stdout is "0 modules with unused exports"
+
 Scenario: Invalid tsconfig path
   When running ts-unused-exports "invalid.json"
   Then the CLI result at status is 2

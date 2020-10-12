@@ -31,7 +31,9 @@ export const runCli = (
 
     const files = Object.keys(analysis);
 
-    if (files.length === 0) {
+    const options = extractOptionsFromFiles(tsFiles).options;
+
+    if (options?.silent && files.length === 0) {
       return exitWith(ExitCode.NoUnusedExportsFound);
     }
 
@@ -50,7 +52,6 @@ export const runCli = (
       return `[${location.line},${location.character}]`;
     };
 
-    const options = extractOptionsFromFiles(tsFiles).options;
     if (options?.showLineNumber) {
       files.forEach(path => {
         analysis[path].forEach(unusedExport => {

@@ -1,3 +1,9 @@
+## Next version
+
+### Changed
+
+- Add an option to stop writing to stdout on success: --silent
+
 ## [6.2.4] - 14 Sep 2020
 
 ### Changed

@@ -46,5 +46,6 @@ export interface ExtraCommandLineOptions {
   maxIssues?: number;
   pathsToExcludeFromReport?: string[];
   searchNamespaces?: boolean;
+  silent?: boolean;
   showLineNumber?: boolean;
 }
