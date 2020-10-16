@@ -30,13 +30,12 @@ export const runCli = (
     );
 
     const files = Object.keys(analysis);
+    const filesCountMessage = `${chalk.bold(files.length.toString())} module${
+      files.length == 1 ? '' : 's'
+    } with unused exports`;
 
     showMessage(
-      chalk.red(
-        `${chalk.bold(files.length.toString())} module${
-          files.length == 1 ? '' : 's'
-        } with unused exports`,
-      ),
+      files.length ? chalk.red(filesCountMessage) : filesCountMessage,
     );
 
     const getLocationInFile = (location: LocationInFile): string => {
