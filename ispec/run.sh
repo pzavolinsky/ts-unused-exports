@@ -9,10 +9,19 @@ function run_itest()
     ../../ispec/_run-and-check-maximum-issues.sh
 }
 
+function run_itest_expect_zero_issues()
+{
+    ../../ispec/_run-and-check-exit-code-zero.sh
+}
+
 function install_and_run_itest()
 {
     npm i > /dev/null && run_itest
 }
+
+pushd ../example/simple-zero-issues
+run_itest_expect_zero_issues
+popd
 
 pushd ../example/simple
 run_itest
