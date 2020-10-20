@@ -15,3 +15,4 @@ function run {
 
 run
 run --showLineNumber
+run --silent

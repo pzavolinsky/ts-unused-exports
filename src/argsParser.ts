@@ -75,6 +75,9 @@ function processOptions(
       case '--showLineNumber':
         newOptions.showLineNumber = true;
         break;
+      case '--silent':
+        newOptions.silent = true;
+        break;
       default:
         throw new Error(`Not a recognised option '${optionName}'`);
     }
