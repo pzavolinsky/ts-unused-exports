@@ -2,6 +2,7 @@ export const USAGE = `
     usage: ts-unused-exports path/to/tsconfig.json [file1.ts file2.ts] [options]
     
     where options are any of:
+      --allowUnusedEnums
       --allowUnusedTypes
       --excludeDeclarationFiles
       --excludePathsFromReport=path1;path2

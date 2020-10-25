@@ -1,6 +1,7 @@
 ### Added
 
 - Add option 'exitWithUnusedTypesCount' to exit with a number indicating the total count of unused types. (Issue #172)
+- Add option 'allowUnusedEnums' to skip unused enums. (Issue #165). Also fixes bug where option 'allowUnusedTypes' also turned on option 'excludeDeclarationFiles'.
 
 ### Changed
 

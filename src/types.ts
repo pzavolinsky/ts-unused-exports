@@ -39,6 +39,7 @@ export interface TsConfig {
 }
 
 export interface ExtraCommandLineOptions {
+  allowUnusedEnums?: boolean;
   allowUnusedTypes?: boolean;
   excludeDeclarationFiles?: boolean;
   exitWithCount?: boolean;

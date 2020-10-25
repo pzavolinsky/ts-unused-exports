@@ -30,8 +30,12 @@ function processOptions(
     const optionValue = parts[1];
 
     switch (optionName) {
+      case '--allowUnusedEnums':
+        newOptions.allowUnusedEnums = true;
+        break;
       case '--allowUnusedTypes':
         newOptions.allowUnusedTypes = true;
+        break;
       case '--excludeDeclarationFiles':
         newOptions.excludeDeclarationFiles = true;
         break;
@@ -86,6 +90,12 @@ function processOptions(
     }
   });
 
+  if (newOptions.exitWithCount && newOptions.exitWithUnusedTypesCount) {
+    throw new Error(
+      'The options exitWithCount and exitWithUnusedTypesCount are mutually exclusive - please just use one of them.',
+    );
+  }
+
   return newFilesAndOptions;
 }
 
@@ -118,7 +128,8 @@ function canExtractOptionsFromFiles(files?: string[]): boolean {
   try {
     extractOptionsFromFiles(files);
     return true;
-  } catch (_e) {
+  } catch (e) {
+    if (!!e.message) console.error(e.message);
     return false;
   }
 }
