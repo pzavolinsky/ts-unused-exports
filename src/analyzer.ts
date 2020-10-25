@@ -5,7 +5,7 @@ import {
   LocationInFile,
 } from './types';
 
-import { cleanRelativePath } from './parser/util';
+import { remoteExportStarPrefix } from './parser/util';
 
 export { Analysis } from './types';
 
@@ -123,7 +123,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
       .forEach(ex => {
         delete fileExports.exports[ex];
 
-        const exports = exportMap[cleanRelativePath(ex)]?.exports;
+        const exports = exportMap[remoteExportStarPrefix(ex)]?.exports;
         if (exports) {
           Object.keys(exports)
             .filter(e => e != 'default')
@@ -139,7 +139,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
               fileExports.exports[key].usageCount = 0;
 
               // Mark the items as imported, for the imported file:
-              const importedFileExports = exportMap[cleanRelativePath(ex)];
+              const importedFileExports = exportMap[remoteExportStarPrefix(ex)];
               if (importedFileExports) {
                 importedFileExports.exports[key].usageCount++;
               }
@@ -152,7 +152,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
       .forEach(ex => {
         delete fileExports.exports[ex];
 
-        const exports = exportMap[cleanRelativePath(ex)]?.exports;
+        const exports = exportMap[remoteExportStarPrefix(ex)]?.exports;
         if (exports) {
           Object.keys(exports)
             .filter(e => e != 'default')
@@ -160,7 +160,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
               // Export-as: so this file exports a new namespace.
 
               // Mark the items as imported, for the imported file:
-              const importedFileExports = exportMap[cleanRelativePath(ex)];
+              const importedFileExports = exportMap[remoteExportStarPrefix(ex)];
               if (importedFileExports) {
                 importedFileExports.exports[key].usageCount++;
               }

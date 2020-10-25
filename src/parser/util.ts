@@ -6,7 +6,7 @@ export function isUnique<T>(value: T, index: number, self: T[]): boolean {
   return self.indexOf(value) === index;
 }
 
-export function cleanRelativePath(path: string): string {
+export function remoteExportStarPrefix(path: string): string {
   if (path.startsWith('*:')) return path.slice(2);
   else if (path.startsWith('*as:')) return path.slice(4);
 
