@@ -68,26 +68,7 @@ const getExportMap = (files: File[]): ExportMap => {
   return map;
 };
 
-const processImportsOfExportedAsNamespace = (
-  file: File,
-  exportMap: ExportMap,
-): void => {
-  /* Basic support for export-as-namespace.
-   * If a file is exported as a namespace, and that namespace is imported,
-   * then we mark *all* exports of that file as used.
-   * A more accurate analysis would require scanning for all usages of the exports, via that namespace.
-   */
-  file.pathsExportedAsNamespace.forEach(exportedAsNamespace => {
-    const what = exportMap[exportedAsNamespace]?.exports;
-    if (what) {
-      Object.keys(what).forEach(exported => what[exported].usageCount++);
-    }
-  });
-};
-
 const processImports = (file: File, exportMap: ExportMap): void => {
-  processImportsOfExportedAsNamespace(file, exportMap);
-
   Object.keys(file.imports).forEach(key => {
     let ex = exportMap[key]?.exports;
 
