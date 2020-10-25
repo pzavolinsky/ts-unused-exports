@@ -41,7 +41,11 @@ const processExportDeclaration = (
       const { what } = exported;
       if (what == STAR) {
         addExport(`*:${key}`, node);
-      } else {
+      }
+      if (what != STAR) {
+        if (imported.isExportStarAs) {
+          addExport(`*as:${key}`, node);
+        }
         what.forEach(w => exportNames.push(w));
       }
     }

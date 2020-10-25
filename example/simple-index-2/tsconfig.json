@@ -10,6 +10,5 @@
       "utils": ["utils/src"],
       "utils/*": ["utils/src/*"]
     },
-  },
-  "include": ["src/**/*.ts"],
+  }
 }

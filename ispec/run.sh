@@ -27,6 +27,14 @@ pushd ../example/simple
 run_itest
 popd
 
+pushd ../example/simple-index
+run_itest
+popd
+
+pushd ../example/simple-index-2
+run_itest
+popd
+
 pushd ../example/definition-files-absolute-paths
 run_itest
 popd

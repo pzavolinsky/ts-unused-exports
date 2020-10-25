@@ -135,6 +135,8 @@ const processImports = (file: File, exportMap: ExportMap): void => {
 const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
   files.forEach(file => {
     const fileExports = exportMap[file.path];
+
+    // export * from 'a' (no 'alias')
     file.exports
       .filter(ex => ex.startsWith('*:'))
       .forEach(ex => {
@@ -145,6 +147,7 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
           Object.keys(exports)
             .filter(e => e != 'default')
             .forEach(key => {
+              // Copy the exports from the imported file:
               if (!fileExports.exports[key]) {
                 const export1 = exports[key];
                 fileExports.exports[key] = {
@@ -153,6 +156,33 @@ const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
                 };
               }
               fileExports.exports[key].usageCount = 0;
+
+              // Mark the items as imported, for the imported file:
+              const importedFileExports = exportMap[cleanRelativePath(ex)];
+              if (importedFileExports) {
+                importedFileExports.exports[key].usageCount++;
+              }
+            });
+        }
+      });
+
+    file.exports
+      .filter(ex => ex.startsWith('*as:'))
+      .forEach(ex => {
+        delete fileExports.exports[ex];
+
+        const exports = exportMap[cleanRelativePath(ex)]?.exports;
+        if (exports) {
+          Object.keys(exports)
+            .filter(e => e != 'default')
+            .forEach(key => {
+              // Export-as: so this file exports a new namespace.
+
+              // Mark the items as imported, for the imported file:
+              const importedFileExports = exportMap[cleanRelativePath(ex)];
+              if (importedFileExports) {
+                importedFileExports.exports[key].usageCount++;
+              }
             });
         }
       });
