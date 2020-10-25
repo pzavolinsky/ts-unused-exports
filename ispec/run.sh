@@ -27,11 +27,11 @@ pushd ../example/simple
 run_itest
 popd
 
-pushd ../example/simple-index-1
+pushd ../example/export-star-as-1
 run_itest
 popd
 
-pushd ../example/simple-index-2
+pushd ../example/export-star-as-2
 run_itest
 popd
 
