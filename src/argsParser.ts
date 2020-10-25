@@ -30,8 +30,12 @@ function processOptions(
     const optionValue = parts[1];
 
     switch (optionName) {
+      case '--allowUnusedEnums':
+        newOptions.allowUnusedEnums = true;
+        break;
       case '--allowUnusedTypes':
         newOptions.allowUnusedTypes = true;
+        break;
       case '--excludeDeclarationFiles':
         newOptions.excludeDeclarationFiles = true;
         break;
@@ -85,6 +89,12 @@ function processOptions(
         throw new Error(`Not a recognised option '${optionName}'`);
     }
   });
+
+  if (newOptions.exitWithCount && newOptions.exitWithUnusedTypesCount) {
+    throw new Error(
+      'The options exitWithCount and exitWithUnusedTypesCount are mutually exclusive - please just use one of them.',
+    );
+  }
 
   return newFilesAndOptions;
 }

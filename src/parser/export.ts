@@ -103,19 +103,32 @@ export const extractExportNames = (path: string, node: ts.Node): string[] => {
   }
 };
 
-const TYPE_NODE_KINDS = [
+const CLASS_OR_INTERFACE_NODE_KINDS = [
   ts.SyntaxKind.InterfaceDeclaration,
   ts.SyntaxKind.TypeAliasDeclaration,
 ];
+
+const ENUM_NODE_KINDS = [ts.SyntaxKind.EnumDeclaration];
 
 const shouldNodeTypeBeIgnored = (
   node: ts.Node,
   extraOptions?: ExtraCommandLineOptions,
 ): boolean => {
   const allowUnusedTypes = !!extraOptions?.allowUnusedTypes;
-  if (!allowUnusedTypes) return false;
+  const allowUnusedEnums = !!extraOptions?.allowUnusedEnums;
 
-  return TYPE_NODE_KINDS.includes(node.kind);
+  if (allowUnusedTypes && allowUnusedEnums)
+    return (
+      CLASS_OR_INTERFACE_NODE_KINDS.includes(node.kind) ||
+      ENUM_NODE_KINDS.includes(node.kind)
+    );
+
+  if (allowUnusedTypes)
+    return CLASS_OR_INTERFACE_NODE_KINDS.includes(node.kind);
+
+  if (allowUnusedEnums) return ENUM_NODE_KINDS.includes(node.kind);
+
+  return false;
 };
 
 export const addExportCore = (
