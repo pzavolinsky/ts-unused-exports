@@ -40,12 +40,13 @@ export interface TsConfig {
 
 export interface ExtraCommandLineOptions {
   allowUnusedTypes?: boolean;
-  exitWithCount?: boolean;
   excludeDeclarationFiles?: boolean;
+  exitWithCount?: boolean;
+  exitWithUnusedTypesCount?: boolean;
   ignoreFilesRegex?: string[];
   maxIssues?: number;
   pathsToExcludeFromReport?: string[];
   searchNamespaces?: boolean;
-  silent?: boolean;
   showLineNumber?: boolean;
+  silent?: boolean;
 }

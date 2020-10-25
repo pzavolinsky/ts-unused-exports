@@ -1,3 +1,7 @@
+### Added
+
+- Add option 'exitWithUnusedTypesCount' to exit with a number indicating the total count of unused types. (Issue #172)
+
 ### Changed
 
 - if 0 issues (0 modules with unused exports) then use the default color. (Issue #164)
@@ -18,6 +22,7 @@
 ## [6.2.2] - 25 Aug 2020
 
 ### Changed
+
 - Fix: when dynamic import has curly braces around parameter
 - Fix: false positives if importing from a d.ts file, and tsconfig is set to use either absolute paths (baseUrl) or aliases (paths).
 

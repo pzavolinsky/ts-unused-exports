@@ -75,12 +75,27 @@ Scenario: Line numbers
   Then the CLI result at status is 1
   And the CLI result at stdout contains "a.ts[2,0]: a"
 
-Scenario: Exit with count (errors)
-  Given file "a.ts" is export const a = 1;
+Scenario: Exit with count of modules with unused types (errors)
+  Given file "a.ts" is
+    """
+    export const a1 = 1;
+    export const a2 = 1;
+    """
   And file "b.ts" is export const b = 1;
   And file "c.ts" is export const c = 1;
   When running ts-unused-exports "tsconfig.json" --exitWithCount
   Then the CLI result at status is 3
+
+Scenario: Exit with count of unused types (errors)
+  Given file "a.ts" is
+    """
+    export const a1 = 1;
+    export const a2 = 1;
+    """
+  And file "b.ts" is export const b = 1;
+  And file "c.ts" is export const c = 1;
+  When running ts-unused-exports "tsconfig.json" --exitWithUnusedTypesCount
+  Then the CLI result at status is 4
 
 Scenario: Exit with count (success)
   Given file "a.ts" is const a = 1;
