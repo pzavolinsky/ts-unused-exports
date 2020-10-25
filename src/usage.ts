@@ -10,6 +10,7 @@ export const USAGE = `
       --ignoreFiles=<regex>
       --ignoreProductionFiles
       --ignoreTestFiles
+      --maxIssues
       --searchNamespaces
       --showLineNumber
       --silent
