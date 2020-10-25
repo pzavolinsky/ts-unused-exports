@@ -27,7 +27,7 @@ pushd ../example/simple
 run_itest
 popd
 
-pushd ../example/simple-index
+pushd ../example/simple-index-1
 run_itest
 popd
 
