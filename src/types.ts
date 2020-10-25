@@ -10,7 +10,6 @@ export interface File {
   exports: string[];
   // The line number and column for each export - Matches the exports array.
   exportLocations: LocationInFile[];
-  pathsExportedAsNamespace: string[];
 }
 
 export interface LocationInFile {

@@ -14,7 +14,6 @@ import { relative, resolve } from 'path';
 import { FromWhat } from './common';
 import { addExportCore } from './export';
 import { addImportCore } from './import';
-import { cleanRelativePath } from './util';
 import { isNodeDisabledViaComment } from './comment';
 import { processNode } from './nodeProcessor';
 import { readFileSync } from 'fs';
@@ -49,13 +48,7 @@ const mapFile = (
   const tsconfigPathsMatcher =
     (!!paths && tsconfigPaths.createMatchPath(baseDir, paths)) || undefined;
 
-  const pathsExportedAsNamespace: string[] = [];
-
   const addImport = (fw: FromWhat): string | undefined => {
-    if (fw.isExportStarAs) {
-      pathsExportedAsNamespace.push(cleanRelativePath(fw.from));
-    }
-
     return addImportCore(
       fw,
       rootDir,
@@ -100,7 +93,6 @@ const mapFile = (
     imports,
     exports: exportNames,
     exportLocations,
-    pathsExportedAsNamespace,
   };
 };
 
