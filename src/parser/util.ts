@@ -7,7 +7,10 @@ export function isUnique<T>(value: T, index: number, self: T[]): boolean {
 }
 
 export function cleanRelativePath(path: string): string {
-  return path.slice(2);
+  if (path.startsWith('*:')) return path.slice(2);
+  else if (path.startsWith('*as:')) return path.slice(4);
+
+  return path;
 }
 
 // A whitelist, to over-ride namespaceBlacklist.
