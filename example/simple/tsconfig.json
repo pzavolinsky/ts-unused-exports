@@ -7,7 +7,4 @@
     "strictNullChecks": true
   },
   "include": ["./**/*.ts"],
-  "atom": {
-    "rewriteTsconfig": true
-  }
 }

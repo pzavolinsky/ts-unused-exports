@@ -6,9 +6,11 @@ export const USAGE = `
       --excludeDeclarationFiles
       --excludePathsFromReport=path1;path2
       --exitWithCount
+      --exitWithUnusedTypesCount
       --ignoreFiles=<regex>
       --ignoreProductionFiles
       --ignoreTestFiles
+      --maxIssues
       --searchNamespaces
       --showLineNumber
       --silent

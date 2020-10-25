@@ -46,6 +46,9 @@ function processOptions(
       case '--exitWithCount':
         newOptions.exitWithCount = true;
         break;
+      case '--exitWithUnusedTypesCount':
+        newOptions.exitWithUnusedTypesCount = true;
+        break;
       case '--ignoreFiles':
         {
           ignoreFilesRegex.push(optionValue);

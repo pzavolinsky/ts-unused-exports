@@ -78,9 +78,17 @@ export const runCli = (
       showMessages(files, showMessage, analysis, options);
     }
 
+    // Max allowed exit code is 127 (single signed byte)
+    const MAX_ALLOWED_EXIT_CODE = 127;
+
     if (options?.exitWithCount) {
-      // Max allowed exit code is 127 (single signed byte)
-      return exitWith(Math.min(127, files.length));
+      return exitWith(Math.min(MAX_ALLOWED_EXIT_CODE, files.length));
+    } else if (options?.exitWithUnusedTypesCount) {
+      const totalIssues = files
+        .map(f => analysis[f].length)
+        .reduce((previous, current) => previous + current, 0);
+
+      return exitWith(Math.min(MAX_ALLOWED_EXIT_CODE, totalIssues));
     }
 
     const maxIssues = options?.maxIssues || 0;
