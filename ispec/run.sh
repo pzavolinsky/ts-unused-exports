@@ -58,3 +58,7 @@ popd
 pushd ../example/absolute-paths-2-tsconfigs
 install_and_run_itest
 popd
+
+pushd ../example/path-alias-and-sub-folders
+run_itest
+popd
