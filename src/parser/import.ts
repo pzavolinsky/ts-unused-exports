@@ -93,7 +93,9 @@ export const addImportCore = (
             undefined,
             EXTENSIONS,
           ))
-        ? declarationFilePatch(matchedPath).replace(`${baseDir}${sep}`, '')
+        ? declarationFilePatch(matchedPath)
+            .replace(`${rootDir}${sep}`, '')
+            .replace(`${baseDir}${sep}`, '') // TODO xxx revise
         : undefined;
     }
   };
