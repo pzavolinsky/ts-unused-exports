@@ -84,19 +84,25 @@ export const addImportCore = (
     } else {
       let matchedPath;
 
-      return isRelativeToBaseDir(baseDir, from)
-        ? join(baseUrl, from)
-        : tsconfigPathsMatcher &&
-          (matchedPath = tsconfigPathsMatcher(
-            from,
-            undefined,
-            undefined,
-            EXTENSIONS,
-          ))
-        ? declarationFilePatch(matchedPath)
-            .replace(`${rootDir}${sep}`, '')
-            .replace(`${baseDir}${sep}`, '') // TODO xxx revise
-        : undefined;
+      if (isRelativeToBaseDir(baseDir, from)) {
+        return join(baseUrl, from);
+      }
+
+      if (
+        tsconfigPathsMatcher &&
+        (matchedPath = tsconfigPathsMatcher(
+          from,
+          undefined,
+          undefined,
+          EXTENSIONS,
+        ))
+      ) {
+        return declarationFilePatch(matchedPath)
+          .replace(`${rootDir}${sep}`, '')
+          .replace(`${baseDir}${sep}`, ''); // TODO xxx revise
+      }
+
+      return undefined;
     }
   };
 
