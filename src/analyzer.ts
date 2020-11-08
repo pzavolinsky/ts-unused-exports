@@ -113,60 +113,76 @@ const processImports = (file: File, exportMap: ExportMap): void => {
   });
 };
 
+// export * from 'a' (no 'alias')
+const expandExportFromStarForFile = (
+  file: File,
+  exportMap: ExportMap,
+): void => {
+  const fileExports = exportMap[file.path];
+
+  file.exports
+    .filter(ex => ex.startsWith('*:'))
+    .forEach(ex => {
+      delete fileExports.exports[ex];
+
+      const exports = exportMap[remoteExportStarPrefix(ex)]?.exports;
+      if (exports) {
+        Object.keys(exports)
+          .filter(e => e != 'default')
+          .forEach(key => {
+            // Copy the exports from the imported file:
+            if (!fileExports.exports[key]) {
+              const export1 = exports[key];
+              fileExports.exports[key] = {
+                usageCount: 0,
+                location: export1.location,
+              };
+            }
+            fileExports.exports[key].usageCount = 0;
+
+            // Mark the items as imported, for the imported file:
+            const importedFileExports = exportMap[remoteExportStarPrefix(ex)];
+            if (importedFileExports) {
+              importedFileExports.exports[key].usageCount++;
+            }
+          });
+      }
+    });
+};
+
+// export * as X from 'a' (has 'alias')
+const expandExportFromStarAsForFile = (
+  file: File,
+  exportMap: ExportMap,
+): void => {
+  const fileExports = exportMap[file.path];
+
+  file.exports
+    .filter(ex => ex.startsWith('*as:'))
+    .forEach(ex => {
+      delete fileExports.exports[ex];
+
+      const exports = exportMap[remoteExportStarPrefix(ex)]?.exports;
+      if (exports) {
+        Object.keys(exports)
+          .filter(e => e != 'default')
+          .forEach(key => {
+            // Export-as: so this file exports a new namespace.
+
+            // Mark the items as imported, for the imported file:
+            const importedFileExports = exportMap[remoteExportStarPrefix(ex)];
+            if (importedFileExports) {
+              importedFileExports.exports[key].usageCount++;
+            }
+          });
+      }
+    });
+};
+
 const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
   files.forEach(file => {
-    const fileExports = exportMap[file.path];
-
-    // export * from 'a' (no 'alias')
-    file.exports
-      .filter(ex => ex.startsWith('*:'))
-      .forEach(ex => {
-        delete fileExports.exports[ex];
-
-        const exports = exportMap[remoteExportStarPrefix(ex)]?.exports;
-        if (exports) {
-          Object.keys(exports)
-            .filter(e => e != 'default')
-            .forEach(key => {
-              // Copy the exports from the imported file:
-              if (!fileExports.exports[key]) {
-                const export1 = exports[key];
-                fileExports.exports[key] = {
-                  usageCount: 0,
-                  location: export1.location,
-                };
-              }
-              fileExports.exports[key].usageCount = 0;
-
-              // Mark the items as imported, for the imported file:
-              const importedFileExports = exportMap[remoteExportStarPrefix(ex)];
-              if (importedFileExports) {
-                importedFileExports.exports[key].usageCount++;
-              }
-            });
-        }
-      });
-
-    file.exports
-      .filter(ex => ex.startsWith('*as:'))
-      .forEach(ex => {
-        delete fileExports.exports[ex];
-
-        const exports = exportMap[remoteExportStarPrefix(ex)]?.exports;
-        if (exports) {
-          Object.keys(exports)
-            .filter(e => e != 'default')
-            .forEach(key => {
-              // Export-as: so this file exports a new namespace.
-
-              // Mark the items as imported, for the imported file:
-              const importedFileExports = exportMap[remoteExportStarPrefix(ex)];
-              if (importedFileExports) {
-                importedFileExports.exports[key].usageCount++;
-              }
-            });
-        }
-      });
+    expandExportFromStarForFile(file, exportMap);
+    expandExportFromStarAsForFile(file, exportMap);
   });
 };
 
