@@ -5,7 +5,7 @@ import {
   LocationInFile,
 } from './types';
 
-import { remoteExportStarPrefix } from './parser/util';
+import { removeExportStarPrefix } from './parser/util';
 
 export { Analysis } from './types';
 
@@ -126,7 +126,7 @@ const expandExportFromStarOrStarAsForFile = (
     .forEach(ex => {
       delete fileExports.exports[ex];
 
-      const exports = exportMap[remoteExportStarPrefix(ex)]?.exports;
+      const exports = exportMap[removeExportStarPrefix(ex)]?.exports;
       if (exports) {
         Object.keys(exports)
           .filter(e => e != 'default')
@@ -145,7 +145,7 @@ const expandExportFromStarOrStarAsForFile = (
             // else is export-as: so this file exports a new namespace.
 
             // Mark the items as imported, for the imported file:
-            const importedFileExports = exportMap[remoteExportStarPrefix(ex)];
+            const importedFileExports = exportMap[removeExportStarPrefix(ex)];
             if (importedFileExports) {
               importedFileExports.exports[key].usageCount++;
             }
