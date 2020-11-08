@@ -97,9 +97,11 @@ export const addImportCore = (
           EXTENSIONS,
         ))
       ) {
+        const absoluteRootDir = resolve(rootDir);
+
         return declarationFilePatch(matchedPath)
-          .replace(`${rootDir}${sep}`, '')
-          .replace(`${baseDir}${sep}`, ''); // TODO xxx revise
+          .replace(`${absoluteRootDir}${sep}`, '')
+          .replace(`${baseDir}${sep}`, '');
       }
 
       return undefined;
