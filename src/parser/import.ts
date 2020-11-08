@@ -77,7 +77,7 @@ export const addImportCore = (
 ): string | undefined => {
   const { from, what } = fw;
 
-  const getKey = (from: string): string | undefined => {
+  const getKey = (from: string): string => {
     if (from[0] == '.') {
       // An undefined return indicates the import is from 'index.ts' or similar == '.'
       return relativeTo(rootDir, path, from) || '.';
@@ -104,11 +104,11 @@ export const addImportCore = (
           .replace(`${baseDir}${sep}`, '');
       }
 
-      return undefined;
+      return from;
     }
   };
 
-  const key = getKey(from) || from;
+  const key = getKey(from);
   const items = imports[key] || [];
 
   imports[key] = items.concat(what).filter(isUnique);
