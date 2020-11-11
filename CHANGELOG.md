@@ -1,3 +1,5 @@
+## [6.3.0] - 11 Nov 2020
+
 ### Added
 
 - Add option 'exitWithUnusedTypesCount' to exit with a number indicating the total count of unused types. (Issue #172)
