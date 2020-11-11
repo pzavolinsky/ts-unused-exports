@@ -1,7 +1,11 @@
+## [7.0.0] - 11 Nov 2020
+
 ### Changed
 
-- Improve support for 'export * as X'
-- Improve support for path aliases with sub folders (fixes inconsistency with basedir vs rootdir).
+- BREAKING CHANGE: Makes TypeScript a peer dependency (Issue #159)  
+  Migration path:
+  If you already have a version of the TypeScript compiler installed in the same spot as ts-unused-exports no migration steps are necessary (it will work out of the box).
+  Otherwise you'll have to install the TypeScript compiler there yourself (e.g. with `npm i -D typescript`).
 
 ## [6.3.0] - 11 Nov 2020
 
@@ -14,10 +18,6 @@
 
 - if 0 issues (0 modules with unused exports) then use the default color. (Issue #164)
 - Add an option to stop writing to stdout on success: --silent
-- BREAKING CHANGE: Makes TypeScript a peer dependency (Issue #159)  
-  Migration path:
-  If you already have a version of the TypeScript compiler installed in the same spot as ts-unused-exports no migration steps are necessary (it will work out of the box).
-  Otherwise you'll have to install the TypeScript compiler there yourself (e.g. with `npm i -D typescript`).
 
 ## [6.2.4] - 14 Sep 2020
 
