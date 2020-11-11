@@ -14,6 +14,10 @@
 
 - if 0 issues (0 modules with unused exports) then use the default color. (Issue #164)
 - Add an option to stop writing to stdout on success: --silent
+- BREAKING CHANGE: Makes TypeScript a peer dependency (Issue #159)  
+  Migration path:
+  If you already have a version of the TypeScript compiler installed in the same spot as ts-unused-exports no migration steps are necessary (it will work out of the box).
+  Otherwise you'll have to install the TypeScript compiler there yourself (e.g. with `npm i -D typescript`).
 
 ## [6.2.4] - 14 Sep 2020
 
@@ -52,7 +56,7 @@
 ### Added
 
 - Handle dynamic imports within a TSX div or fragment
-- Add basic support for export * as namespace.
+- Add basic support for export \* as namespace.
 
 ## [6.1.2] - 1 Apr 2020
 
