@@ -6,6 +6,8 @@
   Migration path:
   If you already have a version of the TypeScript compiler installed in the same spot as ts-unused-exports no migration steps are necessary (it will work out of the box).
   Otherwise you'll have to install the TypeScript compiler there yourself (e.g. with `npm i -D typescript`).
+- Fixed false positive with path aliases and sub-folders (Issue #154)
+- Improved support for export * as (Issue #160)
 
 ## [6.3.0] - 11 Nov 2020
 
