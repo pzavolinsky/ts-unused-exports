@@ -23,6 +23,11 @@ function isWithExpression(node: ts.Node): node is WithExpression {
   return !!myInterface.expression;
 }
 
+function isWithExpressionBoolean(node: ts.Node): boolean {
+  const myInterface = node as WithExpression;
+  return !!myInterface.expression;
+}
+
 const parseDereferencedLambdaParamsToTypes = (
   paramName: string,
   lambda: ts.Node,
@@ -160,7 +165,7 @@ const tryParseExpression: ExpressionParser = (
   // Example: see test with Promise.all[]
   recurseIntoChildren(expr, (node) => {
     if (isWithExpressionBoolean(node) && node.getText().startsWith('import')) {
-      tryParseImportExpression((node as object) as ts.Expression, addImport);
+      tryParseImportExpression(node as ts.Expression, addImport);
     }
 
     return true;
