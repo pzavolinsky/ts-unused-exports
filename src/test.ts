@@ -62,12 +62,12 @@ const setup: SetupFn = ({
     }
     const removeDir = (path: string): void => {
       const items = readdirSync(path, { encoding: 'utf8' }).filter(
-        f => f[0] !== '.',
+        (f) => f[0] !== '.',
       );
-      const files = items.filter(f => !!f.match(/\.(json|ts|tsx|js|jsx)$/));
-      files.forEach(f => unlinkSync(join(path, f)));
-      const dirs = items.filter(i => !files.includes(i));
-      dirs.forEach(d => removeDir(join(path, d)));
+      const files = items.filter((f) => !!f.match(/\.(json|ts|tsx|js|jsx)$/));
+      files.forEach((f) => unlinkSync(join(path, f)));
+      const dirs = items.filter((i) => !files.includes(i));
+      dirs.forEach((d) => removeDir(join(path, d)));
       rmdirSync(path);
     };
     removeDir(tmp);
@@ -94,19 +94,19 @@ const setup: SetupFn = ({
     },
     { optional: 'with files' },
   );
-  When('running ts-unused-exports(.*)', args => {
+  When('running ts-unused-exports(.*)', (args) => {
     const stdout = [] as string[];
     const stderr = [] as string[];
 
     try {
       const status = runCli(
-        code => code,
-        s => stderr.push(s),
-        s => stdout.push(s),
+        (code) => code,
+        (s) => stderr.push(s),
+        (s) => stdout.push(s),
         args
           .trim()
           .split(' ')
-          .map(s => s.replace(/^"(.*)"$/, '$1'))
+          .map((s) => s.replace(/^"(.*)"$/, '$1'))
           .map(pathFor),
       );
       setCtx('$run', {
@@ -130,7 +130,7 @@ const setup: SetupFn = ({
       const actual = raw
         ? result
         : Object.keys(result).reduce((acc, k) => {
-            acc[k] = result[k].map(item => item.exportName);
+            acc[k] = result[k].map((item) => item.exportName);
             return acc;
           }, {} as Record<string, string[]>);
       compare(fixDot(op), actual, fixDot(payload));

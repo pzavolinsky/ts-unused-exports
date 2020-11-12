@@ -18,9 +18,13 @@ type WithExpression = ts.Node & {
   expression: ts.Expression;
 };
 
-function isWithExpression(node: ts.Node): node is WithExpression {
+function isWithExpressionBoolean(node: ts.Node): boolean {
   const myInterface = node as WithExpression;
   return !!myInterface.expression;
+}
+
+function isWithExpression(node: ts.Node): node is WithExpression {
+  return isWithExpressionBoolean(node);
 }
 
 const parseDereferencedLambdaParamsToTypes = (
@@ -30,7 +34,7 @@ const parseDereferencedLambdaParamsToTypes = (
   const types: string[] = [];
 
   const usagePrefix = `${paramName}.`;
-  recurseIntoChildren(lambda, child => {
+  recurseIntoChildren(lambda, (child) => {
     if (child.getText().startsWith(usagePrefix)) {
       const usage = child.getText().substring(usagePrefix.length);
       types.push(usage);
@@ -56,8 +60,8 @@ const parseDestructuredLambdaParamsToTypes = (paramList: string): string[] => {
 
     return names
       .split(',')
-      .map(n => (n.includes(':') ? n.split(':')[0] : n))
-      .map(n => n.trim());
+      .map((n) => (n.includes(':') ? n.split(':')[0] : n))
+      .map((n) => n.trim());
   }
 
   return [paramList];
@@ -76,7 +80,7 @@ const findLambdasWithDereferencing = (node: ts.Node): string[] => {
     if (lambda.getChildCount() === 3) {
       const paramName = lambda.getChildren()[0].getText();
 
-      parseDereferencedLambdaParamsToTypes(paramName, lambda).forEach(t =>
+      parseDereferencedLambdaParamsToTypes(paramName, lambda).forEach((t) =>
         what.push(t),
       );
     } else if (
@@ -85,9 +89,9 @@ const findLambdasWithDereferencing = (node: ts.Node): string[] => {
     ) {
       const paramNames = lambda.getChildren()[1].getText();
 
-      parseDestructuredLambdaParamsToTypes(paramNames).forEach(p => {
+      parseDestructuredLambdaParamsToTypes(paramNames).forEach((p) => {
         what.push(p);
-        parseDereferencedLambdaParamsToTypes(p, lambda).forEach(t =>
+        parseDereferencedLambdaParamsToTypes(p, lambda).forEach((t) =>
           what.push(t),
         );
       });
@@ -158,9 +162,9 @@ const tryParseExpression: ExpressionParser = (
 
   // Handle complex expressions, where the 'import' is buried in a tree.
   // Example: see test with Promise.all[]
-  recurseIntoChildren(expr, node => {
-    if (isWithExpression(node) && node.getText().startsWith('import')) {
-      tryParseImportExpression((node as object) as ts.Expression, addImport);
+  recurseIntoChildren(expr, (node) => {
+    if (isWithExpressionBoolean(node) && node.getText().startsWith('import')) {
+      tryParseImportExpression(node as ts.Expression, addImport);
     }
 
     return true;
@@ -174,7 +178,7 @@ const handleImportWithJsxAttributes = (
   attributes: ts.JsxAttributes,
   addImport: (fw: FromWhat) => void,
 ): void => {
-  attributes.properties.forEach(prop => {
+  attributes.properties.forEach((prop) => {
     if (ts.isJsxAttribute(prop)) {
       if (
         prop.initializer &&
@@ -204,7 +208,7 @@ const handleImportWithinExpression = (
           ts.SyntaxKind.JsxExpression,
         );
 
-        jsxExpressions.forEach(j => {
+        jsxExpressions.forEach((j) => {
           const jsxExpr = j as ts.JsxExpression;
           if (jsxExpr.expression) {
             tryParseExpression(jsxExpr.expression, addImport);
@@ -217,7 +221,7 @@ const handleImportWithinExpression = (
         ts.SyntaxKind.JsxSelfClosingElement,
       );
 
-      selfClosingElements.forEach(elem => {
+      selfClosingElements.forEach((elem) => {
         if (ts.isJsxSelfClosingElement(elem)) {
           handleImportWithJsxAttributes(elem.attributes, addImport);
         }

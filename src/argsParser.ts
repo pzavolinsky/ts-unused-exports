@@ -24,7 +24,7 @@ function processOptions(
     tsFiles: filesAndOptions.tsFiles,
   };
 
-  options.forEach(option => {
+  options.forEach((option) => {
     const parts = option.split('=');
     const optionName = parts[0];
     const optionValue = parts[1];
@@ -42,7 +42,7 @@ function processOptions(
       case '--excludePathsFromReport':
         {
           const paths = optionValue.split(';');
-          paths.forEach(path => {
+          paths.forEach((path) => {
             pathsToExcludeFromReport.push(path);
           });
         }
@@ -113,8 +113,8 @@ export function extractOptionsFromFiles(files?: string[]): TsFilesAndOptions {
   };
 
   if (files) {
-    const options = files.filter(f => isOption(f));
-    const filteredFiles = files.filter(f => !isOption(f));
+    const options = files.filter((f) => isOption(f));
+    const filteredFiles = files.filter((f) => !isOption(f));
 
     filesAndOptions.tsFiles = filteredFiles.length ? filteredFiles : undefined;
 
