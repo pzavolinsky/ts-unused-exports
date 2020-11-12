@@ -1,3 +1,8 @@
+### Changed
+
+- Updated the chalk dependency (no change in behavior)
+- (Internal) Updated the dev dependencies, involving lot of small changes adding parentheses to lambda parameters.
+
 ## [7.0.0] - 11 Nov 2020
 
 ### Changed
