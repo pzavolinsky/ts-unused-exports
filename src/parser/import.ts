@@ -48,7 +48,7 @@ export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   const importNames = isStar
     ? STAR
     : (namedBindings as ts.NamedImports).elements.map(
-        e => (e.propertyName || e.name).text,
+        (e) => (e.propertyName || e.name).text,
       );
 
   // note on namespaces: when importing a namespace, we cannot differentiate that from another element.

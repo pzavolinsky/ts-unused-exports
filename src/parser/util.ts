@@ -27,9 +27,9 @@ function runForChildren(next: ts.Node, fun: (node: ts.Node) => boolean): void {
   next
     .getChildren()
     .filter(
-      c => !namespaceBlacklist.includes(c.kind) || whitelist.includes(c.kind),
+      (c) => !namespaceBlacklist.includes(c.kind) || whitelist.includes(c.kind),
     )
-    .forEach(node => {
+    .forEach((node) => {
       fun(node);
     });
 }

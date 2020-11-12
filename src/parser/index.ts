@@ -125,8 +125,8 @@ const parsePaths = (
   const includeDeclarationFiles = !extraOptions?.excludeDeclarationFiles;
 
   const files = filePaths
-    .filter(p => includeDeclarationFiles || !p.includes('.d.'))
-    .map(path =>
+    .filter((p) => includeDeclarationFiles || !p.includes('.d.'))
+    .map((path) =>
       parseFile(rootDir, resolve(rootDir, path), baseUrl, paths, extraOptions),
     );
 

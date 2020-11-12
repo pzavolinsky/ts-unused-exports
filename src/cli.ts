@@ -32,8 +32,8 @@ const showMessages = (
   showMessage(files.length ? chalk.red(filesCountMessage) : filesCountMessage);
 
   if (options?.showLineNumber) {
-    files.forEach(path => {
-      analysis[path].forEach(unusedExport => {
+    files.forEach((path) => {
+      analysis[path].forEach((unusedExport) => {
         showMessage(
           `${path}${getLocationInFile(
             unusedExport.location,
@@ -42,10 +42,10 @@ const showMessages = (
       });
     });
   } else {
-    files.forEach(path =>
+    files.forEach((path) =>
       showMessage(
         `${path}: ${chalk.bold.yellow(
-          analysis[path].map(r => r.exportName).join(', '),
+          analysis[path].map((r) => r.exportName).join(', '),
         )}`,
       ),
     );
@@ -85,7 +85,7 @@ export const runCli = (
       return exitWith(Math.min(MAX_ALLOWED_EXIT_CODE, files.length));
     } else if (options?.exitWithUnusedTypesCount) {
       const totalIssues = files
-        .map(f => analysis[f].length)
+        .map((f) => analysis[f].length)
         .reduce((previous, current) => previous + current, 0);
 
       return exitWith(Math.min(MAX_ALLOWED_EXIT_CODE, totalIssues));

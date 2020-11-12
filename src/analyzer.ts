@@ -36,7 +36,7 @@ const parseExportArray = (e: string): string[] => {
     .replace('[', '')
     .replace(']', '')
     .split(',')
-    .map(e => e.trim());
+    .map((e) => e.trim());
 };
 
 const getFileExports = (file: File): ExportItem => {
@@ -62,14 +62,14 @@ const getFileExports = (file: File): ExportItem => {
 
 const getExportMap = (files: File[]): ExportMap => {
   const map: ExportMap = {};
-  files.forEach(file => {
+  files.forEach((file) => {
     map[file.path] = getFileExports(file);
   });
   return map;
 };
 
 const processImports = (file: File, exportMap: ExportMap): void => {
-  Object.keys(file.imports).forEach(key => {
+  Object.keys(file.imports).forEach((key) => {
     let ex = exportMap[key]?.exports;
 
     // Handle imports from an index file
@@ -103,10 +103,10 @@ const processImports = (file: File, exportMap: ExportMap): void => {
       ex[imp].usageCount++;
     };
 
-    file.imports[key].forEach(imp =>
+    file.imports[key].forEach((imp) =>
       imp === '*'
         ? Object.keys(ex)
-            .filter(e => e != 'default')
+            .filter((e) => e != 'default')
             .forEach(addUsage)
         : addUsage(imp),
     );
@@ -122,15 +122,15 @@ const expandExportFromStarOrStarAsForFile = (
   const fileExports = exportMap[file.path];
 
   file.exports
-    .filter(ex => ex.startsWith(prefix))
-    .forEach(ex => {
+    .filter((ex) => ex.startsWith(prefix))
+    .forEach((ex) => {
       delete fileExports.exports[ex];
 
       const exports = exportMap[removeExportStarPrefix(ex)]?.exports;
       if (exports) {
         Object.keys(exports)
-          .filter(e => e != 'default')
-          .forEach(key => {
+          .filter((e) => e != 'default')
+          .forEach((key) => {
             if (!isWithAlias) {
               // Copy the exports from the imported file:
               if (!fileExports.exports[key]) {
@@ -171,7 +171,7 @@ const expandExportFromStarAsForFile = (
 };
 
 const expandExportFromStar = (files: File[], exportMap: ExportMap): void => {
-  files.forEach(file => {
+  files.forEach((file) => {
     expandExportFromStarForFile(file, exportMap);
     expandExportFromStarAsForFile(file, exportMap);
   });
@@ -186,7 +186,7 @@ const shouldPathBeExcludedFromResults = (
     return false;
   }
 
-  return extraOptions.pathsToExcludeFromReport.some(ignore =>
+  return extraOptions.pathsToExcludeFromReport.some((ignore) =>
     path.includes(ignore),
   );
 };
@@ -199,15 +199,15 @@ const filterFiles = (
     return files;
   }
 
-  const regexes = extraOptions.ignoreFilesRegex?.map(rex => new RegExp(rex));
+  const regexes = extraOptions.ignoreFilesRegex?.map((rex) => new RegExp(rex));
 
   const shouldIgnoreFile = (fileName: string): boolean => {
-    return regexes.some(reg => {
+    return regexes.some((reg) => {
       return reg.test(fileName);
     });
   };
 
-  return files.filter(f => !shouldIgnoreFile(f.path));
+  return files.filter((f) => !shouldIgnoreFile(f.path));
 };
 
 export default (
@@ -218,18 +218,18 @@ export default (
 
   const exportMap = getExportMap(filteredFiles);
   expandExportFromStar(filteredFiles, exportMap);
-  filteredFiles.forEach(file => processImports(file, exportMap));
+  filteredFiles.forEach((file) => processImports(file, exportMap));
 
   const analysis: Analysis = {};
 
-  Object.keys(exportMap).forEach(file => {
+  Object.keys(exportMap).forEach((file) => {
     const expItem = exportMap[file];
     const { exports, path } = expItem;
 
     if (shouldPathBeExcludedFromResults(path, extraOptions)) return;
 
     const unusedExports = Object.keys(exports).filter(
-      k => exports[k].usageCount === 0,
+      (k) => exports[k].usageCount === 0,
     );
 
     if (unusedExports.length === 0) {
@@ -237,7 +237,7 @@ export default (
     }
 
     analysis[path] = [];
-    unusedExports.forEach(e => {
+    unusedExports.forEach((e) => {
       analysis[path].push({
         exportName: e,
         location: exports[e].location,

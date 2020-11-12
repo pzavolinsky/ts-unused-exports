@@ -18,7 +18,7 @@ type NamespaceHolder = {
 };
 
 const hasModifier = (node: ts.Node, mod: ts.SyntaxKind): boolean | undefined =>
-  node.modifiers && node.modifiers.filter(m => m.kind === mod).length > 0;
+  node.modifiers && node.modifiers.filter((m) => m.kind === mod).length > 0;
 
 const processExportDeclaration = (
   node: ts.Node,
@@ -29,7 +29,7 @@ const processExportDeclaration = (
   const exportDecl = node as ts.ExportDeclaration;
   const { moduleSpecifier } = exportDecl;
   if (moduleSpecifier === undefined) {
-    extractExportStatement(exportDecl).forEach(e => addExport(e, node));
+    extractExportStatement(exportDecl).forEach((e) => addExport(e, node));
     return;
   } else {
     const { exported, imported } = extractExportFromImport(
@@ -46,7 +46,7 @@ const processExportDeclaration = (
         if (imported.isExportStarAs) {
           addExport(`*as:${key}`, node);
         }
-        what.forEach(w => exportNames.push(w));
+        what.forEach((w) => exportNames.push(w));
       }
     }
     return;
@@ -69,22 +69,22 @@ const processExportKeyword = (
   const names = decl.name ? [decl.name.text] : extractExportNames(path, node);
 
   names
-    .filter(name => !!name)
-    .forEach(name => {
+    .filter((name) => !!name)
+    .forEach((name) => {
       addExport(namespace.namespace + name, node);
 
       if (extraOptions?.searchNamespaces) {
         // performance: halves the time taken on large codebase (150k loc)
         const isNamespace = node
           .getChildren()
-          .some(c => c.kind === ts.SyntaxKind.NamespaceKeyword);
+          .some((c) => c.kind === ts.SyntaxKind.NamespaceKeyword);
 
         if (isNamespace) {
           // Process the children, in case they *export* any types:
           node
             .getChildren()
-            .filter(c => c.kind === ts.SyntaxKind.Identifier)
-            .forEach(c => {
+            .filter((c) => c.kind === ts.SyntaxKind.Identifier)
+            .forEach((c) => {
               processSubNode(c, namespace.namespace + name + '.');
             });
 
@@ -164,8 +164,8 @@ export const processNode = (
     // In namespace: need to process children, in case they *import* any types
     node
       .getChildren()
-      .filter(c => !namespaceBlacklist.includes(c.kind))
-      .forEach(c => {
+      .filter((c) => !namespaceBlacklist.includes(c.kind))
+      .forEach((c) => {
         processSubNode(c, namespace);
       });
   }

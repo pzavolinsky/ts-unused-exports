@@ -7,11 +7,11 @@ import { FromWhat, STAR, getFrom } from './common';
 
 const extractAliasFirstFromElements = (
   elements: ts.NodeArray<ts.ExportSpecifier>,
-): string[] => elements.map(e => e.name.text);
+): string[] => elements.map((e) => e.name.text);
 
 const extractPropertyOrAliasFirstFromElements = (
   elements: ts.NodeArray<ts.ExportSpecifier>,
-): string[] => elements.map(e => (e.propertyName || e.name).text);
+): string[] => elements.map((e) => (e.propertyName || e.name).text);
 
 const extractFromBindingsWith = (
   bindings: ts.NamedExportBindings,
@@ -80,8 +80,8 @@ const parseExportNames = (exportName: string): string[] => {
     const names = exportName.substring(1, exportName.length - 2);
     return names
       .split(',')
-      .map(n => (n.includes(':') ? n.split(':')[1] : n))
-      .map(n => n.trim());
+      .map((n) => (n.includes(':') ? n.split(':')[1] : n))
+      .map((n) => n.trim());
   }
 
   return [exportName];

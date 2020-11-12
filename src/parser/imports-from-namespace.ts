@@ -17,8 +17,8 @@ const getPossibleImportedNamespaces = (
   const keys = Object.keys(imports);
   const imported: ImportedNamespace[] = [];
 
-  keys.forEach(fromFile => {
-    const namespaces = imports[fromFile].map(i => `${i}.`);
+  keys.forEach((fromFile) => {
+    const namespaces = imports[fromFile].map((i) => `${i}.`);
     imported.push({
       file: fromFile,
       namespaces: namespaces,
@@ -33,8 +33,8 @@ const mayContainImportsFromNamespace = (
   imports: ImportedNamespace[],
 ): boolean => {
   const nodeText = node.getText();
-  return imports.some(possible => {
-    return possible.namespaces.some(ns => nodeText.includes(ns));
+  return imports.some((possible) => {
+    return possible.namespaces.some((ns) => nodeText.includes(ns));
   });
 };
 
@@ -52,8 +52,8 @@ export const addImportsFromNamespace = (
   const findImportUsagesWithin = (node: ts.Node): void => {
     const nodeText = node.getText();
 
-    possibles.forEach(p => {
-      p.namespaces.forEach(ns => {
+    possibles.forEach((p) => {
+      p.namespaces.forEach((ns) => {
         if (nodeText.startsWith(ns)) {
           addImport({
             from: p.file,
@@ -69,7 +69,7 @@ export const addImportsFromNamespace = (
 
     next
       .getChildren()
-      .filter(c => !namespaceBlacklist.includes(c.kind))
+      .filter((c) => !namespaceBlacklist.includes(c.kind))
       .forEach(recurseIntoChildren);
   };
 
