@@ -18,14 +18,13 @@ type WithExpression = ts.Node & {
   expression: ts.Expression;
 };
 
-function isWithExpression(node: ts.Node): node is WithExpression {
+function isWithExpressionBoolean(node: ts.Node): boolean {
   const myInterface = node as WithExpression;
   return !!myInterface.expression;
 }
 
-function isWithExpressionBoolean(node: ts.Node): boolean {
-  const myInterface = node as WithExpression;
-  return !!myInterface.expression;
+function isWithExpression(node: ts.Node): node is WithExpression {
+  return isWithExpressionBoolean(node);
 }
 
 const parseDereferencedLambdaParamsToTypes = (
