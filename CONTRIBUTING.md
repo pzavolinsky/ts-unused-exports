@@ -41,6 +41,7 @@ Some things that will increase the chance that your pull request is accepted:
 - Try not to introduce new dependencies
 - Try to follow the style of the existing code
 - Write a [good commit message][commit].
+- Add a suitable entry to the CHANGELOG.md file.
 - Try to squash the branch down to 1 commit.
 
 [commit]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
