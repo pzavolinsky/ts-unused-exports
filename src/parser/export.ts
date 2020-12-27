@@ -3,6 +3,8 @@ import * as ts from 'typescript';
 import { ExtraCommandLineOptions, LocationInFile } from '../types';
 import { FromWhat, STAR, getFrom } from './common';
 
+import { TYPE_OR_INTERFACE_NODE_KINDS } from './kinds';
+
 // Parse Exports
 
 const extractAliasFirstFromElements = (
@@ -103,11 +105,6 @@ export const extractExportNames = (path: string, node: ts.Node): string[] => {
   }
 };
 
-const CLASS_OR_INTERFACE_NODE_KINDS = [
-  ts.SyntaxKind.InterfaceDeclaration,
-  ts.SyntaxKind.TypeAliasDeclaration,
-];
-
 const ENUM_NODE_KINDS = [ts.SyntaxKind.EnumDeclaration];
 
 const shouldNodeTypeBeIgnored = (
@@ -119,12 +116,11 @@ const shouldNodeTypeBeIgnored = (
 
   if (allowUnusedTypes && allowUnusedEnums)
     return (
-      CLASS_OR_INTERFACE_NODE_KINDS.includes(node.kind) ||
+      TYPE_OR_INTERFACE_NODE_KINDS.includes(node.kind) ||
       ENUM_NODE_KINDS.includes(node.kind)
     );
 
-  if (allowUnusedTypes)
-    return CLASS_OR_INTERFACE_NODE_KINDS.includes(node.kind);
+  if (allowUnusedTypes) return TYPE_OR_INTERFACE_NODE_KINDS.includes(node.kind);
 
   if (allowUnusedEnums) return ENUM_NODE_KINDS.includes(node.kind);
 

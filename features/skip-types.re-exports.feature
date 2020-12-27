@@ -4,19 +4,21 @@ Background:
   Given file "a.ts" is
     """
     export interface AInput {
-      x: number;
-      y: number;
+    x: number;
+    y: number;
     }
 
     export type AResult = number
+
+    export enum UnusedColorA { Red, Green, Blue};
 
     export const a = ({ x, y }: AInput): AResult => x + y;
     """
   And file "b/b.ts" is
     """
     export interface BInput {
-      x: number;
-      y: number;
+    x: number;
+    y: number;
     }
 
     export type BResult = number
@@ -31,8 +33,12 @@ Background:
 
 Scenario: Not skipping
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["AInput", "AResult", "a"], "b/index.ts": ["BInput", "BResult", "b"] }
+  Then the result is { "a.ts": ["AInput", "AResult", "UnusedColorA", "a"], "b/index.ts": ["BInput", "BResult", "b"] }
 
 Scenario: Skipping
   When analyzing "tsconfig.json" with files ["--allowUnusedTypes"]
-  Then the result is { "a.ts": ["a"], "b/index.ts": ["b"] }
+  Then the result is { "a.ts": ["UnusedColorA", "a"], "b/index.ts": ["b"] }
+
+Scenario: Skipping
+  When analyzing "tsconfig.json" with files ["--allowUnusedEnums"]
+  Then the result is { "a.ts": ["AInput", "AResult", "a"], "b/index.ts": ["BInput", "BResult", "b"] }

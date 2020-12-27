@@ -4,11 +4,12 @@ import { ExtraCommandLineOptions, Imports } from '../types';
 import { FromWhat, STAR } from './common';
 import { addDynamicImports, mayContainDynamicImports } from './dynamic';
 import {
-  extractExportNames,
   extractExportFromImport,
+  extractExportNames,
   extractExportStatement,
 } from './export';
 
+import { ENUM_NODE_KINDS } from './kinds';
 import { addImportsFromNamespace } from './imports-from-namespace';
 import { extractImport } from './import';
 import { namespaceBlacklist } from './namespaceBlacklist';
@@ -28,7 +29,11 @@ const processExportDeclaration = (
   extraOptions?: ExtraCommandLineOptions,
 ): void => {
   const exportDecl = node as ts.ExportDeclaration;
-  if (exportDecl.isTypeOnly && extraOptions?.allowUnusedTypes) {
+  if (
+    (exportDecl.isTypeOnly && extraOptions?.allowUnusedTypes) ||
+    (ENUM_NODE_KINDS.includes(exportDecl.kind) &&
+      extraOptions?.allowUnusedEnums)
+  ) {
     return;
   }
   const { moduleSpecifier } = exportDecl;
