@@ -1,39 +1,39 @@
-Feature: Skip unused interface or type when re-exporting
+Feature: Skip unused interface or type or enum when re-exporting
 
 Background:
   Given file "a.ts" is
     """
-    export interface AInput {
+    export interface IAInput {
     x: number;
     y: number;
     }
 
-    export type AResult = number
+    export type TypeAResult = number
 
     export enum UnusedColorA { Red, Green, Blue};
 
-    export const a = ({ x, y }: AInput): AResult => x + y;
+    export const a = ({ x, y }: IAInput): TypeAResult => x + y;
     """
   And file "b/b.ts" is
     """
-    export interface BInput {
+    export interface IBInput {
     x: number;
     y: number;
     }
 
-    export type BResult = number
+    export type TypeBResult = number
 
-    export const b = ({ x, y }: BInput): BResult => x + y;
+    export const b = ({ x, y }: IBInput): TypeBResult => x + y;
     """
   And file "b/index.ts" is
     """
-    export type { BInput, BResult } from "./b";
+    export type { IBInput, TypeBResult } from "./b";
     export { b } from "./b";
     """
 
 Scenario: Not skipping
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["AInput", "AResult", "UnusedColorA", "a"], "b/index.ts": ["BInput", "BResult", "b"] }
+  Then the result is { "a.ts": ["IAInput", "TypeAResult", "UnusedColorA", "a"], "b/index.ts": ["IBInput", "TypeBResult", "b"] }
 
 Scenario: Skipping
   When analyzing "tsconfig.json" with files ["--allowUnusedTypes"]
@@ -41,4 +41,4 @@ Scenario: Skipping
 
 Scenario: Skipping
   When analyzing "tsconfig.json" with files ["--allowUnusedEnums"]
-  Then the result is { "a.ts": ["AInput", "AResult", "a"], "b/index.ts": ["BInput", "BResult", "b"] }
+  Then the result is { "a.ts": ["IAInput", "TypeAResult", "a"], "b/index.ts": ["IBInput", "TypeBResult", "b"] }
