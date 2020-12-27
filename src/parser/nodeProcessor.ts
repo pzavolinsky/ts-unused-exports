@@ -4,11 +4,12 @@ import { ExtraCommandLineOptions, Imports } from '../types';
 import { FromWhat, STAR } from './common';
 import { addDynamicImports, mayContainDynamicImports } from './dynamic';
 import {
-  extractExportNames,
   extractExportFromImport,
+  extractExportNames,
   extractExportStatement,
 } from './export';
 
+import { ENUM_NODE_KINDS } from './kinds';
 import { addImportsFromNamespace } from './imports-from-namespace';
 import { extractImport } from './import';
 import { namespaceBlacklist } from './namespaceBlacklist';
@@ -25,8 +26,16 @@ const processExportDeclaration = (
   addImport: (fw: FromWhat) => string | undefined,
   addExport: (exportName: string, node: ts.Node) => void,
   exportNames: string[],
+  extraOptions?: ExtraCommandLineOptions,
 ): void => {
   const exportDecl = node as ts.ExportDeclaration;
+  if (
+    (exportDecl.isTypeOnly && extraOptions?.allowUnusedTypes) ||
+    (ENUM_NODE_KINDS.includes(exportDecl.kind) &&
+      extraOptions?.allowUnusedEnums)
+  ) {
+    return;
+  }
   const { moduleSpecifier } = exportDecl;
   if (moduleSpecifier === undefined) {
     extractExportStatement(exportDecl).forEach((e) => addExport(e, node));
@@ -130,7 +139,13 @@ export const processNode = (
   }
 
   if (kind === ts.SyntaxKind.ExportDeclaration) {
-    processExportDeclaration(node, addImport, addExport, exportNames);
+    processExportDeclaration(
+      node,
+      addImport,
+      addExport,
+      exportNames,
+      extraOptions,
+    );
   }
 
   // Searching for dynamic imports requires inspecting statements in the file,
