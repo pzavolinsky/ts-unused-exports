@@ -1,9 +1,8 @@
 import * as ts from 'typescript';
 
+import { ENUM_NODE_KINDS, TYPE_OR_INTERFACE_NODE_KINDS } from './kinds';
 import { ExtraCommandLineOptions, LocationInFile } from '../types';
 import { FromWhat, STAR, getFrom } from './common';
-
-import { TYPE_OR_INTERFACE_NODE_KINDS } from './kinds';
 
 // Parse Exports
 
@@ -104,8 +103,6 @@ export const extractExportNames = (path: string, node: ts.Node): string[] => {
     }
   }
 };
-
-const ENUM_NODE_KINDS = [ts.SyntaxKind.EnumDeclaration];
 
 const shouldNodeTypeBeIgnored = (
   node: ts.Node,
