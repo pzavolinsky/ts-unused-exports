@@ -11,6 +11,8 @@
 [![Dependencies](https://david-dm.org/pzavolinsky/ts-unused-exports.svg)](https://david-dm.org/pzavolinsky/ts-unused-exports)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z13CHUI)
+
 ## Installation
 
 ```
