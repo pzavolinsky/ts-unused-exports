@@ -1,3 +1,5 @@
+## [7.0.1] - 18 Jan 2021
+
 ### Changed
 
 - Updated the chalk dependency (no change in behavior)
