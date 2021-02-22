@@ -27,9 +27,11 @@ pushd ../example/simple
 run_itest
 popd
 
-pushd ../example/simple-new-ts-4-options
-install_and_run_itest
-popd
+if [ "$TYPESCRIPT_VERSION" = "4" ]
+    pushd ../example/simple-new-ts-4-options
+    run_itest
+    popd
+fi
 
 pushd ../example/export-star-as-1
 run_itest
