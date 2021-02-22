@@ -99,7 +99,7 @@ export const addImportCore = (
       ) {
         const absoluteRootDir = resolve(rootDir);
 
-        // normalizing path separators as tsconfig-path can return mixed path separators
+        // Use join to normalize path separators, since tsconfig-path can return mixed path separators
         return join(
           declarationFilePatch(matchedPath)
             .replace(`${absoluteRootDir}${sep}`, '')
