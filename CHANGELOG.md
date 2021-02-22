@@ -1,6 +1,7 @@
 ### Changed
 
 - Fix false positives on Windows machines when using absolute paths (baseUrl) or aliases (paths).
+- Allow for new compiler option noUncheckedIndexedAccess
 
 ## [7.0.1] - 18 Jan 2021
 
