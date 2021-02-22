@@ -27,6 +27,10 @@ pushd ../example/simple
 run_itest
 popd
 
+pushd ../example/simple-new-ts-4-options
+install_and_run_itest
+popd
+
 pushd ../example/export-star-as-1
 run_itest
 popd
