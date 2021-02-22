@@ -27,6 +27,7 @@ pushd ../example/simple
 run_itest
 popd
 
+# TYPESCRIPT_VERSION is set for some travis builds (see .travis.yml)
 if [ "$TYPESCRIPT_VERSION" = "4" ]
     pushd ../example/simple-new-ts-4-options
     run_itest
