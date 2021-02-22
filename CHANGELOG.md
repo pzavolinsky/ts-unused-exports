@@ -2,6 +2,8 @@
 
 - Fix false positives on Windows machines when using absolute paths (baseUrl) or aliases (paths).
 
+## [7.0.1] - 18 Jan 2021
+
 ### Changed
 
 - Updated the chalk dependency (no change in behavior)
