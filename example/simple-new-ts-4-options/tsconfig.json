@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "commonjs",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    // noUncheckedIndexedAccess - added in TS 4.1
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["./**/*.ts"],
+}
