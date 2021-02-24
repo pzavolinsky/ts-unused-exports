@@ -1,3 +1,5 @@
+## [7.0.2] - 23 Feb 2021
+
 ### Changed
 
 - Fix false positives on Windows machines when using absolute paths (baseUrl) or aliases (paths).
