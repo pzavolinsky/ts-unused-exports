@@ -1,10 +1,16 @@
+## [7.0.3] - 25 Feb 2021
+
+### Changed
+
+- Package metadata related to funding and financial support, no functional or implementation changes.
+
 ## [7.0.2] - 23 Feb 2021
 
 ### Changed
 
 - Fix false positives on Windows machines when using absolute paths (baseUrl) or aliases (paths).
 
-## [7.0.1] - 18 Jan 2021
+## [7.0.1] - 18 Jan 2021`
 
 ### Changed
 
