@@ -166,11 +166,19 @@ export function add2(x: number) {
 }
 ```
 
-# Changelog (Release History)
+## Tools
+
+Here are some tools that can be used with `ts-unused-exports`. note: these tools are separate, external projects, and we are not the maintainers. So, if you have feedback or issues with these tools, please first check in with the tool authors.
+
+| Tool                                                                    | Description                                                        |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [eslint plugin](https://github.com/wcandillon/eslint-plugin-ts-exports) | An eslint plugin that executes `ts-unused-exports` over your code. |
+
+## Changelog (Release History)
 
 To see what has changed in each version, please see our [CHANGELOG.md](https://github.com/pzavolinsky/ts-unused-exports/blob/master/CHANGELOG.md).
 
-# Contributing
+## Contributing
 
 `ts-unused-exports` is maintained by volunteers, working in their free time. If you'd like to help out, please see [CONTRIBUTING.md](https://github.com/pzavolinsky/ts-unused-exports/blob/master/CONTRIBUTING.md).
 
