@@ -6,21 +6,22 @@ import { dirname, resolve } from 'path';
 import { TsConfig } from './types';
 import { extractOptionsFromFiles } from './argsParser';
 import parseFiles from './parser';
-import { readFileSync } from 'fs';
 
 const parseTsConfig = (tsconfigPath: string): TsConfig => {
   const basePath = resolve(dirname(tsconfigPath));
 
   try {
-    const parseJsonResult = ts.parseConfigFileTextToJson(
+    const configFileName = ts.findConfigFile(
+      basePath,
+      ts.sys.fileExists,
       tsconfigPath,
-      readFileSync(tsconfigPath, { encoding: 'utf8' }),
     );
+    if (!configFileName) throw `Couldn't find ${tsconfigPath}`;
 
-    if (parseJsonResult.error) throw parseJsonResult.error;
+    const configFile = ts.readConfigFile(configFileName, ts.sys.readFile);
 
     const result = ts.parseJsonConfigFileContent(
-      parseJsonResult.config,
+      configFile.config,
       ts.sys,
       basePath,
     );
