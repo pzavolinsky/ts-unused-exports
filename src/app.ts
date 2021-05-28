@@ -24,12 +24,14 @@ const parseTsConfig = (tsconfigPath: string): TsConfig => {
       configFile.config,
       ts.sys,
       basePath,
+      undefined,
+      tsconfigPath,
     );
     if (result.errors.length) throw result.errors;
 
     return {
-      baseUrl: result.raw?.compilerOptions?.baseUrl || '.',
-      paths: result.raw?.compilerOptions?.paths,
+      baseUrl: result.raw?.compilerOptions?.baseUrl || '.', // TODO - use result.options.baseUrl but that seems to require changes (simplicifications?) elsewhere
+      paths: result.options.paths,
       files: result.fileNames,
     };
   } catch (e) {
