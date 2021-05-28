@@ -1,4 +1,5 @@
 {
+  "extends":"./tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "target": "es5",
@@ -7,8 +8,7 @@
     "strictNullChecks": true,
     "moduleResolution": "node",
     "paths": {
-      "utils": ["utils/src"],
-      "utils/*": ["utils/src/*"]
+      "utils": ["utils/src"]
     }
   }
 }
