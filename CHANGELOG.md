@@ -1,3 +1,7 @@
+### Changed
+
+- Fix: Add support for 'extends' in tsconfig.json (Issue #102, #200)
+
 ## [7.0.3] - 25 Feb 2021
 
 ### Changed
