@@ -14,9 +14,6 @@ import path = require('path');
 
 const EXTENSIONS = ['.d.ts', '.ts', '.tsx', '.js', '.jsx'];
 
-const relativeTo = (file: string, path: string): string =>
-  resolve(dirname(file), path);
-
 const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
   existsSync(resolve(baseDir, `${from}.js`)) ||
   existsSync(resolve(baseDir, `${from}.ts`)) ||
@@ -86,7 +83,7 @@ export const addImportCore = (
   const getKey = (from: string): string => {
     if (from[0] == '.') {
       // An undefined return indicates the import is from 'index.ts' or similar == '.'
-      return relativeTo(pathIn, from) || '.';
+      return resolve(dirname(pathIn), from) || '.';
     } else {
       let matchedPath;
 
