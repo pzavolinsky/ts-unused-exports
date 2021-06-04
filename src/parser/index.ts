@@ -9,7 +9,6 @@ import {
   TsConfig,
   TsConfigPaths,
 } from '../types';
-import { relative, resolve } from 'path';
 
 import { FromWhat } from './common';
 import { addExportCore } from './export';
@@ -17,18 +16,34 @@ import { addImportCore } from './import';
 import { isNodeDisabledViaComment } from './comment';
 import { processNode } from './nodeProcessor';
 import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
-const extractFilename = (rootDir: string, path: string): string => {
-  let name = relative(rootDir, path).replace(/([\\/]index)?\.[^.]*$/, '');
+import path = require('path');
+
+// We remove extension, so that we can handle many different file types
+const pathWithoutExtension = (pathIn: string): string => {
+  const nameOnly = path.parse(pathIn).name;
+  let nameOnlyWithoutIndex = nameOnly.replace(/([\\/])?index\.[^.]*$/, '');
 
   // Imports always have the '.d' part dropped from the filename,
   // so for the export counting to work with d.ts files, we need to also drop '.d' part.
   // Assumption: the same folder will not contain two files like: a.ts, a.d.ts.
-  if (!!name.match(/\.d$/)) {
-    name = name.substr(0, name.length - 2);
+  if (!!nameOnlyWithoutIndex.match(/\.d$/)) {
+    nameOnlyWithoutIndex = nameOnlyWithoutIndex.substr(0, nameOnly.length - 2);
   }
 
-  return name;
+  const parsed = path.parse(pathIn);
+
+  if (
+    pathIn.endsWith('index.ts') ||
+    pathIn.endsWith('index.tsx') ||
+    pathIn.endsWith('index.js')
+  )
+    // xxx other cases??
+    return parsed.dir;
+
+  const result = path.join(parsed.dir, nameOnlyWithoutIndex);
+  return result;
 };
 
 const mapFile = (
@@ -42,9 +57,8 @@ const mapFile = (
   const imports: Imports = {};
   const exportNames: string[] = [];
   const exportLocations: LocationInFile[] = [];
-  const name = extractFilename(rootDir, path);
 
-  const baseDir = resolve(rootDir, baseUrl);
+  const baseDir = baseUrl; // xxx remove baseDir
   const tsconfigPathsMatcher =
     (!!paths && tsconfigPaths.createMatchPath(baseDir, paths)) || undefined;
 
@@ -88,7 +102,7 @@ const mapFile = (
   });
 
   return {
-    path: name,
+    path: pathWithoutExtension(path),
     fullPath: path,
     imports,
     exports: exportNames,

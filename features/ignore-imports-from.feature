@@ -72,7 +72,7 @@ Scenario: Ignoring all non-test files, with test-utils files
 
 # Only evaluate *test* files (ignore all non-test files).
 # - using --ignoreProductionFiles
-Scenario: Ignoring all non-test files, with test-utils files
+Scenario: Ignoring all non-test files, with test-utils files via ignoreProductionFiles
   Given file "TestUtils.ts" is
     """
     export function helpTest() {}";
