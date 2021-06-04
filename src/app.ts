@@ -59,8 +59,5 @@ export default (tsconfigPath: string, files?: string[]): Analysis => {
   const args = extractOptionsFromFiles(files);
   const tsConfig = loadTsConfig(tsconfigPath, args.tsFiles);
 
-  return analyze(
-    parseFiles(dirname(tsconfigPath), tsConfig, args.options),
-    args.options,
-  );
+  return analyze(parseFiles(tsConfig, args.options), args.options);
 };

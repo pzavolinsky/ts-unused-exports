@@ -47,7 +47,6 @@ const pathWithoutExtension = (pathIn: string): string => {
 };
 
 const mapFile = (
-  rootDir: string,
   path: string,
   file: ts.SourceFile,
   baseUrl: string,
@@ -58,20 +57,11 @@ const mapFile = (
   const exportNames: string[] = [];
   const exportLocations: LocationInFile[] = [];
 
-  const baseDir = baseUrl; // xxx remove baseDir
   const tsconfigPathsMatcher =
-    (!!paths && tsconfigPaths.createMatchPath(baseDir, paths)) || undefined;
+    (!!paths && tsconfigPaths.createMatchPath(baseUrl, paths)) || undefined;
 
   const addImport = (fw: FromWhat): string | undefined => {
-    return addImportCore(
-      fw,
-      rootDir,
-      path,
-      imports,
-      baseDir,
-      baseUrl,
-      tsconfigPathsMatcher,
-    );
+    return addImportCore(fw, path, imports, baseUrl, tsconfigPathsMatcher);
   };
 
   const addExport = (exportName: string, node: ts.Node): void => {
@@ -111,14 +101,12 @@ const mapFile = (
 };
 
 const parseFile = (
-  rootDir: string,
   path: string,
   baseUrl: string,
   paths?: TsConfigPaths,
   extraOptions?: ExtraCommandLineOptions,
 ): File =>
   mapFile(
-    rootDir,
     path,
     ts.createSourceFile(
       path,
@@ -132,7 +120,6 @@ const parseFile = (
   );
 
 const parsePaths = (
-  rootDir: string,
   { baseUrl, files: filePaths, paths }: TsConfig,
   extraOptions?: ExtraCommandLineOptions,
 ): File[] => {
@@ -140,17 +127,14 @@ const parsePaths = (
 
   const files = filePaths
     .filter((p) => includeDeclarationFiles || !p.includes('.d.'))
-    .map((path) =>
-      parseFile(rootDir, resolve(rootDir, path), baseUrl, paths, extraOptions),
-    );
+    .map((path) => parseFile(resolve('.', path), baseUrl, paths, extraOptions));
 
   return files;
 };
 
 export default (
-  rootDir: string,
   TsConfig: TsConfig,
   extraOptions?: ExtraCommandLineOptions,
 ): File[] => {
-  return parsePaths(rootDir, TsConfig, extraOptions);
+  return parsePaths(TsConfig, extraOptions);
 };

@@ -14,7 +14,7 @@ import path = require('path');
 
 const EXTENSIONS = ['.d.ts', '.ts', '.tsx', '.js', '.jsx'];
 
-const relativeTo = (rootDir: string, file: string, path: string): string =>
+const relativeTo = (file: string, path: string): string =>
   resolve(dirname(file), path);
 
 const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
@@ -70,28 +70,22 @@ const declarationFilePatch = (matchedPath: string): string => {
 
 export const addImportCore = (
   fw: FromWhat,
-  rootDir: string,
   pathIn: string,
   imports: Imports,
-  baseDir: string,
   baseUrl: string,
   tsconfigPathsMatcher?: tsconfigPaths.MatchPath,
 ): string | undefined => {
   const { from, what } = fw;
 
-  // xxx redundant params!
-  // baseDir, baseUrl are same
-  // rootDir is always .
-
   const getKey = (from: string): string => {
     if (from[0] == '.') {
       // An undefined return indicates the import is from 'index.ts' or similar == '.'
-      return relativeTo(rootDir, pathIn, from) || '.';
+      return relativeTo(pathIn, from) || '.';
     } else {
       let matchedPath;
 
-      if (isRelativeToBaseDir(baseDir, from)) {
-        if (!from.startsWith(baseUrl)) return path.join(baseUrl, from);
+      if (isRelativeToBaseDir(baseUrl, from)) {
+        if (!from.startsWith(baseUrl)) return path.join(baseUrl, from); // xxx dupe
 
         return from;
       }
@@ -112,7 +106,7 @@ export const addImportCore = (
         return matched;
       }
 
-      if (!from.startsWith(baseUrl)) return path.join(baseUrl, from);
+      if (!from.startsWith(baseUrl)) return path.join(baseUrl, from); // xxx dupe
 
       return from;
     }
