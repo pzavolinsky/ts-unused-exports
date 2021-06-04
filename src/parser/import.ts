@@ -107,7 +107,8 @@ export const addImportCore = (
 
         if (!matched.startsWith(baseUrl)) return path.join(baseUrl, matched);
 
-        return matched;
+        // Use join to normalize path separators, since tsconfig-path can return mixed path separators (Windows)
+        return path.join(matched);
       }
 
       return joinWithBaseUrl(baseUrl, from);
