@@ -29,8 +29,11 @@ const parseTsConfig = (tsconfigPath: string): TsConfig => {
     );
     if (result.errors.length) throw result.errors;
 
+    // We now use absolute paths to avoid ambiguity and to be able to delegate baseUrl resolving to TypeScript.
+    // A consequence is, we cannot fall back to '.' so instead the fallback is the tsconfig dir:
+    // (I think this only occurs with unit tests!)
     return {
-      baseUrl: result.raw?.compilerOptions?.baseUrl || '.', // TODO - use result.options.baseUrl but that seems to require changes (simplicifications?) elsewhere
+      baseUrl: result.options.baseUrl || basePath,
       paths: result.options.paths,
       files: result.fileNames,
     };

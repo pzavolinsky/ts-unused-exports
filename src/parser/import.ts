@@ -2,18 +2,20 @@ import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
 
 import { FromWhat, STAR, getFrom } from './common';
-import { dirname, join, relative, resolve, sep } from 'path';
+import { dirname, resolve } from 'path';
 
 import { Imports } from '../types';
 import { existsSync } from 'fs';
 import { isUnique } from './util';
+
+import path = require('path');
 
 // Parse Imports
 
 const EXTENSIONS = ['.d.ts', '.ts', '.tsx', '.js', '.jsx'];
 
 const relativeTo = (rootDir: string, file: string, path: string): string =>
-  relative(rootDir, resolve(dirname(file), path));
+  resolve(dirname(file), path);
 
 const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
   existsSync(resolve(baseDir, `${from}.js`)) ||
@@ -69,7 +71,7 @@ const declarationFilePatch = (matchedPath: string): string => {
 export const addImportCore = (
   fw: FromWhat,
   rootDir: string,
-  path: string,
+  pathIn: string,
   imports: Imports,
   baseDir: string,
   baseUrl: string,
@@ -77,15 +79,21 @@ export const addImportCore = (
 ): string | undefined => {
   const { from, what } = fw;
 
+  // xxx redundant params!
+  // baseDir, baseUrl are same
+  // rootDir is always .
+
   const getKey = (from: string): string => {
     if (from[0] == '.') {
       // An undefined return indicates the import is from 'index.ts' or similar == '.'
-      return relativeTo(rootDir, path, from) || '.';
+      return relativeTo(rootDir, pathIn, from) || '.';
     } else {
       let matchedPath;
 
       if (isRelativeToBaseDir(baseDir, from)) {
-        return join(baseUrl, from);
+        if (!from.startsWith(baseUrl)) return path.join(baseUrl, from);
+
+        return from;
       }
 
       if (
@@ -97,15 +105,14 @@ export const addImportCore = (
           EXTENSIONS,
         ))
       ) {
-        const absoluteRootDir = resolve(rootDir);
+        const matched = declarationFilePatch(matchedPath);
 
-        // Use join to normalize path separators, since tsconfig-path can return mixed path separators
-        return join(
-          declarationFilePatch(matchedPath)
-            .replace(`${absoluteRootDir}${sep}`, '')
-            .replace(`${baseDir}${sep}`, ''),
-        );
+        if (!matched.startsWith(baseUrl)) return path.join(baseUrl, matched);
+
+        return matched;
       }
+
+      if (!from.startsWith(baseUrl)) return path.join(baseUrl, from);
 
       return from;
     }
