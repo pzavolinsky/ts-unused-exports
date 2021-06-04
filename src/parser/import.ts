@@ -2,18 +2,17 @@ import * as ts from 'typescript';
 import * as tsconfigPaths from 'tsconfig-paths';
 
 import { FromWhat, STAR, getFrom } from './common';
-import { dirname, join, relative, resolve, sep } from 'path';
+import { dirname, resolve } from 'path';
 
 import { Imports } from '../types';
 import { existsSync } from 'fs';
 import { isUnique } from './util';
 
+import path = require('path');
+
 // Parse Imports
 
 const EXTENSIONS = ['.d.ts', '.ts', '.tsx', '.js', '.jsx'];
-
-const relativeTo = (rootDir: string, file: string, path: string): string =>
-  relative(rootDir, resolve(dirname(file), path));
 
 const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
   existsSync(resolve(baseDir, `${from}.js`)) ||
@@ -23,6 +22,12 @@ const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
   existsSync(resolve(baseDir, from, 'index.js')) ||
   existsSync(resolve(baseDir, from, 'index.ts')) ||
   existsSync(resolve(baseDir, from, 'index.tsx'));
+
+const joinWithBaseUrl = (baseUrl: string, from: string) => {
+  if (!from.startsWith(baseUrl)) return path.join(baseUrl, from);
+
+  return from;
+};
 
 export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   const from = getFrom(decl.moduleSpecifier);
@@ -68,10 +73,8 @@ const declarationFilePatch = (matchedPath: string): string => {
 
 export const addImportCore = (
   fw: FromWhat,
-  rootDir: string,
-  path: string,
+  pathIn: string,
   imports: Imports,
-  baseDir: string,
   baseUrl: string,
   tsconfigPathsMatcher?: tsconfigPaths.MatchPath,
 ): string | undefined => {
@@ -80,12 +83,12 @@ export const addImportCore = (
   const getKey = (from: string): string => {
     if (from[0] == '.') {
       // An undefined return indicates the import is from 'index.ts' or similar == '.'
-      return relativeTo(rootDir, path, from) || '.';
+      return resolve(dirname(pathIn), from) || '.';
     } else {
       let matchedPath;
 
-      if (isRelativeToBaseDir(baseDir, from)) {
-        return join(baseUrl, from);
+      if (isRelativeToBaseDir(baseUrl, from)) {
+        return joinWithBaseUrl(baseUrl, from);
       }
 
       if (
@@ -97,17 +100,15 @@ export const addImportCore = (
           EXTENSIONS,
         ))
       ) {
-        const absoluteRootDir = resolve(rootDir);
+        const matched = declarationFilePatch(matchedPath);
 
-        // Use join to normalize path separators, since tsconfig-path can return mixed path separators
-        return join(
-          declarationFilePatch(matchedPath)
-            .replace(`${absoluteRootDir}${sep}`, '')
-            .replace(`${baseDir}${sep}`, ''),
-        );
+        if (!matched.startsWith(baseUrl)) return path.join(baseUrl, matched);
+
+        // Use join to normalize path separators, since tsconfig-path can return mixed path separators (Windows)
+        return path.join(matched);
       }
 
-      return from;
+      return joinWithBaseUrl(baseUrl, from);
     }
   };
 
