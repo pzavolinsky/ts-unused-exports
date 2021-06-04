@@ -6,6 +6,8 @@ export function isUnique<T>(value: T, index: number, self: T[]): boolean {
   return self.indexOf(value) === index;
 }
 
+export const indexCandidates = ['index', 'index.ts', 'index.tsx', 'index.js'];
+
 export function removeExportStarPrefix(path: string): string {
   if (path.startsWith('*:')) return path.slice(2);
   else if (path.startsWith('*as:')) return path.slice(4);

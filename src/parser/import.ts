@@ -26,6 +26,12 @@ const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
   existsSync(resolve(baseDir, from, 'index.ts')) ||
   existsSync(resolve(baseDir, from, 'index.tsx'));
 
+const joinWithBaseUrl = (baseUrl: string, from: string) => {
+  if (!from.startsWith(baseUrl)) return path.join(baseUrl, from);
+
+  return from;
+};
+
 export const extractImport = (decl: ts.ImportDeclaration): FromWhat => {
   const from = getFrom(decl.moduleSpecifier);
   const { importClause } = decl;
@@ -85,9 +91,7 @@ export const addImportCore = (
       let matchedPath;
 
       if (isRelativeToBaseDir(baseUrl, from)) {
-        if (!from.startsWith(baseUrl)) return path.join(baseUrl, from); // xxx dupe
-
-        return from;
+        return joinWithBaseUrl(baseUrl, from);
       }
 
       if (
@@ -106,9 +110,7 @@ export const addImportCore = (
         return matched;
       }
 
-      if (!from.startsWith(baseUrl)) return path.join(baseUrl, from); // xxx dupe
-
-      return from;
+      return joinWithBaseUrl(baseUrl, from);
     }
   };
 

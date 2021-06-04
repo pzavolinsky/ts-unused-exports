@@ -4,8 +4,7 @@ import {
   File,
   LocationInFile,
 } from './types';
-
-import { removeExportStarPrefix } from './parser/util';
+import { indexCandidates, removeExportStarPrefix } from './parser/util';
 
 export { Analysis } from './types';
 
@@ -74,7 +73,6 @@ const processImports = (file: File, exportMap: ExportMap): void => {
 
     // Handle imports from an index file
     if (!ex && key === '.') {
-      const indexCandidates = ['index', 'index.ts', 'index.tsx'];
       for (let c = 0; c < indexCandidates.length; c++) {
         const indexKey = indexCandidates[c];
         ex = exportMap[indexKey]?.exports || undefined;
