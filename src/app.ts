@@ -23,6 +23,16 @@ const parseTsConfig = (tsconfigPath: string): TsConfig => {
       parseJsonResult.config,
       ts.sys,
       basePath,
+      undefined,
+      undefined,
+      undefined,
+      [
+        {
+          extension: 'vue',
+          isMixedContent: true,
+          scriptKind: ts.ScriptKind.Deferred,
+        },
+      ],
     );
     if (result.errors.length) throw result.errors;
 
