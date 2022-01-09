@@ -1,9 +1,10 @@
 import chalk = require('chalk');
 
-import analyzeTsConfig from './app';
+import { Analysis, ExtraCommandLineOptions, LocationInFile } from './types';
 import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
-import { LocationInFile, Analysis, ExtraCommandLineOptions } from './types';
+
 import { USAGE } from './usage';
+import analyzeTsConfig from './app';
 
 // eslint style exit code:
 enum ExitCode {
@@ -98,7 +99,8 @@ export const runCli = (
         ? ExitCode.NoUnusedExportsFound
         : ExitCode.UnusedExportsFound,
     );
-  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
     showError(e);
     return exitWith(ExitCode.BadArgsOrException);
   }

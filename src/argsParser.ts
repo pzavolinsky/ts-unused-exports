@@ -128,7 +128,8 @@ function canExtractOptionsFromFiles(files?: string[]): boolean {
   try {
     extractOptionsFromFiles(files);
     return true;
-  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
     if (!!e.message) console.error(e.message);
     return false;
   }
