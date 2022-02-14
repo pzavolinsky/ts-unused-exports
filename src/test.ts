@@ -101,7 +101,7 @@ const setup: SetupFn = ({
     try {
       const status = runCli(
         (code) => code,
-        (s) => stderr.push(s),
+        (s) => stderr.push(s as string),
         (s) => stdout.push(s),
         args
           .trim()

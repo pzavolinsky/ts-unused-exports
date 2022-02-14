@@ -54,7 +54,7 @@ const showMessages = (
 
 export const runCli = (
   exitWith: (code: ExitCode) => ExitCode,
-  showError: (s: string) => void,
+  showError: (s: unknown) => void,
   showMessage: (s: string) => void,
   [tsconfig, ...tsFiles]: string[],
 ): ExitCode => {

@@ -129,7 +129,7 @@ function canExtractOptionsFromFiles(files?: string[]): boolean {
     extractOptionsFromFiles(files);
     return true;
   } catch (e) {
-    if (!!e.message) console.error(e.message);
+    if (!!(e as Error).message) console.error((e as Error).message);
     return false;
   }
 }

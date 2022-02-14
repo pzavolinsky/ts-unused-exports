@@ -1,4 +1,4 @@
-## [8.0.0] - [<release date>]
+## [8.0.0] - 14 Feb 2022
 
 ### Changed
 
