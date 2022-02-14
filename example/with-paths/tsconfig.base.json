@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "utils": ["utils/src"],
+      "utils/*": ["utils/src/*"]
+    }
+  }
+}
