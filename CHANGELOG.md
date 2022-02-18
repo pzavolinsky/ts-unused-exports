@@ -1,3 +1,10 @@
+## [8.0.0] - 14 Feb 2022
+
+### Changed
+
+- Fix: Add support for 'extends' in tsconfig.json (Issue #102, #200)
+- (Internal) Using absolute paths which is less ambiguous. Delegating tsconfig.json parsing to TypeScript.
+
 ## [7.0.3] - 25 Feb 2021
 
 ### Changed
