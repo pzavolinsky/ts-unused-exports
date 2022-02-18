@@ -8,23 +8,28 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x, 16.x]
-        # TODO - add 18 when it is released
+        # TODO - add 18.x when it is released
+        typescript-version: [3, 4]
 
+runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      # TODO - do we need to setup .npmrc file to publish to npm ?
+      - name: Use Node.js ${{ matrix.node-version }} and TypeScript ${{ matrix.typescript-version }}
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: GitHub Action for Yarn
-        uses: Borales/actions-yarn@v2.3.0
-      - name: yarn install, build, and test
-        run: |
-          yarn test
+          registry-url: 'https://registry.npmjs.org'
+      # npm ci - for a clean install, fails safe
+      - run: npm ci
+      - run: npm install --development ${{ matrix.typescript-version }}
+      - run: npm test
+      # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once!)
       - name: Deploy
-        if: github.ref == 'refs/heads/main' && matrix.node-version == '12.x'
-        run: npx semantic-release
+        if: github.ref == 'refs/heads/master' && matrix.node-version == '16.x' && matrix.typescript-version == '4'
+        run: npm publish
         env:
-          CI: true
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Report Code Coverage
+        if: matrix.node-version == '16.x' && matrix.typescript-version == 4
+        run: npm run report-coverage-to-coveralls

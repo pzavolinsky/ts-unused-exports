@@ -26,6 +26,7 @@
     "lint:fix": "./node_modules/.bin/eslint --ext .ts src --fix",
     "lint": "./node_modules/.bin/eslint --ext .ts src",
     "pack": "docker build -t ts-unused-exports . && docker run -v $PWD/lib:/usr/src/lib ts-unused-exports",
+    "prepublish": "npm test",
     "report-coverage-to-coveralls": "cat ./coverage/lcov.info | coveralls",
     "test:cc": "nyc npm run test:unit:raw",
     "test:itest": "cd ispec && bash ./run.sh",
