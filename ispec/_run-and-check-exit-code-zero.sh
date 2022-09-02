@@ -2,6 +2,7 @@
 set +e;
 
 function run {
+    echo $1
     node ../../bin/ts-unused-exports tsconfig.json --exitWithUnusedTypesCount --excludePathsFromReport=to-ignore $1
     ERROR_COUNT=$?
     if [ $ERROR_COUNT -ne 0 ]
@@ -13,6 +14,6 @@ function run {
     fi
 }
 
-run
-run --showLineNumber
-run --silent
+run $1
+run $1 --showLineNumber
+run $1 --silent
