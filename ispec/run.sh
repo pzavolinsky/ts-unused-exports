@@ -23,6 +23,10 @@ pushd ../example/simple-zero-issues
 run_itest_expect_zero_issues
 popd
 
+pushd ../example/filename-ends-with-index
+run_itest_expect_zero_issues
+popd
+
 pushd ../example/simple
 run_itest
 popd
