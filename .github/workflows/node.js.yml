@@ -22,11 +22,11 @@ jobs:
       - run: npm install --development ${{ matrix.typescript-version }}
       - run: npm test
       # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once!)
-      - name: Deploy
-        if: github.ref == 'refs/heads/master' && matrix.node-version == '16.x' && matrix.typescript-version == '4'
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Deploy
+      #   if: github.ref == 'refs/heads/master' && matrix.node-version == '16.x' && matrix.typescript-version == '4'
+      #   run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # - name: Report Code Coverage
       #   if: matrix.node-version == '16.x' && matrix.typescript-version == 4
       #   run: npm run report-coverage-to-coveralls
