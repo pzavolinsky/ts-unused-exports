@@ -27,6 +27,6 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Report Code Coverage
-        if: matrix.node-version == '16.x' && matrix.typescript-version == 4
-        run: npm run report-coverage-to-coveralls
+      # - name: Report Code Coverage
+      #   if: matrix.node-version == '16.x' && matrix.typescript-version == 4
+      #   run: npm run report-coverage-to-coveralls
