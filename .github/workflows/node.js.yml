@@ -1,0 +1,40 @@
+name: CI & CD
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+    environment: prod
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 16.x]
+        # TODO - add 18.x when it is released
+        typescript-version: [3, 4]
+    steps:
+      - uses: actions/checkout@v2
+      # TODO - do we need to setup .npmrc file to publish to npm ?
+      - name: Use Node.js ${{ matrix.node-version }} and TypeScript ${{ matrix.typescript-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+      # npm ci - for a clean install, fails safe
+      - run: npm ci
+      - run: npm install --development ${{ matrix.typescript-version }}
+      - run: npm test
+      # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once!)
+      # - name: Deploy
+      #   if: github.ref == 'refs/heads/master' && matrix.node-version == '16.x' && matrix.typescript-version == '4'
+      #   run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Report Code Coverage
+      #   if: matrix.node-version == '16.x' && matrix.typescript-version == 4
+      #   run: npm run report-coverage-to-coveralls
