@@ -8,7 +8,6 @@
 [![npm Package](https://img.shields.io/npm/v/ts-unused-exports.svg?style=flat-square)](https://www.npmjs.org/package/ts-unused-exports)
 [![NPM Downloads](https://img.shields.io/npm/dm/ts-unused-exports.svg)](https://npmjs.org/package/ts-unused-exports)
 
-[![Dependencies](https://david-dm.org/pzavolinsky/ts-unused-exports.svg)](https://david-dm.org/pzavolinsky/ts-unused-exports)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z13CHUI)
@@ -165,14 +164,6 @@ export function add2(x: number) {
   return x + 2;
 }
 ```
-
-## Tools
-
-Here are some tools that can be used with `ts-unused-exports`. note: these tools are separate, external projects, and we are not the maintainers. So, if you have feedback or issues with these tools, please first check in with the tool authors.
-
-| Tool                                                                    | Description                                                        |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| [eslint plugin](https://github.com/wcandillon/eslint-plugin-ts-exports) | An eslint plugin that executes `ts-unused-exports` over your code. |
 
 ## Changelog (Release History)
 
