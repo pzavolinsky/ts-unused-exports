@@ -1,3 +1,7 @@
+### Changed
+
+- Fix handling of files ending with 'index.ts': do not always report as containing unused exports. Do allow ignoring via ignoreFile regex.
+
 ## [8.0.0] - 14 Feb 2022
 
 ### Changed
