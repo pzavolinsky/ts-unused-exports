@@ -11,7 +11,7 @@ function run_itest()
 
 function run_itest_expect_zero_issues()
 {
-    ../../ispec/_run-and-check-exit-code-zero.sh
+    ../../ispec/_run-and-check-exit-code-zero.sh $1
 }
 
 function install_and_run_itest()
@@ -21,6 +21,10 @@ function install_and_run_itest()
 
 pushd ../example/simple-zero-issues
 run_itest_expect_zero_issues
+popd
+
+pushd ../example/filename-ends-with-index-2
+run_itest_expect_zero_issues --ignoreFiles=pgtyped
 popd
 
 pushd ../example/simple

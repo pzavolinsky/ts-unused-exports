@@ -23,7 +23,7 @@ import path = require('path');
 
 const cleanFilename = (pathIn: string): string => {
   const nameOnly = path.parse(pathIn).name;
-  const nameOnlyWithoutIndex = nameOnly.replace(/([\\/])?index\.[^.]*$/, '');
+  const nameOnlyWithoutIndex = nameOnly.replace(/([\\/])index\.[^.]*$/, '');
 
   // Imports always have the '.d' part dropped from the filename,
   // so for the export counting to work with d.ts files, we need to also drop '.d' part.
