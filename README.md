@@ -2,7 +2,7 @@
 
 `ts-unused-exports` finds unused exported symbols in your Typescript project.
 
-[![Build Status](https://travis-ci.com/pzavolinsky/ts-unused-exports.svg?branch=master)](https://travis-ci.com/pzavolinsky/ts-unused-exports)
+[![Build Status](https://github.com/pzavolinsky/ts-unused-exports/actions/workflows/node.js.yml/badge.svg?branch=master)](https://github.com/pzavolinsky/ts-unused-exports/actions/workflows/node.js.yml?query=branch%3Amaster)
 [![Coveralls](https://img.shields.io/coveralls/pzavolinsky/ts-unused-exports.svg)](https://coveralls.io/github/pzavolinsky/ts-unused-exports)
 
 [![npm Package](https://img.shields.io/npm/v/ts-unused-exports.svg?style=flat-square)](https://www.npmjs.org/package/ts-unused-exports)
