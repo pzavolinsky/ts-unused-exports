@@ -1,15 +1,8 @@
-name: CI
+name: Deploy to npm
 
-# Automatically runs tests on pull OR push to master.
-# Does *not* deploy to npm.
-
-on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+# MANUAL execution only
+#
+# Also runs the full set of tests, with all Node + TypeScript versions.
 
 jobs:
   build:
@@ -31,6 +24,12 @@ jobs:
       - run: npm ci
       - run: npm install --development ${{ matrix.typescript-version }}
       - run: npm test
+      # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once!)
+      - name: Deploy
+        if: github.ref == 'refs/heads/master' && matrix.node-version == '16.x' && matrix.typescript-version == '4'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # - name: Report Code Coverage
       #   if: matrix.node-version == '16.x' && matrix.typescript-version == 4
       #   run: npm run report-coverage-to-coveralls
