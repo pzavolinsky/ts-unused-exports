@@ -4,6 +4,9 @@ name: Deploy to npm
 #
 # Also runs the full set of tests, with all Node + TypeScript versions.
 
+on: 
+  workflow_dispatch
+
 jobs:
   build:
     environment: prod
