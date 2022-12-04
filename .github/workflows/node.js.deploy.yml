@@ -4,8 +4,11 @@ name: Deploy to npm
 #
 # Also runs the full set of tests, with all Node + TypeScript versions.
 
+on:
+  workflow_dispatch
+
 jobs:
-  build:
+  build_test_and_deploy:
     environment: prod
     runs-on: ubuntu-latest
     strategy:

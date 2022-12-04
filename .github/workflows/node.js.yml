@@ -12,7 +12,7 @@ on:
     - master
 
 jobs:
-  build:
+  build_and_test:
     environment: prod
     runs-on: ubuntu-latest
     strategy:
