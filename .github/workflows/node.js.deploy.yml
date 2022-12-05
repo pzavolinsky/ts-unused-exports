@@ -4,8 +4,7 @@ name: Deploy to npm
 #
 # Also runs the full set of tests, with all Node + TypeScript versions.
 
-on:
-  workflow_dispatch
+on: workflow_dispatch
 
 jobs:
   build_test_and_deploy:
@@ -25,7 +24,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       # npm ci - for a clean install, fails safe
       - run: npm ci
-      - run: npm install --development ${{ matrix.typescript-version }}
+      - run: npm install --development typescript@${{ matrix.typescript-version }}
       - run: npm test
       # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once!)
       - name: Deploy

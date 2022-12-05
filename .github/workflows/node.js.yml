@@ -6,10 +6,10 @@ name: CI
 on:
   push:
     branches:
-    - master
+      - master
   pull_request:
     branches:
-    - master
+      - master
 
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       # npm ci - for a clean install, fails safe
       - run: npm ci
-      - run: npm install --development ${{ matrix.typescript-version }}
+      - run: npm install --development typescript@${{ matrix.typescript-version }}
       - run: npm test
       # - name: Report Code Coverage
       #   if: matrix.node-version == '16.x' && matrix.typescript-version == 4
