@@ -20,19 +20,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js $NODE_FOR_DEPLOY and TypeScript $TS_FOR_DEPLOY
+      - name: Use Node.js ${{ env.NODE_FOR_DEPLOY }} and TypeScript ${{ env.TS_FOR_DEPLOY }}
         uses: actions/setup-node@v3
         with:
-          node-version: $NODE_FOR_DEPLOY
+          node-version: ${{ env.NODE_FOR_DEPLOY }}
           registry-url: 'https://registry.npmjs.org'
       # npm ci - for a clean install, fails safe
       - run: npm ci
-      - run: npm install --development typescript@$TS_FOR_DEPLOY
+      - run: npm install --development typescript@${{ env.TS_FOR_DEPLOY }}
       - run: npm test
-      # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once!)
+      # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once, for particular Node + TypeScript)
       - name: Deploy
         # use node 14 because 16+ uses package-lock.json version 2
-        if: github.ref == 'refs/heads/master' && matrix.node-version == '$NODE_FOR_DEPLOY' && matrix.typescript-version == '$TS_FOR_DEPLOY'
+        if: github.ref == 'refs/heads/master' && matrix.node-version == env.NODE_FOR_DEPLOY && matrix.typescript-version == env.TS_FOR_DEPLOY
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
