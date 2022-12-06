@@ -7,7 +7,9 @@ name: Deploy to npm
 on: workflow_dispatch
 
 env:
+  # use the usual TypeScript version, slightly older for more compatibility
   TS_FOR_DEPLOY: 4.0.5
+  # use node 14 because 16+ uses package-lock.json version 2
   NODE_FOR_DEPLOY: 14
 
 jobs:
@@ -29,14 +31,9 @@ jobs:
       - run: npm ci
       - run: npm install --development typescript@${{ env.TS_FOR_DEPLOY }}
       - run: npm test
-      # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once, for particular Node + TypeScript)
+      # only deploy to npmjs, if this is master
       - name: Deploy
-        # use node 14 because 16+ uses package-lock.json version 2
-        if: github.ref == 'refs/heads/master' && matrix.node-version == env.NODE_FOR_DEPLOY && matrix.typescript-version == env.TS_FOR_DEPLOY
-        run: echo publishing to npm
-        # xxx disabled - run: npm publish
+        if: github.ref == 'refs/heads/master'
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # - name: Report Code Coverage
-      #   if: matrix.node-version == '16.x' && matrix.typescript-version == 4
-      #   run: npm run report-coverage-to-coveralls
