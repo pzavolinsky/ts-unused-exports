@@ -16,7 +16,7 @@ on:
 
 env:
   TS_FOR_DEPLOY: 4.0.5
-  NODE_FOR_DEPLOY: 14
+  NODE_FOR_DEPLOY: 14.x
 
 jobs:
   build:
