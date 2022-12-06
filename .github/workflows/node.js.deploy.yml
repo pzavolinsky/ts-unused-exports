@@ -2,37 +2,38 @@ name: Deploy to npm
 
 # MANUAL execution only
 #
-# Also runs the full set of tests, with all Node + TypeScript versions.
+# Also runs the full set of tests, with the deploying Node + TypeScript version.
 
 on: workflow_dispatch
 
+env:
+  # use the usual TypeScript version, slightly older for more compatibility
+  TS_FOR_DEPLOY: 4.0.5
+  # use node 14 because 16+ uses package-lock.json version 2
+  NODE_FOR_DEPLOY: 14.x
+
 jobs:
+  build_and_test_many_versions:
+    uses: ./.github/workflows/node.js.yml # use the callable tests job to run tests
   build_test_and_deploy:
+    name: Build, Test and Deploy to npm
+    needs: [build_and_test_many_versions] # require tests to pass before deploy runs
     environment: prod
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x, 16.x, 18.x]
-        # TODO - add 20.x when it is released
-        typescript-version: [3, 4]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }} and TypeScript ${{ matrix.typescript-version }}
+      - name: Use Node.js ${{ env.NODE_FOR_DEPLOY }} and TypeScript ${{ env.TS_FOR_DEPLOY }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_FOR_DEPLOY }}
           registry-url: 'https://registry.npmjs.org'
       # npm ci - for a clean install, fails safe
       - run: npm ci
-      - run: npm install --development typescript@${{ matrix.typescript-version }}
+      - run: npm install --development typescript@${{ env.TS_FOR_DEPLOY }}
       - run: npm test
-      # only deploy to npmjs, if this is master AND this is one particular build (we only want to deploy once!)
+      # only deploy to npmjs, if this is master
       - name: Deploy
-        # use node 14 because 16+ uses package-lock.json version 2
-        if: github.ref == 'refs/heads/master' && matrix.node-version == '14.x' && matrix.typescript-version == '4'
+        if: github.ref == 'refs/heads/master'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # - name: Report Code Coverage
-      #   if: matrix.node-version == '16.x' && matrix.typescript-version == 4
-      #   run: npm run report-coverage-to-coveralls
