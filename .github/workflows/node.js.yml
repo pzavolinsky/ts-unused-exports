@@ -14,10 +14,6 @@ on:
       - master
   workflow_call: # allow this workflow to be called from other workflows
 
-env:
-  TS_FOR_DEPLOY: 4.0.5
-  NODE_FOR_DEPLOY: 14.x
-
 jobs:
   build:
     name: Build and run tests
@@ -25,26 +21,29 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 16.x, 18.x]
+        node_version: [10, 12, 14, 16, 18]
         # TODO - add 20.x when it is released
-        typescript-version: [4]
+        typescript_version: [4]
         # To avoid too many builds, only test for extra TypeScript versions, for a subset of the Node versions:
         include:
-          - node: $NODE_FOR_DEPLOY
-            ts: [3, $TS_FOR_DEPLOY]
-          - node: 16
-            ts: [3]
+          - node_version: 14
+            typescript_version: 3
+          # the 'deploy' config, with deliberately older TypeScript version:
+          - node_version: 14
+            typescript_version: 4.0.5
+          - node_version: 16
+            typescript_version: 3
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }} and TypeScript ${{ matrix.typescript-version }}
+      - name: Use Node.js ${{ matrix.node_version }} and TypeScript ${{ matrix.typescript_version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node_version }}
           registry-url: 'https://registry.npmjs.org'
       # npm ci - for a clean install, fails safe
       - run: npm ci
-      - run: npm install --development typescript@${{ matrix.typescript-version }}
+      - run: npm install --development typescript@${{ matrix.typescript_version }}
       - run: npm test
       # - name: Report Code Coverage
-      #   if: matrix.node-version == '16.x' && matrix.typescript-version == 4
+      #   if: matrix.node_version == '16.x' && matrix.typescript_version == 4
       #   run: npm run report-coverage-to-coveralls
