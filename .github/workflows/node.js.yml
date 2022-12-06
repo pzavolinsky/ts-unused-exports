@@ -1,6 +1,8 @@
 name: CI
 
 # Automatically runs tests on pull OR push to master.
+#
+# Runs over a matrix of Node and TypeScript versions.
 # Does *not* deploy to npm.
 
 on:
@@ -10,6 +12,11 @@ on:
   pull_request:
     branches:
       - master
+  workflow_call: # allow this workflow to be called from other workflows
+
+env:
+  TS_FOR_DEPLOY: 4.0.5
+  NODE_FOR_DEPLOY: 14
 
 jobs:
   build:
@@ -19,7 +26,13 @@ jobs:
       matrix:
         node-version: [10.x, 12.x, 14.x, 16.x, 18.x]
         # TODO - add 20.x when it is released
-        typescript-version: [3, 4]
+        typescript-version: [4]
+    # To avoid too many builds, only test for extra TypeScript versions, for a subset of the Node versions:
+    include:
+      - node: $NODE_FOR_DEPLOY
+        ts: [3, $TS_FOR_DEPLOY]
+      - node: 16
+        ts: [3]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }} and TypeScript ${{ matrix.typescript-version }}
