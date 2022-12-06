@@ -16,22 +16,21 @@ on:
 
 jobs:
   build:
-    name: Build and run tests
     environment: prod
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [10, 12, 14, 16, 18]
+        node_version: [10.x, 12.x, 14.x, 16.x, 18.x]
         # TODO - add 20.x when it is released
         typescript_version: [4]
         # To avoid too many builds, only test for extra TypeScript versions, for a subset of the Node versions:
         include:
-          - node_version: 14
+          - node_version: 14.x
             typescript_version: 3
           # the 'deploy' config, with deliberately older TypeScript version:
-          - node_version: 14
+          - node_version: 14.x
             typescript_version: 4.0.5
-          - node_version: 16
+          - node_version: 16.x
             typescript_version: 3
     steps:
       - uses: actions/checkout@v3
