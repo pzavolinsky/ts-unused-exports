@@ -12,8 +12,9 @@ env:
 
 jobs:
   build_and_test_many_versions:
-    uses: ./.github/workflows/xxx.yml # use the callable tests job to run tests
+    uses: ./.github/workflows/node.js.yml # use the callable tests job to run tests
   build_test_and_deploy:
+    name: Build, Test and Deploy to npm
     needs: [build_and_test_many_versions] # require tests to pass before deploy runs
     environment: prod
     runs-on: ubuntu-latest
