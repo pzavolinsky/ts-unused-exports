@@ -33,7 +33,8 @@ jobs:
       - name: Deploy
         # use node 14 because 16+ uses package-lock.json version 2
         if: github.ref == 'refs/heads/master' && matrix.node-version == env.NODE_FOR_DEPLOY && matrix.typescript-version == env.TS_FOR_DEPLOY
-        run: npm publish
+        run: echo publishing to npm
+        # xxx disabled - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # - name: Report Code Coverage
