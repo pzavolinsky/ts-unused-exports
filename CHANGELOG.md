@@ -1,3 +1,5 @@
+## [8.0.5] - 10 Dec 2022
+
 ### Changed
 
 - Add support for running from a directory not the 'project' directory that contains tsconfig.json. (Issue #248)
