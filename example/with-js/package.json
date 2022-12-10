@@ -1,0 +1,14 @@
+{
+  "name": "with-js",
+  "version": "0.0.0",
+  "description": "Example used by integration tests (ispec) - with-js",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && ../../bin/ts-unused-exports tsconfig.json"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
