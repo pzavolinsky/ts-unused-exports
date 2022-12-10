@@ -4,8 +4,8 @@
   "description": "Example used by integration tests (ispec) - with-js",
   "main": "src/index.js",
   "scripts": {
-    "build": "tsc",
-    "test": "tsc && ../../bin/ts-unused-exports tsconfig.json"
+    "build": "tsc --allowJs",
+    "test": "tsc --allowJs && ../../bin/ts-unused-exports tsconfig.json"
   },
   "license": "MIT",
   "devDependencies": {
