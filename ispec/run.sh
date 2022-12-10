@@ -79,5 +79,9 @@ pushd ../example/path-alias-and-sub-folders
 run_itest
 popd
 
+pushd ../example/with-js
+run_itest
+popd
+
 # Test running from another directory
 ./_run_from_directory_not_project.sh

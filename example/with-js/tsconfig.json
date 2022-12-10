@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "module": "es6",
+      "target": "es2019",
+      "noImplicitAny": false,
+      "alwaysStrict": true,
+      "removeComments": true,
+      "strictNullChecks": true,
+      "preserveConstEnums": true,
+      "sourceMap": true,
+      "outDir": "build"
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"]
+  }
