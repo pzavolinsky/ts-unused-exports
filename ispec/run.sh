@@ -35,7 +35,7 @@ pushd ../example/simple
 run_itest
 popd
 
-# TYPESCRIPT_VERSION is set for some travis builds (see .travis.yml)
+# TYPESCRIPT_VERSION is set for some builds (see .github/worflows)
 if [ "$TYPESCRIPT_VERSION" = "4" ]
 then
     pushd ../example/simple-new-ts-4-options
@@ -78,3 +78,6 @@ popd
 pushd ../example/path-alias-and-sub-folders
 run_itest
 popd
+
+# Test running from another directory
+./_run_from_directory_not_project.sh

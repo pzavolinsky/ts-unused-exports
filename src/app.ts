@@ -9,6 +9,7 @@ import parseFiles from './parser';
 
 const parseTsConfig = (tsconfigPath: string): TsConfig => {
   const basePath = resolve(dirname(tsconfigPath));
+  tsconfigPath = resolve(tsconfigPath);
 
   try {
     const configFileName = ts.findConfigFile(
