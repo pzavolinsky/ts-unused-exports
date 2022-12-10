@@ -13,6 +13,7 @@ on:
     branches:
       - master
   workflow_call: # allow this workflow to be called from other workflows
+  workflow_dispatch: # allow manual execution, in case for example a run was cancelled
 
 jobs:
   build:
