@@ -14,6 +14,8 @@ export const indexCandidates = [
 ];
 
 export function removeExportStarPrefix(path: string): string {
+  if (path.endsWith('.js')) path = path.substring(0, path.length - 3);
+
   if (path.startsWith('*:')) return path.slice(2);
   else if (path.startsWith('*as:')) return path.slice(4);
 

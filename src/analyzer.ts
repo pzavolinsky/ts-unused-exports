@@ -67,9 +67,18 @@ const getExportMap = (files: File[]): ExportMap => {
   return map;
 };
 
+const removeExtension = (filename: string): string => {
+  if (filename.endsWith('.js')) {
+    return filename.substring(0, filename.length - 3);
+  }
+  return filename;
+};
+
 const processImports = (file: File, exportMap: ExportMap): void => {
   Object.keys(file.imports).forEach((key) => {
-    let ex = exportMap[key]?.exports;
+    const keyNoExtensionToAllowForJs = removeExtension(key);
+
+    let ex = exportMap[keyNoExtensionToAllowForJs]?.exports;
 
     // Handle imports from an index file
     if (!ex && key === '.') {
@@ -101,13 +110,9 @@ const processImports = (file: File, exportMap: ExportMap): void => {
       ex[imp].usageCount++;
     };
 
-    file.imports[key].forEach((imp) =>
-      imp === '*'
-        ? Object.keys(ex)
-            .filter((e) => e != 'default')
-            .forEach(addUsage)
-        : addUsage(imp),
-    );
+    file.imports[key].forEach((imp) => {
+      imp === '*' ? Object.keys(ex).forEach(addUsage) : addUsage(imp);
+    });
   });
 };
 

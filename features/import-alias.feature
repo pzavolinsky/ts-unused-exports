@@ -14,8 +14,8 @@ Scenario: Used export default - import * as x
   Given file "a.ts" is export default 1;
   And file "b.ts" is import * as ax from './a';
   When analyzing "tsconfig.json"
-  Then the result at a.ts is ["default"]
-# see star.feature - Import * marks 'default' as unused
+  Then the result is {}
+# see star.feature - Import * does NOT mark 'default' as unused
 
 Scenario: Used export default - import x
   Given file "a.ts" is export default 1;

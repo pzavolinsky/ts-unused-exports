@@ -1,3 +1,8 @@
+
+### Added
+
+Allow for importing of 'x.js' files as opposed to simply 'x'. This aims towards supporting es6 and higher modules as opposed to CommonJS.
+
 ## [8.0.5] - 10 Dec 2022
 
 ### Changed

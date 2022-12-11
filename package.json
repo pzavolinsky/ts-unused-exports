@@ -1,6 +1,6 @@
 {
   "name": "ts-unused-exports",
-  "version": "8.0.5",
+  "version": "9.0.0",
   "description": "ts-unused-exports finds unused exported symbols in your Typescript project",
   "main": "lib/app.js",
   "repository": {
