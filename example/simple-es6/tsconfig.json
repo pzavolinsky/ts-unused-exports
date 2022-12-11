@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  },
+  "include": ["./**/*.ts"],
+}
