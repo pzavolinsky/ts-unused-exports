@@ -1,3 +1,3 @@
-import inc from './math';
+import * as inc from './math.js';
 
-console.log('two', inc(1));
+console.log('two', inc.default(1));

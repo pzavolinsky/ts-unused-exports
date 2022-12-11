@@ -1,10 +1,11 @@
 {
-  "compilerOptions": {
+  "compilerOptions":
+  {
     "target": "ES5",
     "module": "commonjs",
-    "noEmit": true,
     "noImplicitAny": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "outDir": "./lib",
   },
   "include": ["./**/*.ts"],
 }

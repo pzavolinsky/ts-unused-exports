@@ -3,7 +3,8 @@
     "target": "es6",
     "module": "es6",
     "noImplicitAny": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "outDir": "./lib",
   },
   "include": ["./**/*.ts"],
 }
