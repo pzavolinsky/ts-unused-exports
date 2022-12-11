@@ -4,7 +4,11 @@ import {
   File,
   LocationInFile,
 } from './types';
-import { indexCandidates, removeExportStarPrefix } from './parser/util';
+import {
+  indexCandidates,
+  removeExportStarPrefix,
+  removeFileExtensionToAllowForJs,
+} from './parser/util';
 
 export { Analysis } from './types';
 
@@ -67,18 +71,9 @@ const getExportMap = (files: File[]): ExportMap => {
   return map;
 };
 
-const removeExtension = (filename: string): string => {
-  if (filename.endsWith('.js')) {
-    return filename.substring(0, filename.length - 3);
-  }
-  return filename;
-};
-
 const processImports = (file: File, exportMap: ExportMap): void => {
   Object.keys(file.imports).forEach((key) => {
-    const keyNoExtensionToAllowForJs = removeExtension(key);
-
-    let ex = exportMap[keyNoExtensionToAllowForJs]?.exports;
+    let ex = exportMap[removeFileExtensionToAllowForJs(key)]?.exports;
 
     // Handle imports from an index file
     if (!ex && key === '.') {
