@@ -85,6 +85,9 @@ function processOptions(
       case '--silent':
         newOptions.silent = true;
         break;
+      case '--findCompletelyUnusedFiles':
+        newOptions.findCompletelyUnusedFiles = true;
+        break;
       default:
         throw new Error(`Not a recognised option '${optionName}'`);
     }

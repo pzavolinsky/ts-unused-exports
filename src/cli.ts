@@ -24,6 +24,7 @@ const showMessages = (
   files: string[],
   showMessage: (s: string) => void,
   analysis: Analysis,
+  unusedFiles: string[] | undefined,
   options: ExtraCommandLineOptions | undefined,
 ): void => {
   const filesCountMessage = `${chalk.bold(files.length.toString())} module${
@@ -51,6 +52,14 @@ const showMessages = (
       ),
     );
   }
+
+  if (unusedFiles && unusedFiles.length > 0) {
+    showMessage(chalk.red('completely unused files'));
+
+    unusedFiles.forEach((path) => {
+      showMessage(path);
+    });
+  }
 };
 
 export const runCli = (
@@ -65,7 +74,7 @@ export const runCli = (
   }
 
   try {
-    const analysis = analyzeTsConfig(
+    const { unusedFiles, ...analysis } = analyzeTsConfig(
       tsconfig,
       tsFiles.length ? tsFiles : undefined,
     );
@@ -76,7 +85,7 @@ export const runCli = (
 
     const hideMessages = options?.silent && files.length === 0;
     if (!hideMessages) {
-      showMessages(files, showMessage, analysis, options);
+      showMessages(files, showMessage, analysis, unusedFiles, options);
     }
 
     // Max allowed exit code is 127 (single signed byte)
