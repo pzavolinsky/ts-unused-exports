@@ -1,3 +1,4 @@
+import isEqual from 'lodash.isEqual';
 import {
   Analysis,
   ExtraCommandLineOptions,
@@ -219,6 +220,7 @@ export default (
   filteredFiles.forEach((file) => processImports(file, exportMap));
 
   const analysis: Analysis = {};
+  const unusedFiles: string[] = [];
 
   Object.keys(exportMap).forEach((file) => {
     const expItem = exportMap[file];
@@ -234,6 +236,8 @@ export default (
       return;
     }
 
+    const realExportNames = Object.keys(exports);
+
     analysis[path] = [];
     unusedExports.forEach((e) => {
       analysis[path].push({
@@ -241,7 +245,18 @@ export default (
         location: exports[e].location,
       });
     });
+
+    if (
+      extraOptions?.findCompletelyUnusedFiles &&
+      isEqual(realExportNames, unusedExports)
+    ) {
+      unusedFiles.push(path);
+    }
   });
+
+  if (extraOptions?.findCompletelyUnusedFiles) {
+    analysis.unusedFiles = unusedFiles;
+  }
 
   return analysis;
 };

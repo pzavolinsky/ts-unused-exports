@@ -23,9 +23,15 @@ interface ExportNameAndLocation {
   location: LocationInFile;
 }
 
-export interface Analysis {
+interface AnalysisExports {
   [index: string]: ExportNameAndLocation[];
 }
+
+interface AnalysisUnusedFiles {
+  unusedFiles?: string[];
+}
+
+export type Analysis = AnalysisExports & AnalysisUnusedFiles;
 
 export interface TsConfigPaths {
   [glob: string]: string[];
@@ -49,4 +55,5 @@ export interface ExtraCommandLineOptions {
   searchNamespaces?: boolean;
   showLineNumber?: boolean;
   silent?: boolean;
+  findCompletelyUnusedFiles?: boolean;
 }
