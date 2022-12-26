@@ -8,7 +8,10 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": [
+      "node"
+    ]
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts"],
