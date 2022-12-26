@@ -4,7 +4,11 @@ import {
   File,
   LocationInFile,
 } from './types';
-import { indexCandidates, removeExportStarPrefix } from './parser/util';
+import {
+  indexCandidates,
+  removeExportStarPrefix,
+  removeFileExtensionToAllowForJs,
+} from './parser/util';
 
 export { Analysis } from './types';
 
@@ -69,7 +73,7 @@ const getExportMap = (files: File[]): ExportMap => {
 
 const processImports = (file: File, exportMap: ExportMap): void => {
   Object.keys(file.imports).forEach((key) => {
-    let ex = exportMap[key]?.exports;
+    let ex = exportMap[removeFileExtensionToAllowForJs(key)]?.exports;
 
     // Handle imports from an index file
     if (!ex && key === '.') {
@@ -101,13 +105,9 @@ const processImports = (file: File, exportMap: ExportMap): void => {
       ex[imp].usageCount++;
     };
 
-    file.imports[key].forEach((imp) =>
-      imp === '*'
-        ? Object.keys(ex)
-            .filter((e) => e != 'default')
-            .forEach(addUsage)
-        : addUsage(imp),
-    );
+    file.imports[key].forEach((imp) => {
+      imp === '*' ? Object.keys(ex).forEach(addUsage) : addUsage(imp);
+    });
   });
 };
 

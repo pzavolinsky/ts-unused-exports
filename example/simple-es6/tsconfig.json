@@ -1,8 +1,7 @@
 {
-  "compilerOptions":
-  {
-    "target": "ES5",
-    "module": "commonjs",
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
     "noImplicitAny": true,
     "strictNullChecks": true,
     "outDir": "./lib",

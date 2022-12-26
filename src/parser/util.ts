@@ -9,9 +9,25 @@ export function isUnique<T>(value: T, index: number, self: T[]): boolean {
 export const indexCandidates = [
   '/index',
   '/index.ts',
+  '/index.cts',
+  '/index.mts',
   '/index.tsx',
   '/index.js',
+  '/index.cjs',
+  '/index.mjs',
 ];
+
+export function removeFileExtensionToAllowForJs(path: string): string {
+  // ref: https://www.typescriptlang.org/docs/handbook/esm-node.html
+  const extensionsToStrip = ['.js', '.cjs', '.mjs'];
+
+  for (let i = 0; i < extensionsToStrip.length; i++) {
+    const ext = extensionsToStrip[i];
+    if (path.endsWith(ext)) return path.substring(0, path.length - ext.length);
+  }
+
+  return path;
+}
 
 export function removeExportStarPrefix(path: string): string {
   if (path.startsWith('*:')) return path.slice(2);
