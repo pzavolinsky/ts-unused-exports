@@ -12,15 +12,33 @@ import path = require('path');
 
 // Parse Imports
 
-const EXTENSIONS = ['.d.ts', '.ts', '.tsx', '.js', '.jsx'];
+const EXTENSIONS = [
+  '.d.ts',
+  '.ts',
+  '.cts',
+  '.mts',
+  '.tsx',
+  '.js',
+  '.cjs',
+  '.mjs',
+  '.jsx',
+];
 
 const isRelativeToBaseDir = (baseDir: string, from: string): boolean =>
   existsSync(resolve(baseDir, `${from}.js`)) ||
+  existsSync(resolve(baseDir, `${from}.cjs`)) ||
+  existsSync(resolve(baseDir, `${from}.mjs`)) ||
   existsSync(resolve(baseDir, `${from}.ts`)) ||
+  existsSync(resolve(baseDir, `${from}.cts`)) ||
+  existsSync(resolve(baseDir, `${from}.mts`)) ||
   existsSync(resolve(baseDir, `${from}.d.ts`)) ||
   existsSync(resolve(baseDir, `${from}.tsx`)) ||
   existsSync(resolve(baseDir, from, 'index.js')) ||
+  existsSync(resolve(baseDir, from, 'index.cjs')) ||
+  existsSync(resolve(baseDir, from, 'index.mjs')) ||
   existsSync(resolve(baseDir, from, 'index.ts')) ||
+  existsSync(resolve(baseDir, from, 'index.cts')) ||
+  existsSync(resolve(baseDir, from, 'index.mts')) ||
   existsSync(resolve(baseDir, from, 'index.tsx'));
 
 const joinWithBaseUrl = (baseUrl: string, from: string) => {
