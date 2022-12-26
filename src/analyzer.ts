@@ -208,6 +208,12 @@ const filterFiles = (
   return files.filter((f) => !shouldIgnoreFile(f.path));
 };
 
+const areEqual = (files1: string[], files2: string[]): boolean => {
+  if (files1.length !== files2.length) return false;
+
+  return files1.every((f) => files2.includes(f));
+};
+
 export default (
   files: File[],
   extraOptions?: ExtraCommandLineOptions,
@@ -219,6 +225,7 @@ export default (
   filteredFiles.forEach((file) => processImports(file, exportMap));
 
   const analysis: Analysis = {};
+  const unusedFiles: string[] = [];
 
   Object.keys(exportMap).forEach((file) => {
     const expItem = exportMap[file];
@@ -234,6 +241,8 @@ export default (
       return;
     }
 
+    const realExportNames = Object.keys(exports);
+
     analysis[path] = [];
     unusedExports.forEach((e) => {
       analysis[path].push({
@@ -241,7 +250,18 @@ export default (
         location: exports[e].location,
       });
     });
+
+    if (
+      extraOptions?.findCompletelyUnusedFiles &&
+      areEqual(realExportNames, unusedExports)
+    ) {
+      unusedFiles.push(path);
+    }
   });
+
+  if (extraOptions?.findCompletelyUnusedFiles) {
+    analysis.unusedFiles = unusedFiles;
+  }
 
   return analysis;
 };

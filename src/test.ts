@@ -81,7 +81,7 @@ const setup: SetupFn = ({
   When(
     'analyzing "{filename}"',
     (tsconfigFileName, fileNames) => {
-      const result = analyzeTsConfig(
+      const { unusedFiles, ...result } = analyzeTsConfig(
         pathFor(tsconfigFileName),
         fileNames ? JSON.parse(fileNames).map(pathFor) : undefined,
       );
@@ -91,6 +91,10 @@ const setup: SetupFn = ({
         return acc;
       }, {} as typeof result);
       setCtx('$result', withoutTmpDir);
+      const withoutTmpFiles = unusedFiles?.map((k) => {
+        return k.replace(tmp, '');
+      });
+      setCtx('$unused_files', withoutTmpFiles);
     },
     { optional: 'with files' },
   );
@@ -140,6 +144,11 @@ const setup: SetupFn = ({
   Then(
     'the CLI result {op}',
     (op, payload) => compare(op, getCtx('$run'), payload),
+    { inline: true },
+  );
+  Then(
+    'the unused file {op}',
+    (op, payload) => compare(op, getCtx('$unused_files'), payload),
     { inline: true },
   );
 };

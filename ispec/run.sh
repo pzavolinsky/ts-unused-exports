@@ -83,5 +83,9 @@ pushd ../example/with-js
 run_itest
 popd
 
+pushd ../example/simple-unused-file
+../../ispec/_run-and-check-exit-code.sh --findCompletelyUnusedFiles
+popd
+
 # Test running from another directory
 ./_run_from_directory_not_project.sh
