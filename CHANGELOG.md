@@ -1,7 +1,9 @@
 
 ### Added
 
-Allow for importing of 'x.js' files as opposed to simply 'x'. This aims towards supporting es6 and higher modules as opposed to CommonJS.
+- Allow for importing of 'x.js' files as opposed to simply 'x'. This aims towards supporting es6 and higher modules as opposed to CommonJS.
+
+- Add option `--findCompletelyUnusedFiles` to check for *completely* unused files
 
 ## [8.0.5] - 10 Dec 2022
 
