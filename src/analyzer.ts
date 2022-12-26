@@ -1,4 +1,3 @@
-import isEqual from 'lodash.isEqual';
 import {
   Analysis,
   ExtraCommandLineOptions,
@@ -209,6 +208,12 @@ const filterFiles = (
   return files.filter((f) => !shouldIgnoreFile(f.path));
 };
 
+const areEqual = (files1: string[], files2: string[]): boolean => {
+  if (files1.length !== files2.length) return false;
+
+  return files1.every((f) => files2.includes(f));
+};
+
 export default (
   files: File[],
   extraOptions?: ExtraCommandLineOptions,
@@ -248,7 +253,7 @@ export default (
 
     if (
       extraOptions?.findCompletelyUnusedFiles &&
-      isEqual(realExportNames, unusedExports)
+      areEqual(realExportNames, unusedExports)
     ) {
       unusedFiles.push(path);
     }
