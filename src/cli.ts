@@ -54,7 +54,7 @@ const showMessages = (
   }
 
   if (unusedFiles && unusedFiles.length > 0) {
-    showMessage(chalk.red('completely unused files'));
+    showMessage(chalk.red('Completely unused files:'));
 
     unusedFiles.forEach((path) => {
       showMessage(path);
