@@ -11,7 +11,7 @@ export interface FromWhat {
 const TRIM_QUOTES = /^['"](.*)['"]$/;
 
 export const getFromText = (moduleSpecifier: string): string =>
-  moduleSpecifier.replace(TRIM_QUOTES, '$1').replace(/\/index$/, '');
+  moduleSpecifier.replace(TRIM_QUOTES, '$1').replace(/\/index(.[mc]?js)?$/, '');
 
 export const getFrom = (moduleSpecifier: ts.Expression): string =>
   getFromText(moduleSpecifier.getText());

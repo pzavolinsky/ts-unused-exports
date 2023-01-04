@@ -64,7 +64,9 @@ const setup: SetupFn = ({
       const items = readdirSync(path, { encoding: 'utf8' }).filter(
         (f) => f[0] !== '.',
       );
-      const files = items.filter((f) => !!f.match(/\.(json|ts|tsx|js|jsx)$/));
+      const files = items.filter(
+        (f) => !!f.match(/\.(json|ts|tsx|js|jsx|mjs|cjs|mts|cts)$/),
+      );
       files.forEach((f) => unlinkSync(join(path, f)));
       const dirs = items.filter((i) => !files.includes(i));
       dirs.forEach((d) => removeDir(join(path, d)));
