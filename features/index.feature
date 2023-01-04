@@ -18,6 +18,24 @@ Scenario: Import './index'
   When analyzing "tsconfig.json"
   Then the result is {}
 
+Scenario: Import './index.js'
+  Given file "index.ts" is export const a = 1;
+  And file "a.ts" is import { a } from './index.js';
+  When analyzing "tsconfig.json"
+  Then the result is {}
+
+Scenario: Import './index.mjs'
+  Given file "index.mts" is export const a = 1;
+  And file "a.ts" is import { a } from './index.mjs';
+  When analyzing "tsconfig.json"
+  Then the result is {}
+
+Scenario: Import './index.cjs'
+  Given file "index.cts" is export const a = 1;
+  And file "a.ts" is import { a } from './index.cjs';
+  When analyzing "tsconfig.json"
+  Then the result is {}
+
 Scenario: Import './index' TSX
   Given file "index.tsx" is export const a = 1;
   And file "a.ts" is import { a } from './index';
