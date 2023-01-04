@@ -1,3 +1,5 @@
+## [9.0.1] - 4 Jan 2023
+
 ### Changed
 
 - Fix for index files that end with .js or .cjs or .mjs.
