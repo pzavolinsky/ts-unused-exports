@@ -1,3 +1,9 @@
+## [9.0.2] - 15 Jan 2023
+
+### Added
+
+- Added better examples of how to use as a library, via TypeScript or JavaScript. No code was changed.
+
 ## [9.0.1] - 4 Jan 2023
 
 ### Changed
