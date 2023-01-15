@@ -1,11 +1,9 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "outDir": "./dist",
-        "jsx": "react",
+        "outDir": "./dist"
     },
     "include": [
-        "./src/**/*.ts",
-        "./src/**/*.tsx"
+        "./src/**/*.ts"
     ]
 }
