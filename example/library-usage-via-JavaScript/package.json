@@ -1,0 +1,16 @@
+{
+  "description": "Example of using ts-unused-exports as a library, via JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:watch": "nodemon index.js",
+    "build": "echo This is a static template, there is no bundler or bundling involved!"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "nodemon": "^2.0.20",
+    "ts-unused-exports": "^9.0.1"
+  },
+  "type": "module"
+}

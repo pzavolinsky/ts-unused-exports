@@ -36,23 +36,7 @@ or, if installed globally:
 ts-unused-exports path/to/tsconfig.json [file1.ts ...] [options]
 ```
 
-or, as a library:
-
-```ts
-import analyzeTsConfig from 'ts-unused-exports';
-const result = analyzeTsConfig('path/to/tsconfig.json');
-// or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts']);
-// or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts', '--excludePathsFromReport=math']);
-
-// result : { [index:string] : ExportNameAndLocation[] }
-// where the keys are file paths and the values are a structure descibing unused symbols:
-// interface ExportNameAndLocation {
-//   exportName: string;
-//   location: LocationInFile;
-// }
-```
-
-Options:
+## Usage Options
 
 | Option name                | Description                                                                                                                                                                                                                                                                                                                                            | Example                               |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
@@ -76,6 +60,38 @@ Note that if `ts-unused-exports` is called without files, the files will be read
 `ts-unused-exports` also resolves path aliases specified in tsconfig's `paths` object.
 
 As of version 7.0.0 the TypeScript compiler is a _peer dependency_ of `ts-unused-exports`. This means that if the TypeScript compiler is not already in the same spot as `ts-unused-exports`, you have to install it yourself (e.g. with `npm i -D typescript`).
+
+
+### Usage as a library
+
+#### Usage as a library - From TypeScript (was built with ES5 + commonjs)
+
+```ts
+import analyzeTsConfig from 'ts-unused-exports';
+const result = analyzeTsConfig('path/to/tsconfig.json');
+// or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts']);
+// or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts', '--excludePathsFromReport=math']);
+
+// result : { [index:string] : ExportNameAndLocation[] }
+// where the keys are file paths and the values are a structure descibing unused symbols:
+// interface ExportNameAndLocation {
+//   exportName: string;
+//   location: LocationInFile;
+// }
+```
+
+For an example see `./example/library-usage-via-TypeScript/`.
+
+#### Usage as a library - From JavaScript
+
+From JavaScript - depending on your environment, you may need to navigate to reach the analyzeTsConfig() function.
+
+```js
+import analyzeTsConfig from "ts-unused-exports";
+const result = analyzeTsConfig.default('path/to/tsconfig.json');
+```
+
+For an example see `./example/library-usage-via-JavaScript/`.
 
 ## Why should I use this?
 
