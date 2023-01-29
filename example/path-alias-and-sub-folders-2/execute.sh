@@ -1,1 +1,1 @@
-npm i && npm start && npm test
+npm i && npm test

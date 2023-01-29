@@ -1,3 +1,7 @@
-import { foo } from "@foo/index";
+import { fooFromIndex } from "@foo/index";
+import { fooOther } from "@foo/other";
 
-console.log(foo);
+export function unusedFromIndex() {}
+
+console.log(fooFromIndex);
+console.log(fooOther);
