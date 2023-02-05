@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json",
+    "start": "npm run-script build && node ./dist/index.js",
+    "test": "../../bin/ts-unused-exports ./tsconfig.json"
+  },
+  "dependencies": {
+    "ts-unused-exports": "^9.0.2",
+    "typescript": "^4.9.4"
+  }
+}
