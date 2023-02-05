@@ -1,1 +1,1 @@
-npm i && npm build && npm start
+npm ci && npm build && npm start

@@ -16,7 +16,7 @@ function run_itest_expect_zero_issues()
 
 function install_and_run_itest()
 {
-    npm i > /dev/null && run_itest
+    npm ci > /dev/null && run_itest
 }
 
 pushd ../example/simple-zero-issues
@@ -76,6 +76,10 @@ install_and_run_itest
 popd
 
 pushd ../example/path-alias-and-sub-folders
+run_itest
+popd
+
+pushd ../example/path-alias-and-sub-folders-import-from-index
 run_itest
 popd
 

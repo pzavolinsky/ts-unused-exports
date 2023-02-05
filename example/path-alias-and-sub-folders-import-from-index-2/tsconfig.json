@@ -1,0 +1,36 @@
+{
+  "include": ["src"],
+
+  "compilerOptions": {
+    // Type Checking
+    "strict": true,
+
+    // Modules
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "paths": {
+      "@foo/*": ["src/foo/*"],
+      "@foo2": ["src/foo2/index"],
+      "@foo2/*": ["src/foo2/*"],
+      "@foo3/*": ["src/foo3/*"],
+    },
+
+    // Emit
+    // "noEmit": true,
+
+    // Interop Constraints
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+
+    // Language and Environment
+    // "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "target": "ESNext",
+
+    // Completeness
+    "skipLibCheck": true,
+    "outDir": "./dist"
+  }
+}

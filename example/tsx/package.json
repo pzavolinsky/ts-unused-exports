@@ -6,7 +6,7 @@
     },
     "license": "MIT",
     "scripts": {
-        "test": "npm i && ../../bin/ts-unused-exports ./tsconfig.json"
+        "test": "npm ci && ../../bin/ts-unused-exports ./tsconfig.json"
     },
     "dependencies": {
         "@types/react": "^16.4.18",

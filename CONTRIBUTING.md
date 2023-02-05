@@ -16,7 +16,7 @@ Fork, then clone the repo:
 
 Install dependencies:
 
-    npm i
+    npm ci
 
 Make sure the tests pass:
 

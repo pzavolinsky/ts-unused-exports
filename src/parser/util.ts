@@ -17,6 +17,16 @@ export const indexCandidates = [
   '/index.mjs',
 ];
 
+export const indexCandidateExtensions = [
+  '.ts',
+  '.cts',
+  '.mts',
+  '.tsx',
+  '.js',
+  '.cjs',
+  '.mjs',
+];
+
 export function removeFileExtensionToAllowForJs(path: string): string {
   // ref: https://www.typescriptlang.org/docs/handbook/esm-node.html
   const extensionsToStrip = ['.js', '.cjs', '.mjs'];

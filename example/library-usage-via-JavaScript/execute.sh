@@ -1,1 +1,1 @@
-npm i && npm start
+npm ci && npm start

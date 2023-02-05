@@ -1,3 +1,10 @@
+## [9.0.3] - 5 Feb 2023
+
+### Changed
+
+- Fix for import from index file via a custom path - avoids false positives on index files - #266. Now tested with more cases such as import from "foo" OR import from "foo/index" with various file extensions supported.
+- ts-unused-exports npm package: Updated the version in package-lock.json
+
 ## [9.0.2] - 15 Jan 2023
 
 ### Added
