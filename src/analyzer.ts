@@ -5,6 +5,7 @@ import {
   LocationInFile,
 } from './types';
 import {
+  indexCandidateExtensions,
   indexCandidates,
   removeExportStarPrefix,
   removeFileExtensionToAllowForJs,
@@ -76,15 +77,32 @@ const processImports = (file: File, exportMap: ExportMap): void => {
     let ex = exportMap[removeFileExtensionToAllowForJs(key)]?.exports;
 
     // Handle imports from an index file
-    if (!ex && key === '.') {
+    if (!ex) {
+      // Try matching import from /a/b/c -> /a/b/c/index.x
       for (let c = 0; c < indexCandidates.length; c++) {
         const indexKey = indexCandidates[c];
         ex = exportMap[indexKey]?.exports || undefined;
         if (ex) break;
       }
+
+      if (!ex && key.endsWith('index')) {
+        // Try matching import from /a/b/c/index -> /a/b/c/index.x
+        for (let c = 0; c < indexCandidateExtensions.length; c++) {
+          const indexKey = key + indexCandidateExtensions[c];
+          ex = exportMap[indexKey]?.exports || undefined;
+          if (ex) break;
+        }
+        if (!ex) {
+          const indexKey = key.substring(0, key.length - '/index'.length);
+          ex = exportMap[indexKey]?.exports || undefined;
+        }
+      }
     }
 
-    if (!ex) return;
+    if (!ex) {
+      // DEV DEBUG - console.warn(`Could not resolve ${key}`);
+      return;
+    }
 
     const addUsage = (imp: string): void => {
       if (!ex[imp]) {

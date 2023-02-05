@@ -11,7 +11,9 @@ export interface FromWhat {
 const TRIM_QUOTES = /^['"](.*)['"]$/;
 
 export const getFromText = (moduleSpecifier: string): string =>
-  moduleSpecifier.replace(TRIM_QUOTES, '$1').replace(/\/index(.[mc]?js)?$/, '');
+  moduleSpecifier
+    .replace(TRIM_QUOTES, '$1')
+    .replace(/\/index(.[mc]?js)?$/, '/index'); // Do not completely remove /index as then is ambiguous between file or folder name
 
 export const getFrom = (moduleSpecifier: ts.Expression): string =>
   getFromText(moduleSpecifier.getText());

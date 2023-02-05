@@ -10,7 +10,9 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "paths": {
-      "@foo/*": ["src/foo/*"]
+      "@foo/*": ["src/foo/*"],
+      "@foo2": ["src/foo2/index"],
+      "@foo2/*": ["src/foo2/*"],
     },
 
     // Emit
