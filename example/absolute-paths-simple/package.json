@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "build": "tsc",
-    "test": "npm i && npm run build && ../../bin/ts-unused-exports ./tsconfig.json --ignorePaths=to-ignore"
+    "test": "npm ci && npm run build && ../../bin/ts-unused-exports ./tsconfig.json --ignorePaths=to-ignore"
   },
   "dependencies": {
     "typescript": "^3.7.4"

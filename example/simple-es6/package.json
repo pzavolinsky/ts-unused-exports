@@ -6,7 +6,7 @@
     },
     "license": "MIT",
     "scripts": {
-        "test": "npm i && ../../bin/ts-unused-exports ./tsconfig.json"
+        "test": "npm ci && ../../bin/ts-unused-exports ./tsconfig.json"
     },
     "type": "module",
     "dependencies": {

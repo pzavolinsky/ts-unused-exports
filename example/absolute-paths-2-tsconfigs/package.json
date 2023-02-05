@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "test": "npm i && npm run build && npm run test:test",
+    "test": "npm ci && npm run build && npm run test:test",
     "test:test": "../../bin/ts-unused-exports ./tsconfig.json"
   },
   "dependencies": {
