@@ -4,7 +4,7 @@
     "scripts": {
         "build": "tsc",
         "start": "node ./dist/app.js",
-        "test": "npm ci && ./node_modules/bin/ts-unused-exports ./tsconfig.json"
+        "test": "npm ci && ./node_modules/ts-unused-exports/bin/ts-unused-exports ../simple/tsconfig.json"
     },
     "dependencies": {
         "ts-unused-exports": "^9.0.1",
