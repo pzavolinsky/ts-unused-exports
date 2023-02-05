@@ -93,6 +93,7 @@ const processImports = (file: File, exportMap: ExportMap): void => {
           if (ex) break;
         }
         if (!ex) {
+          // Try matching import from /a/b/c/index -> /a/b/c
           const indexKey = key.substring(0, key.length - '/index'.length);
           ex = exportMap[indexKey]?.exports || undefined;
         }
