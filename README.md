@@ -186,7 +186,7 @@ export function add2(x: number) {
 
 ### eslint plugins
 
-ts-unused-exports can also be executed via this [eslint plugin](https://github.com/gajus/eslint-plugin-canonical#no-unused-exports) by Gajus Kuizinas.
+`ts-unused-exports` can also be executed via this [eslint plugin](https://github.com/gajus/eslint-plugin-canonical#no-unused-exports) by Gajus Kuizinas.
 
 ## Changelog (Release History)
 
