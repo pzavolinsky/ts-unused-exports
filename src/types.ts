@@ -57,3 +57,7 @@ export interface ExtraCommandLineOptions {
   silent?: boolean;
   findCompletelyUnusedFiles?: boolean;
 }
+
+export interface ExtraOptionsForPresentation {
+  baseUrl?: string;
+}

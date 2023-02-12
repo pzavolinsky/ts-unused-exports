@@ -1,6 +1,6 @@
 {
   "name": "ts-unused-exports",
-  "version": "9.0.3",
+  "version": "9.0.4",
   "description": "ts-unused-exports finds unused exported symbols in your Typescript project",
   "main": "lib/app.js",
   "repository": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/pzavolinsky/ts-unused-exports",
   "scripts": {
+    "bump": "npm version patch",
     "build": "tsc",
     "exec": "bin/ts-unused-exports",
     "lint:fix": "./node_modules/.bin/eslint --ext .ts src --fix",
