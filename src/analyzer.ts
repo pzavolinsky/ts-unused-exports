@@ -25,6 +25,8 @@ interface FileExports {
 interface ExportItem {
   exports: FileExports;
   path: string;
+  // Was the file imported at least once. If so, then can mark any export * as used (handles transitive export(import) like a -> b -> c).
+  fileWasImported: boolean;
 }
 
 interface ExportMap {
@@ -61,7 +63,7 @@ const getFileExports = (file: File): ExportItem => {
     }
   });
 
-  return { exports, path: file.fullPath };
+  return { exports, path: file.fullPath, fileWasImported: false };
 };
 
 const getExportMap = (files: File[]): ExportMap => {
@@ -74,7 +76,9 @@ const getExportMap = (files: File[]): ExportMap => {
 
 const processImports = (file: File, exportMap: ExportMap): void => {
   Object.keys(file.imports).forEach((key) => {
-    let ex = exportMap[removeFileExtensionToAllowForJs(key)]?.exports;
+    const importedFileExports = exportMap[removeFileExtensionToAllowForJs(key)];
+
+    let ex = importedFileExports?.exports;
 
     // Handle imports from an index file
     if (!ex) {
@@ -121,8 +125,14 @@ const processImports = (file: File, exportMap: ExportMap): void => {
           },
         };
       }
+
+      // DEV DEBUG - console.log(`Marking as used: ${imp} in ${file.path}`);
       ex[imp].usageCount++;
     };
+
+    if (!!importedFileExports) {
+      importedFileExports.fileWasImported = true;
+    }
 
     file.imports[key].forEach((imp) => {
       imp === '*' ? Object.keys(ex).forEach(addUsage) : addUsage(imp);
@@ -164,6 +174,12 @@ const expandExportFromStarOrStarAsForFile = (
             // Mark the items as imported, for the imported file:
             const importedFileExports = exportMap[removeExportStarPrefix(ex)];
             if (importedFileExports) {
+              // DEV DEBUG
+              /* console.log(
+                `Marking as used: ${key} in ${removeExportStarPrefix(ex)}`,
+              );
+              console.dir(Object.keys(exportMap));*/
+              importedFileExports.fileWasImported = true;
               importedFileExports.exports[key].usageCount++;
             }
           });
@@ -252,9 +268,15 @@ export default (
 
     if (shouldPathBeExcludedFromResults(path, extraOptions)) return;
 
-    const unusedExports = Object.keys(exports).filter(
-      (k) => exports[k].usageCount === 0,
-    );
+    const unusedExports = Object.keys(exports).filter((k) => {
+      // If the file was imported at least once, then do NOT consider any of its 'export (import) *' as unused.
+      // This avoids false positives with transitive import/exports like a -> b -> c.
+      if (expItem.fileWasImported && k.startsWith('*')) {
+        return false;
+      }
+
+      return exports[k].usageCount === 0;
+    });
 
     if (unusedExports.length === 0) {
       return;

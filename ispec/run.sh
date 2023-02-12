@@ -87,6 +87,10 @@ pushd ../example/import-and-re-export
 run_itest
 popd
 
+pushd ../example/import-and-re-export-2
+run_itest
+popd
+
 pushd ../example/with-js
 run_itest
 popd
