@@ -250,6 +250,21 @@ const areEqual = (files1: string[], files2: string[]): boolean => {
   return files1.every((f) => files2.includes(f));
 };
 
+const makeExportStarRelative = (
+  baseUrl: string | undefined,
+  filePath: string,
+): string => {
+  if (!filePath.startsWith('*')) {
+    return filePath;
+  }
+
+  const filePathNoStar = removeExportStarPrefix(filePath);
+  if (!!baseUrl && filePathNoStar.startsWith(baseUrl)) {
+    return `* -> ${filePathNoStar.substring(baseUrl.length)}`;
+  }
+  return filePath;
+};
+
 export default (
   files: File[],
   extraOptions?: ExtraCommandLineOptions,
@@ -288,7 +303,7 @@ export default (
     analysis[path] = [];
     unusedExports.forEach((e) => {
       analysis[path].push({
-        exportName: e,
+        exportName: makeExportStarRelative(extraOptions?.baseUrl, e),
         location: exports[e].location,
       });
     });
