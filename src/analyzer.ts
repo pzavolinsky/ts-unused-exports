@@ -76,9 +76,10 @@ const getExportMap = (files: File[]): ExportMap => {
 
 const processImports = (file: File, exportMap: ExportMap): void => {
   Object.keys(file.imports).forEach((key) => {
-    const importedFileExports = exportMap[removeFileExtensionToAllowForJs(key)];
+    const importedFileExports =
+      exportMap[removeFileExtensionToAllowForJs(key)] || null;
 
-    let ex = importedFileExports?.exports;
+    let ex = importedFileExports?.exports || null;
 
     // Handle imports from an index file
     if (!ex) {
