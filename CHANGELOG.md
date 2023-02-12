@@ -1,3 +1,10 @@
+## [9.0.4] - 12 Feb 2023
+
+### Changed
+
+- Improve handling of transitive imports like 'a -> b -> c' especially where 'export *' is used - #216
+- Improve output format when the unused item involves an 'export *'.
+
 ## [9.0.3] - 5 Feb 2023
 
 ### Changed
