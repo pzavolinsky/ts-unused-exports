@@ -1,6 +1,7 @@
 import {
   Analysis,
   ExtraCommandLineOptions,
+  ExtraOptionsForPresentation,
   File,
   LocationInFile,
 } from './types';
@@ -250,7 +251,7 @@ const areEqual = (files1: string[], files2: string[]): boolean => {
   return files1.every((f) => files2.includes(f));
 };
 
-const makeExportStarRelative = (
+const makeExportStarRelativeForPresentation = (
   baseUrl: string | undefined,
   filePath: string,
 ): string => {
@@ -267,7 +268,7 @@ const makeExportStarRelative = (
 
 export default (
   files: File[],
-  extraOptions?: ExtraCommandLineOptions,
+  extraOptions?: ExtraCommandLineOptions & ExtraOptionsForPresentation,
 ): Analysis => {
   const filteredFiles = filterFiles(files, extraOptions);
 
@@ -303,7 +304,10 @@ export default (
     analysis[path] = [];
     unusedExports.forEach((e) => {
       analysis[path].push({
-        exportName: makeExportStarRelative(extraOptions?.baseUrl, e),
+        exportName: makeExportStarRelativeForPresentation(
+          extraOptions?.baseUrl,
+          e,
+        ),
         location: exports[e].location,
       });
     });

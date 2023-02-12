@@ -56,5 +56,8 @@ export interface ExtraCommandLineOptions {
   showLineNumber?: boolean;
   silent?: boolean;
   findCompletelyUnusedFiles?: boolean;
+}
+
+export interface ExtraOptionsForPresentation {
   baseUrl?: string;
 }
