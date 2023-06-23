@@ -364,3 +364,7 @@ export const namespaceBlacklist: ReadonlyArray<ts.SyntaxKind> = [
   ts.SyntaxKind.FirstJSDocTagNode,
   ts.SyntaxKind.LastJSDocTagNode,
 ];
+
+export const ignoreLocalBlacklist = namespaceBlacklist.filter(
+  (kind) => kind !== ts.SyntaxKind.Identifier,
+);
