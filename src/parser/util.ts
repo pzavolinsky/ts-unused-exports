@@ -1,6 +1,6 @@
 import ts = require('typescript');
 
-import { namespaceBlacklist } from './namespaceBlacklist';
+import { namespaceBlacklist } from './blacklists';
 
 export function isUnique<T>(value: T, index: number, self: T[]): boolean {
   return self.indexOf(value) === index;
@@ -31,11 +31,23 @@ export function removeFileExtensionToAllowForJs(path: string): string {
   // ref: https://www.typescriptlang.org/docs/handbook/esm-node.html
   const extensionsToStrip = ['.js', '.cjs', '.mjs'];
 
-  for (let i = 0; i < extensionsToStrip.length; i++) {
-    const ext = extensionsToStrip[i];
-    if (path.endsWith(ext)) return path.substring(0, path.length - ext.length);
-  }
+  return stripExtensionsFromPath(extensionsToStrip, path);
+}
 
+export function removeTsFileExtension(path: string): string {
+  const ext = ['.ts'];
+  return stripExtensionsFromPath(ext, path);
+}
+
+export function stripExtensionsFromPath(
+  extensions: string[],
+  path: string,
+): string {
+  for (const extension of extensions) {
+    if (path.endsWith(extension)) {
+      return path.substring(0, path.length - extension.length);
+    }
+  }
   return path;
 }
 

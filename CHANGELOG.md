@@ -1,3 +1,7 @@
+## [9.0.5] - 23 Jun 2023
+
+- Add --ignoreLocallyUsed flag which means that exports which are used in the same file they are defined in won't be reported as unused
+
 ## [9.0.4] - 12 Feb 2023
 
 ### Changed

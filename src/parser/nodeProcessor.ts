@@ -12,7 +12,8 @@ import {
 import { ENUM_NODE_KINDS } from './kinds';
 import { addImportsFromNamespace } from './imports-from-namespace';
 import { extractImport } from './import';
-import { namespaceBlacklist } from './namespaceBlacklist';
+import { ignoreLocalBlacklist, namespaceBlacklist } from './blacklists';
+import { removeTsFileExtension } from './util';
 
 type NamespaceHolder = {
   namespace: string;
@@ -160,6 +161,18 @@ export const processNode = (
     addImportsFromNamespace(node, imports, addImport);
   }
 
+  if (
+    extraOptions?.ignoreLocallyUsed &&
+    kind === ts.SyntaxKind.Identifier &&
+    node.parent.kind !== ts.SyntaxKind.VariableDeclaration &&
+    node.parent.kind !== ts.SyntaxKind.FunctionDeclaration
+  ) {
+    addImport({
+      from: removeTsFileExtension(node.getSourceFile().fileName),
+      what: [node.getText()],
+    });
+  }
+
   if (hasModifier(node, ts.SyntaxKind.ExportKeyword)) {
     const nsHolder = {
       namespace,
@@ -175,11 +188,15 @@ export const processNode = (
     namespace = nsHolder.namespace;
   }
 
-  if (namespace.length > 0) {
+  if (namespace.length > 0 || extraOptions?.ignoreLocallyUsed) {
     // In namespace: need to process children, in case they *import* any types
+    // If ignoreLocallyUsed: need to iterate through whole AST to find local uses of exported variables
+    const blacklist = extraOptions?.ignoreLocallyUsed
+      ? ignoreLocalBlacklist
+      : namespaceBlacklist;
     node
       .getChildren()
-      .filter((c) => !namespaceBlacklist.includes(c.kind))
+      .filter((c) => !blacklist.includes(c.kind))
       .forEach((c) => {
         processSubNode(c, namespace);
       });

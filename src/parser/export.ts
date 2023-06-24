@@ -62,13 +62,14 @@ export const extractExportFromImport = (
       extractPropertyOrAliasFromBindings(exportClause)
     : STAR;
 
+  const from = getFrom(moduleSpecifier);
   return {
     exported: {
-      from: getFrom(moduleSpecifier),
+      from,
       what: whatExported,
     },
     imported: {
-      from: getFrom(moduleSpecifier),
+      from,
       what: whatImported,
       isExportStarAs: exportClause?.kind === ts.SyntaxKind.NamespaceExport,
     },

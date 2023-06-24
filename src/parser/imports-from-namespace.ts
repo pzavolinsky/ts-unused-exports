@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 
 import { FromWhat } from './common';
 import { Imports } from '../types';
-import { namespaceBlacklist } from './namespaceBlacklist';
+import { namespaceBlacklist } from './blacklists';
 
 // Parse use of imports from namespace
 

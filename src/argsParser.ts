@@ -68,6 +68,10 @@ function processOptions(
           ignoreFilesRegex.push(`(spec|test|Test)`);
         }
         break;
+      case '--ignoreLocallyUsed': {
+        newOptions.ignoreLocallyUsed = true;
+        break;
+      }
       case '--maxIssues':
         {
           newFilesAndOptions.options = {

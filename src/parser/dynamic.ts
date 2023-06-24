@@ -7,7 +7,7 @@ import {
   recurseIntoChildren,
 } from './util';
 
-import { namespaceBlacklist } from './namespaceBlacklist';
+import { namespaceBlacklist } from './blacklists';
 
 // Parse Dynamic Imports
 

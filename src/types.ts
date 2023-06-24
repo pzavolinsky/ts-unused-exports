@@ -50,6 +50,7 @@ export interface ExtraCommandLineOptions {
   exitWithCount?: boolean;
   exitWithUnusedTypesCount?: boolean;
   ignoreFilesRegex?: string[];
+  ignoreLocallyUsed?: boolean;
   maxIssues?: number;
   pathsToExcludeFromReport?: string[];
   searchNamespaces?: boolean;
