@@ -1,3 +1,7 @@
+## [9.0.6] - 26 Jun 2023
+
+- Handled the case when import statement contains '.ts' and '.tsx' extensions in path
+
 ## [9.0.5] - 24 Jun 2023
 
 - Add --ignoreLocallyUsed flag which means that exports which are used in the same file they are defined in won't be reported as unused

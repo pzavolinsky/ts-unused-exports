@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es5",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "paths": {
+      "utils": ["utils/src"],
+      "utils/*": ["utils/src/*"]
+    },
+  },
+  "include": ["src/**/*.ts"],
+}

@@ -18,6 +18,9 @@ function install_and_run_itest()
 {
     npm ci > /dev/null && run_itest
 }
+pushd ../example/import-with-ts-extension
+run_itest
+popd
 
 pushd ../example/simple-zero-issues
 run_itest_expect_zero_issues

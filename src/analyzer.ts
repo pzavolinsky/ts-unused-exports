@@ -9,7 +9,7 @@ import {
   indexCandidateExtensions,
   indexCandidates,
   removeExportStarPrefix,
-  removeFileExtensionToAllowForJs,
+  removeFileExtensionToAllowForJsTsJsxTsx,
 } from './parser/util';
 
 export { Analysis } from './types';
@@ -78,7 +78,7 @@ const getExportMap = (files: File[]): ExportMap => {
 const processImports = (file: File, exportMap: ExportMap): void => {
   Object.keys(file.imports).forEach((key) => {
     const importedFileExports =
-      exportMap[removeFileExtensionToAllowForJs(key)] || null;
+      exportMap[removeFileExtensionToAllowForJsTsJsxTsx(key)] || null;
 
     let ex = importedFileExports?.exports || null;
 
