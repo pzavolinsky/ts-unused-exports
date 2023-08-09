@@ -1,4 +1,13 @@
+## [10.0.0] - 9 Aug 2023
+
+### Changed
+
+- support when the import statement contains the '.ts' extension - #281
+- the setting excludePathsFromReport now supports regex - #293
+
 ## [9.0.5] - 24 Jun 2023
+
+### Added
 
 - Add --ignoreLocallyUsed flag which means that exports which are used in the same file they are defined in won't be reported as unused
 
