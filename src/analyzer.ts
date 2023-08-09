@@ -222,7 +222,7 @@ const shouldPathBeExcludedFromResults = (
   }
 
   return extraOptions.pathsToExcludeFromReport.some((ignore) =>
-    path.includes(ignore),
+    new RegExp(ignore).test(path),
   );
 };
 
