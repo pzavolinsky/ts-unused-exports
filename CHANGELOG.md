@@ -2,8 +2,8 @@
 
 ### Changed
 
-- support when the import statement contains the '.ts' extension - #281
 - the setting excludePathsFromReport now supports regex - #293
+- handle import statements that contain '.ts' or '.tsx' extensions - #281
 
 ## [9.0.5] - 24 Jun 2023
 

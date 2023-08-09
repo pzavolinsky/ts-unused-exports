@@ -27,9 +27,9 @@ export const indexCandidateExtensions = [
   '.mjs',
 ];
 
-export function removeFileExtensionToAllowForJs(path: string): string {
+export function removeFileExtensionToAllowForJsTsJsxTsx(path: string): string {
   // ref: https://www.typescriptlang.org/docs/handbook/esm-node.html
-  const extensionsToStrip = ['.js', '.cjs', '.mjs'];
+  const extensionsToStrip = ['.js', '.jsx', '.cjs', '.mjs', '.ts', '.tsx'];
 
   return stripExtensionsFromPath(extensionsToStrip, path);
 }
