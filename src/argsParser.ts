@@ -43,7 +43,9 @@ function processOptions(
         {
           const paths = optionValue.split(';');
           paths.forEach((path) => {
-            pathsToExcludeFromReport.push(path);
+            if (path) {
+              pathsToExcludeFromReport.push(path);
+            }
           });
         }
         break;

@@ -16,3 +16,8 @@ Scenario: Ignore none
   Given file "exports.ts" is export const a = 1;
   When analyzing "tsconfig.json" with files ["--excludePathsFromReport=other-1;other-2"]
   Then the result is { "exports.ts": ["a"] }
+
+Scenario: Extra semi-colons doesn't filter all results
+  Given file "exports.ts" is export const a = 1;
+  When analyzing "tsconfig.json" with files ["--excludePathsFromReport=other-1;;other-2;"]
+  Then the result is { "exports.ts": ["a"] }
