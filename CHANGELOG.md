@@ -1,3 +1,9 @@
+## [10.0.1] - 4 Sept 2023
+
+### Changed
+
+- fix: an extra semicolon in the setting --excludePathsFromReport should not break the filtering. #297.
+
 ## [10.0.0] - 9 Aug 2023
 
 ### Changed
