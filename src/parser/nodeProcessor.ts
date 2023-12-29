@@ -161,12 +161,7 @@ export const processNode = (
     addImportsFromNamespace(node, imports, addImport);
   }
 
-  if (
-    extraOptions?.ignoreLocallyUsed &&
-    kind === ts.SyntaxKind.Identifier &&
-    node.parent.kind !== ts.SyntaxKind.VariableDeclaration &&
-    node.parent.kind !== ts.SyntaxKind.FunctionDeclaration
-  ) {
+  if (extraOptions?.ignoreLocallyUsed && kind === ts.SyntaxKind.Identifier) {
     addImport({
       from: removeTsFileExtension(node.getSourceFile().fileName),
       what: [node.getText()],

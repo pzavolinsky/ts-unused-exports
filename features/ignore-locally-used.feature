@@ -40,3 +40,26 @@ Scenario: ignoreLocallyUsed works with more complex file extensions
     """
   When running ts-unused-exports "tsconfig.json" --ignoreLocallyUsed
   Then the CLI result at status is 0
+
+Scenario: ignoreLocallyUsed works with template literals
+  Given file "local.test.ts" is
+    """
+    export const a = 1;
+    const b = `text ${a} some more text`;
+    """
+  When running ts-unused-exports "tsconfig.json" --ignoreLocallyUsed
+  Then the CLI result at status is 0
+
+Scenario: ignoreLocallyUsed works with objects
+  Given file "local.test.ts" is
+    """
+    export const a = 1;
+    export const b = 2;
+    const c = {
+      a
+    };
+    c['b'] = b;
+    """
+  When running ts-unused-exports "tsconfig.json" --ignoreLocallyUsed
+  Then the CLI result at status is 0
+  
