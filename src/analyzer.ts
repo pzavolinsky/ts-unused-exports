@@ -242,7 +242,7 @@ const filterFiles = (
     });
   };
 
-  return files.filter((f) => !shouldIgnoreFile(f.path));
+  return files.filter((f) => !shouldIgnoreFile(f.fullPath));
 };
 
 const areEqual = (files1: string[], files2: string[]): boolean => {
