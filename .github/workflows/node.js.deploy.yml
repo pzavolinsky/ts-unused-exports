@@ -17,8 +17,8 @@ jobs:
     strategy:
       # using matrix here as env variables did not work
       matrix:
-        # use node 14 because 16+ uses package-lock.json version 2
-        node-version: [14.x]
+        # use node 20 as is longer term (note: 16+ uses package-lock.json version 2)
+        node-version: [20.x]
         # use the usual TypeScript version, slightly older for more compatibility
         typescript-version: [4.0.5]
     steps:

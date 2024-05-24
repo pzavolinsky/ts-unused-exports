@@ -93,7 +93,10 @@ export const extractExportNames = (path: string, node: ts.Node): string[] => {
   switch (node.kind) {
     case ts.SyntaxKind.VariableStatement:
       return parseExportNames(
-        (node as ts.VariableStatement).declarationList.declarations[0].name.getText(),
+        // prettier-ignore
+        (
+          node as ts.VariableStatement
+        ).declarationList.declarations[0].name.getText(),
       );
     case ts.SyntaxKind.FunctionDeclaration:
       const { name } = node as ts.FunctionDeclaration;

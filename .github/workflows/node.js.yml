@@ -21,17 +21,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [10.x, 12.x, 14.x, 16.x, 18.x]
-        # TODO - add 20.x when it is released
+        node_version: [10.x, 12.x, 14.x, 16.x, 18.x, 20.x, 22.x]
         typescript_version: [4]
         # To avoid too many builds, only test for extra TypeScript versions, for a subset of the Node versions:
+        # use node 20 as is longer term
         include:
-          - node_version: 14.x
-            typescript_version: 3
-          # the 'deploy' config, with deliberately older TypeScript version:
-          - node_version: 14.x
+          - node_version: 20.x
             typescript_version: 4.0.5
-          - node_version: 16.x
+          # the 'deploy' config, with deliberately older TypeScript version:
+          - node_version: 20.x
+            typescript_version: 3
+          - node_version: 22.x
             typescript_version: 3
     steps:
       - uses: actions/checkout@v3
@@ -45,5 +45,5 @@ jobs:
       - run: npm install --development typescript@${{ matrix.typescript_version }}
       - run: npm test
       # - name: Report Code Coverage
-      #   if: matrix.node_version == '16.x' && matrix.typescript_version == 4
+      #   if: matrix.node_version == '20.x' && matrix.typescript_version == 4
       #   run: npm run report-coverage-to-coveralls
