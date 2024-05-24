@@ -1,3 +1,10 @@
+## [10.1.0] - 24 May 2024
+
+### Changed
+
+- fix: --ignorefiles was ignoring file extensions when matching - #296
+- fix: --ignoreLocallyUsed had some false positives. Detail: was incorrectly excluding when parent is variable or function declaration - #300
+
 ## [10.0.1] - 4 Sept 2023
 
 ### Changed
