@@ -69,4 +69,4 @@ const analyzeTsConfig = (tsconfigPath: string, files?: string[]): Analysis => {
 
 export default analyzeTsConfig;
 
-export type { Analysis } from './analyzer';
+export * from './analyzer';
