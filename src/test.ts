@@ -12,7 +12,7 @@ import {
 import pickledCucumber, { SetupFn } from 'pickled-cucumber';
 
 import { Analysis } from './types';
-import analyzeTsConfig from './app';
+import { analyzeTsConfig } from './app';
 import { join } from 'path';
 import { runCli } from './cli';
 import { tmpdir } from 'os';

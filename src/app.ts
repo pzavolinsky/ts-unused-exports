@@ -56,7 +56,10 @@ const loadTsConfig = (
   return { baseUrl, paths, files: explicitFiles || files };
 };
 
-const analyzeTsConfig = (tsconfigPath: string, files?: string[]): Analysis => {
+export const analyzeTsConfig = (
+  tsconfigPath: string,
+  files?: string[],
+): Analysis => {
   const args = extractOptionsFromFiles(files);
   const tsConfig = loadTsConfig(tsconfigPath, args.tsFiles);
 
@@ -66,7 +69,5 @@ const analyzeTsConfig = (tsconfigPath: string, files?: string[]): Analysis => {
   };
   return analyze(parseFiles(tsConfig, args.options), options);
 };
-
-export default analyzeTsConfig;
 
 export * from './analyzer';
