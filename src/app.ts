@@ -3,7 +3,7 @@ import * as ts from 'typescript';
 import analyze, { Analysis } from './analyzer';
 import { dirname, resolve } from 'path';
 
-import { TsConfig } from './types';
+import type { TsConfig } from './types';
 import { extractOptionsFromFiles } from './argsParser';
 import parseFiles from './parser';
 
@@ -69,5 +69,3 @@ export const analyzeTsConfig = (
   };
   return analyze(parseFiles(tsConfig, args.options), options);
 };
-
-export * from './analyzer';
