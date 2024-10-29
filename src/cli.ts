@@ -4,7 +4,7 @@ import { Analysis, ExtraCommandLineOptions, LocationInFile } from './types';
 import { extractOptionsFromFiles, hasValidArgs } from './argsParser';
 
 import { USAGE } from './usage';
-import { analyzeTsConfig } from './app';
+import { analyzeTsConfig } from '.';
 
 // eslint style exit code:
 enum ExitCode {
