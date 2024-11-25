@@ -1,3 +1,9 @@
+## [11.0.1] - 25 Nov 2024
+
+### Changed
+
+- updated examples and README to match the changes in version 11.0.0
+
 ## [11.0.0] - 25 Nov 2024
 
 ### Changed
