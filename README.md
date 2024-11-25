@@ -68,7 +68,7 @@ As of version 7.0.0 the TypeScript compiler is a _peer dependency_ of `ts-unused
 #### Usage as a library - From TypeScript (was built with ES5 + commonjs)
 
 ```ts
-import analyzeTsConfig from 'ts-unused-exports';
+import { analyzeTsConfig } from 'ts-unused-exports';
 const result = analyzeTsConfig('path/to/tsconfig.json');
 // or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts']);
 // or const result = analyzeTsConfig('path/to/tsconfig.json', ['file1.ts', '--excludePathsFromReport=math']);
@@ -88,7 +88,7 @@ For an example see `./example/library-usage-via-TypeScript/`.
 From JavaScript - depending on your environment, you may need to navigate to reach the analyzeTsConfig() function.
 
 ```js
-import analyzeTsConfig from "ts-unused-exports";
+import { analyzeTsConfig } from "ts-unused-exports";
 const result = analyzeTsConfig.default('path/to/tsconfig.json');
 ```
 
