@@ -276,7 +276,7 @@ export default (
   expandExportFromStar(filteredFiles, exportMap);
   filteredFiles.forEach((file) => processImports(file, exportMap));
 
-  const analysis: Analysis = {};
+  const analysis: Analysis = { unusedExports: {} };
   const unusedFiles: string[] = [];
 
   Object.keys(exportMap).forEach((file) => {
@@ -301,9 +301,9 @@ export default (
 
     const realExportNames = Object.keys(exports);
 
-    analysis[path] = [];
+    analysis.unusedExports[path] = [];
     unusedExports.forEach((e) => {
-      analysis[path].push({
+      analysis.unusedExports[path].push({
         exportName: makeExportStarRelativeForPresentation(
           extraOptions?.baseUrl,
           e,

@@ -63,3 +63,5 @@ If you don't know where to put the breakpoint, you can always put it in the firs
 
 Hint: to simplify debugging, you can comment out all the other tests in the file.
 In **Visual Code**, a quick way to do this, is to select the tests you want to skip, and press `CTRL + /`.
+
+Hint: to run only certain tests from the command line, place the `@only` decorator just before the test. Then execute them via `test:unit:only`.

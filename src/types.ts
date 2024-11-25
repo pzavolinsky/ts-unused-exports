@@ -31,7 +31,9 @@ interface AnalysisUnusedFiles {
   unusedFiles?: string[];
 }
 
-export type Analysis = AnalysisExports & AnalysisUnusedFiles;
+export type Analysis = {
+  unusedExports: AnalysisExports;
+} & AnalysisUnusedFiles;
 
 export interface TsConfigPaths {
   [glob: string]: string[];

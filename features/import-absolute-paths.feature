@@ -25,7 +25,7 @@ Scenario: Import component using absolute path
         import {MyComponent1} from "components/MyComponent";
         """
     When analyzing "tsconfig.json"
-    Then the result is { "src/components/MyComponent.ts": ["UnusedComponent"] }
+    Then the result is { "unusedExports": { "src/components/MyComponent.ts": ["UnusedComponent"] } }
 
 Scenario: Import component using absolute path, from sub-folder
     Given file "./src/components/MyComponent.ts" is
@@ -38,7 +38,7 @@ Scenario: Import component using absolute path, from sub-folder
         import {MyComponent1} from "components/MyComponent";
         """
     When analyzing "tsconfig.json"
-    Then the result is { "src/components/MyComponent.ts": ["UnusedComponent"] }
+    Then the result is { "unusedExports": { "src/components/MyComponent.ts": ["UnusedComponent"] } }
 
 Scenario: Import function using absolute path
     Given file "src/helpers/form/myFunctions.ts" is
@@ -51,7 +51,7 @@ Scenario: Import function using absolute path
         import { doSomething } from "helpers/form/myFunctions";
         """
     When analyzing "tsconfig.json"
-    Then the result is { "src/helpers/form/myFunctions.ts": ["unusedDoSomething"] }
+    Then the result is { "unusedExports": { "src/helpers/form/myFunctions.ts": ["unusedDoSomething"] } }
 
 # TODO xxx test namespace using absolute path - search ON
 #   When analyzing "tsconfig.json" with files ["--searchNamespaces"]

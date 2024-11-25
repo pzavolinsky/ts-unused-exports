@@ -8,7 +8,7 @@ Scenario: export { a }
     """
   And file "b.ts" is import { a } from './a';
   When analyzing "tsconfig.json"
-  Then the result is {}
+  Then the result is { "unusedExports": {} }
 
 Scenario: export { a } from file
   Given file "a.ts" is export const a = 1;
@@ -19,7 +19,7 @@ Scenario: export { a } from file
     """
   And file "c.ts" is import { a } from './b';
   When analyzing "tsconfig.json"
-  Then the result is {}
+  Then the result is { "unusedExports": {} }
 
 Scenario: Include files from sub-folder, without error
   Given file "x/a.ts" is
@@ -33,7 +33,7 @@ Scenario: Include files from sub-folder, without error
     export const a: A = 0
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["a"], "x/a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["a"], "x/a.ts": ["A_unused"] } }
 
 Scenario: Include re-exported types from sub-folder, without error
   Given file "x/a.ts" is
@@ -53,7 +53,7 @@ Scenario: Include re-exported types from sub-folder, without error
     export type C_unused = 2;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.ts": ["A_unused"] } }
 
 Scenario: Include files indirectly from sub-folder, without error
   Given file "x/a.ts" is
@@ -75,7 +75,7 @@ Scenario: Include files indirectly from sub-folder, without error
     export type C_unused = 2;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.ts": ["A_unused"] } }
 
 Scenario: Import a destructured export
   Given file "a.ts" is
@@ -90,7 +90,7 @@ Scenario: Import a destructured export
     export const B_unused = 1;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Import a destructured export with renamings
   Given file "a.ts" is
@@ -105,4 +105,4 @@ Scenario: Import a destructured export with renamings
     export const B_unused = 1;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": {  "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }

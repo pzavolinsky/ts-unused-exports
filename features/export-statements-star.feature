@@ -10,7 +10,7 @@ Scenario: export * from ./a/a.ts
   And file "c.ts" is import { A } from './b';
 
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["A_unused"] } }
 
 Scenario: export * from ./a/a/a.ts
   Given file "a/a/a.ts" is
@@ -32,7 +32,7 @@ Scenario: export * from ./a/a/a.ts
 
   When analyzing "tsconfig.json"
   # note A_innermost_unused is not detected - that would require parsing for all usages of the namespace
-  Then the result is { "a/index.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "a/index.ts": ["A_unused"] } }
 
 Scenario: export * from ./a1/a2/a.ts
   Given file "a1/a2/a.ts" is
@@ -54,7 +54,7 @@ Scenario: export * from ./a1/a2/a.ts
 
   When analyzing "tsconfig.json"
   # note A_innermost_unused is not detected - that would require parsing for all usages of the namespace
-  Then the result is { "a1/index.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "a1/index.ts": ["A_unused"] } }
 
 Scenario: export * from ./a1/a2/a.ts - import skipping the mid-level - import from innermost index
   Given file "a1/a2/a.ts" is
@@ -78,7 +78,7 @@ Scenario: export * from ./a1/a2/a.ts - import skipping the mid-level - import fr
 
   When analyzing "tsconfig.json"
   # note A_innermost_unused is NOT detected
-  Then the result is { "a1/a_ts":["* -> /a1/a2/a"], "a1/index.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "a1/a_ts":["* -> /a1/a2/a"], "a1/index.ts": ["A_unused"] } }
 
 Scenario: export * from ./a1/a2/a.ts - import skipping the mid-level - import from innermost a.ts
   Given file "a1/a2/a.ts" is
@@ -104,7 +104,7 @@ Scenario: export * from ./a1/a2/a.ts - import skipping the mid-level - import fr
   When analyzing "tsconfig.json"
   # note A_innermost_unused is NOT detected
   # TODO review - A is flagged via "a1/a2/index_ts":["A"...] - which is strictly correct, although could be annoying
-  Then the result is { "a1/index.ts": ["A_unused"],"a1/a2/index_ts":["A","A_innermost_unused"] }
+  Then the result is { "unusedExports": { "a1/index.ts": ["A_unused"],"a1/a2/index_ts":["A","A_innermost_unused"] } }
 
 Scenario: export * from ./a/a/a.ts - import skipping the mid-level
   Given file "a/a/a.ts" is
@@ -128,7 +128,7 @@ Scenario: export * from ./a/a/a.ts - import skipping the mid-level
 
   When analyzing "tsconfig.json"
   # note A_innermost_unused IS detected
-  Then the result is { "a/index.ts": ["A_unused", "A_innermost_unused"] }
+  Then the result is { "unusedExports": { "a/index.ts": ["A_unused", "A_innermost_unused"] } }
 
 Scenario: export * from ./a/a/a.ts - import skipping the mid-level
   Given file "a/a/a.ts" is
@@ -152,7 +152,7 @@ Scenario: export * from ./a/a/a.ts - import skipping the mid-level
 
   When analyzing "tsconfig.json"
   # note A_innermost_unused is NOT detected
-  Then the result is { "a/index.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "a/index.ts": ["A_unused"] } }
 
 Scenario: export * from ./a
   Given file "a/index.ts" is
@@ -164,7 +164,7 @@ Scenario: export * from ./a
   And file "c.ts" is import { A } from './b';
 
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["A_unused"] } }
 
 Scenario: export * as fromA from ./a/a.ts
   Given file "a/a.ts" is
@@ -177,7 +177,7 @@ Scenario: export * as fromA from ./a/a.ts
 
   When analyzing "tsconfig.json"
   # note A_unused is not detected - that would require parsing for all usages of the namespace
-  Then the result is { }
+  Then the result is { "unusedExports": {} }
 
 Scenario: export * as fromA from ./a/a.ts
   Given file "a/a.ts" is
@@ -189,7 +189,7 @@ Scenario: export * as fromA from ./a/a.ts
   And file "c.ts" is import { fromA } from './b';
 
   When analyzing "tsconfig.json"
-  Then the result is { }
+  Then the result is { "unusedExports": { } }
 # note A_unused is not detected - that would require parsing for all usages of the namespace
 
 Scenario: export * as fromA from ./src/a.ts
@@ -202,7 +202,7 @@ Scenario: export * as fromA from ./src/a.ts
   And file "src/c.ts" is import { fromA } from './b';
 
   When analyzing "tsconfig.json"
-  Then the result is { }
+  Then the result is { "unusedExports": {} }
 # note A_unused is not detected - that would require parsing for all usages of the namespace
 
 Scenario: export * as fromA from ./src/a.ts
@@ -215,7 +215,7 @@ Scenario: export * as fromA from ./src/a.ts
   And file "src/c.ts" is import { fromA } from './b';
 
   When analyzing "tsconfig.json"
-  Then the result is { }
+  Then the result is { "unusedExports": {} }
 # note A_unused is not detected - that would require parsing for all usages of the namespace
 
 Scenario: export * as fromA from ./src/a.ts
@@ -228,7 +228,7 @@ Scenario: export * as fromA from ./src/a.ts
   And file "c.ts" is import * as fromA2 from 'src/b';
 
   When analyzing "tsconfig.json"
-  Then the result is { }
+  Then the result is { "unusedExports": {} }
 # note A_unused is not detected - that would require parsing for all usages of the namespace
 
 Scenario: export * as fromA from ./a.ts
@@ -241,7 +241,7 @@ Scenario: export * as fromA from ./a.ts
   And file "c.ts" is import * as fromA2 from './b';
 
   When analyzing "tsconfig.json"
-  Then the result is { }
+  Then the result is { "unusedExports": {} }
 
 Scenario: export * as fromA from ./a
   Given file "a/index.ts" is
@@ -253,5 +253,5 @@ Scenario: export * as fromA from ./a
   And file "c.ts" is import { fromA } from './b';
 
   When analyzing "tsconfig.json"
-  Then the result is { }
+  Then the result is { "unusedExports": {} }
 # note A_unused is not detected - that would require parsing for all usages of the namespace

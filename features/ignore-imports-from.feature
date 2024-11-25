@@ -46,7 +46,7 @@ Scenario: Ignoring all test files, with test-utils files
     export function unusedFromTest() {}";
     """
   When analyzing "tsconfig.json" with files ["--ignoreTestFiles"]
-  Then the result is { "a.ts": ["onlyUsedInTests", "a_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["onlyUsedInTests", "a_unused"] } }
 
 # Only evaluate *test* files (ignore all non-test files).
 #
@@ -68,7 +68,7 @@ Scenario: Ignoring all non-test files, with test-utils files
     """
   # note: this complex regex is covered with the option --ignoreProductionFiles
   When analyzing "tsconfig.json" with files ["--ignoreFiles=^(?!.*(test|Test)).*$"]
-  Then the result is { "TestUtils.ts": ["unusedFromUtils"], "b.test.ts": ["unusedFromTest"] }
+  Then the result is { "unusedExports": { "TestUtils.ts": ["unusedFromUtils"], "b.test.ts": ["unusedFromTest"] } }
 
 # Only evaluate *test* files (ignore all non-test files).
 # - using --ignoreProductionFiles
@@ -87,4 +87,4 @@ Scenario: Ignoring all non-test files, with test-utils files via ignoreProductio
     export function unusedFromTest() {}";
     """
   When analyzing "tsconfig.json" with files ["--ignoreProductionFiles"]
-  Then the result is { "TestUtils.ts": ["unusedFromUtils"], "b.test.ts": ["unusedFromTest"] }
+  Then the result is { "unusedExports": { "TestUtils.ts": ["unusedFromUtils"], "b.test.ts": ["unusedFromTest"] } }

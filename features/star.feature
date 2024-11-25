@@ -8,7 +8,7 @@ Scenario: Import * does NOT mark 'default' as unused
     """
   And file "b.ts" is import * as all from './a';
   When analyzing "tsconfig.json"
-  Then the result is {}
+  Then the result is { "unusedExports": {} }
 # note: a or default could still be used, as all.a or all.default - so safest to mark as used
 
 Scenario: Import * and default
@@ -19,14 +19,14 @@ Scenario: Import * and default
     """
   And file "b.ts" is import def, * as all from './a';
   When analyzing "tsconfig.json"
-  Then the result is {}
+  Then the result is { "unusedExports": {} }
 
 Scenario: Export * from
   Given file "a.ts" is export const a = 1;
   And file "b.ts" is export * from './a';
   And file "c.ts" is import { a } from './b';
   When analyzing "tsconfig.json"
-  Then the result is {}
+  Then the result is { "unusedExports": {} }
 
 Scenario: Export *, import only some
   Given file "a.ts" is
@@ -37,7 +37,7 @@ Scenario: Export *, import only some
   And file "b.ts" is export * from './a';
   And file "c.ts" is import { a } from './b';
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["b"] }
+  Then the result is { "unusedExports": { "b.ts": ["b"] } }
 
 Scenario: Export * and named
   Given file "a.ts" is
@@ -52,4 +52,4 @@ Scenario: Export * and named
     """
   And file "c.ts" is import { a, b } from './b';
   When analyzing "tsconfig.json"
-  Then the result is {}
+  Then the result is { "unusedExports": {} }

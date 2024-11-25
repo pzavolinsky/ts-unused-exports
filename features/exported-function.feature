@@ -14,4 +14,4 @@ Scenario: Not imported
 Scenario: Imported
   Given file "b.ts" is import {sum} from './a';
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["a_unused"]}
+  Then the result is { "unusedExports": { "a.ts": ["a_unused"]} }

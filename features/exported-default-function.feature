@@ -10,4 +10,4 @@ Scenario: Missing default
 Scenario: Import default
   Given file "b.ts" is import def from './a';
   When analyzing "tsconfig.json"
-  Then the result is {}
+  Then the result is { "unusedExports": {} }

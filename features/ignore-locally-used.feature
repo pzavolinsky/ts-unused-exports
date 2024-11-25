@@ -24,10 +24,10 @@ Scenario: IgnoreLocallyUsed off
 Scenario: Used locally in a namespace
   Given file "namespace.ts" is
     """
-      export const a = 1;
-      namespace foo {
-        const b = a + 1;
-      }
+    export const a = 1;
+    namespace foo {
+    const b = a + 1;
+    }
     """
   When running ts-unused-exports "tsconfig.json" --ignoreLocallyUsed
   Then the CLI result at status is 0
@@ -56,10 +56,9 @@ Scenario: ignoreLocallyUsed works with objects
     export const a = 1;
     export const b = 2;
     const c = {
-      a
+    a
     };
     c['b'] = b;
     """
   When running ts-unused-exports "tsconfig.json" --ignoreLocallyUsed
   Then the CLI result at status is 0
-  
