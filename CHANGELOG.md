@@ -17,8 +17,8 @@
   "filePath2": { /* ... */ },
   /* ... */
   unusedFiles: { /* ... */ },
-};
-```
+  };
+  ```
   - NEW:
   ```ts
   const result = {
@@ -28,7 +28,7 @@
       /* ... */
   },
   unusedFiles: [ "filePath1", "filePath2", /*"..."*/ ]
-};
+  };
   ```
 - fix: The scope of --ignoreTestFiles has been reduced, to make it less likely to exclude non-test files
 - (internal) built using Node v20.13.1
