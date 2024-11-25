@@ -67,7 +67,7 @@ function processOptions(
         break;
       case '--ignoreTestFiles':
         {
-          ignoreFilesRegex.push(`(spec|test|Test)`);
+          ignoreFilesRegex.push(`(\.spec|\.test|\Test.*)`);
         }
         break;
       case '--ignoreLocallyUsed': {
