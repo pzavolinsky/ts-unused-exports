@@ -1,3 +1,10 @@
+## [11.0.0] - 25 Nov 2024
+
+### Changed
+
+- fix: The scope of --ignoreTestFiles has been reduced, to make it less likely to exclude non-test files
+- breaking change: The default export (API entry point) has been changed to be compatible with esm module (should also work with cjs)
+
 ## [10.1.0] - 24 May 2024
 
 ### Changed
