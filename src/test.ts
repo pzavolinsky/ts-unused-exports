@@ -83,16 +83,19 @@ const setup: SetupFn = ({
   When(
     'analyzing "{filename}"',
     (tsconfigFileName, fileNames) => {
-      const { unusedFiles, ...result } = analyzeTsConfig(
+      const { unusedFiles, unusedExports } = analyzeTsConfig(
         pathFor(tsconfigFileName),
         fileNames ? JSON.parse(fileNames).map(pathFor) : undefined,
       );
       const tmp = `${getCtx('DIR')}/`;
-      const withoutTmpDir = Object.keys(result).reduce((acc, k) => {
-        acc[fixDot(k.replace(tmp, ''))] = result[k];
+      const withoutTmpDir = Object.keys(unusedExports).reduce((acc, k) => {
+        acc[fixDot(k.replace(tmp, ''))] = unusedExports[k];
         return acc;
-      }, {} as typeof result);
-      setCtx('$result', withoutTmpDir);
+      }, {} as typeof unusedExports);
+      const analysisWithouttmpDir: Analysis = {
+        unusedExports: withoutTmpDir,
+      };
+      setCtx('$result', analysisWithouttmpDir);
       const withoutTmpFiles = unusedFiles?.map((k) => {
         return k.replace(tmp, '');
       });
@@ -133,13 +136,29 @@ const setup: SetupFn = ({
     (raw, op, payload) => {
       const result = getCtx<Analysis>('$result');
       // Note: when `raw` is not set, we are only asserting for symbol names
-      const actual = raw
-        ? result
-        : Object.keys(result).reduce((acc, k) => {
-            acc[k] = result[k].map((item) => item.exportName);
+      if (raw) {
+        if (op.startsWith('at')) {
+          compare(fixDot(op), result.unusedExports, fixDot(payload));
+        } else {
+          compare(fixDot(op), result, fixDot(payload));
+        }
+      } else {
+        const unusedExports = Object.keys(result.unusedExports).reduce(
+          (acc, k) => {
+            acc[k] = result.unusedExports[k].map((item) => item.exportName);
             return acc;
-          }, {} as Record<string, string[]>);
-      compare(fixDot(op), actual, fixDot(payload));
+          },
+          {} as Record<string, string[]>,
+        );
+        const actual = {
+          unusedExports: unusedExports,
+        };
+        if (op.startsWith('at')) {
+          compare(fixDot(op), actual.unusedExports, fixDot(payload));
+        } else {
+          compare(fixDot(op), actual, fixDot(payload));
+        }
+      }
     },
     { inline: true },
   );

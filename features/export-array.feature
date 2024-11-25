@@ -10,7 +10,7 @@ Scenario: export simple array
     import { x, y, z } from './a';
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["unused"] } }
 
 Scenario: export simple array, with alias
   Given file "a.ts" is
@@ -22,4 +22,4 @@ Scenario: export simple array, with alias
     import { x as x1, y, z } from './a';
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["unused"] } }

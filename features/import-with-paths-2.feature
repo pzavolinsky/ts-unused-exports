@@ -57,4 +57,4 @@ Scenario: Import from long path both directly and via alias
         export const unused2 = 1;
         """
     When analyzing "tsconfig.json"
-    Then the result is {"src/main_ts":["unused2"],"src/very/long/path/to/file/helpers_ts":["unused1"]}
+    Then the result is { "unusedExports": { "src/main_ts":["unused2"],"src/very/long/path/to/file/helpers_ts":["unused1"]} }

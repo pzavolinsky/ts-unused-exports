@@ -14,7 +14,7 @@ Scenario: Include dynamic import as promise
     export const B_unused: A = 0
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Include dynamic import as promise - in a function
   Given file "a.ts" is
@@ -32,7 +32,7 @@ Scenario: Include dynamic import as promise - in a function
     export const B_unused: A = 0
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Include dynamic import via await - in a function
   Given file "a.ts" is
@@ -49,7 +49,7 @@ Scenario: Include dynamic import via await - in a function
     export const B_unused: A = 0
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Dynamically import default function
   Given file "a.ts" is
@@ -64,7 +64,7 @@ Scenario: Dynamically import default function
     export const B_unused: A = 0
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"] } }
 
 Scenario: Dynamically import with dereference
   Given file "a.ts" is
@@ -80,7 +80,7 @@ Scenario: Dynamically import with dereference
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Dynamically import inside a class
   Given file "a.ts" is
@@ -99,7 +99,7 @@ Scenario: Dynamically import inside a class
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Dynamically import with other lambda with same member name
   Given file "a.ts" is
@@ -120,7 +120,7 @@ Scenario: Dynamically import with other lambda with same member name
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Dynamically import with destructuring and renaming
   Given file "a.ts" is
@@ -137,7 +137,7 @@ Scenario: Dynamically import with destructuring and renaming
     export const B_unused = 1;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Dynamically import with destructuring and less whitespace
   Given file "a.ts" is
@@ -151,7 +151,7 @@ Scenario: Dynamically import with destructuring and less whitespace
     export const B_unused = 1;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "a.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "a.ts": ["A_unused"] } }
 
 Scenario: Dynamically import to a promise
   Given file "a.ts" is
@@ -165,7 +165,7 @@ Scenario: Dynamically import to a promise
     export const B_unused = 1;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"],  "b.ts": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"],  "b.ts": ["B_unused"] } }
 
 Scenario: Dynamically import inside a ternary operator - classes
   Given file "a.ts" is
@@ -188,7 +188,7 @@ Scenario: Dynamically import inside a ternary operator - classes
     export const C_unused = 1;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"],  "b.ts": ["B_unused"], "c.ts": ["C_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"],  "b.ts": ["B_unused"], "c.ts": ["C_unused"] } }
 
 Scenario: Dynamically import inside a ternary operator - functions
   Given file "a.ts" is
@@ -211,4 +211,4 @@ Scenario: Dynamically import inside a ternary operator - functions
     export const C_unused = 1;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"],  "b.ts": ["B_unused"], "c.ts": ["C_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"],  "b.ts": ["B_unused"], "c.ts": ["C_unused"] } }

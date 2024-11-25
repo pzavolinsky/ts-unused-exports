@@ -18,7 +18,7 @@ Scenario: Dynamically import inside a div property
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import inside a div child
   Given file "a.ts" is
@@ -38,7 +38,7 @@ Scenario: Dynamically import inside a div child
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import inside a fragment child
   Given file "a.ts" is
@@ -58,7 +58,7 @@ Scenario: Dynamically import inside a fragment child
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import inside a div child, nested in fragment
   Given file "a.ts" is
@@ -80,7 +80,7 @@ Scenario: Dynamically import inside a div child, nested in fragment
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import inside a div child, nested in div
   Given file "a.ts" is
@@ -102,7 +102,7 @@ Scenario: Dynamically import inside a div child, nested in div
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import inside a div property, nested in div
   Given file "a.ts" is
@@ -124,7 +124,7 @@ Scenario: Dynamically import inside a div property, nested in div
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import inside a div property, nested in fragment
   Given file "a.ts" is
@@ -146,7 +146,7 @@ Scenario: Dynamically import inside a div property, nested in fragment
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import multiple, nested inside div or div property
   Given file "a.ts" is
@@ -186,7 +186,7 @@ Scenario: Dynamically import multiple, nested inside div or div property
     export const B_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import multiple, nested inside div or div property - lambdas are processed independently
   Given file "a.ts" is
@@ -241,7 +241,7 @@ Scenario: Dynamically import multiple, nested inside div or div property - lambd
     export const T_unused = 0;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.ts": ["A", "B_unused"], "c.ts": ["A", "C_unused"], "d.ts": ["A", "D_unused"], "t.tsx": ["T_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.ts": ["A", "B_unused"], "c.ts": ["A", "C_unused"], "d.ts": ["A", "D_unused"], "t.tsx": ["T_unused"] } }
 
 Scenario: Dynamically import in div inside function
   Given file "a.ts" is
@@ -259,7 +259,7 @@ Scenario: Dynamically import in div inside function
     export const B_unused = 3;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import in div inside function - no block on right hand side
   Given file "a.ts" is
@@ -277,7 +277,7 @@ Scenario: Dynamically import in div inside function - no block on right hand sid
     export const B_unused = 3;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "a.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import in div inside function - real example
   Given file "./MyDynamicComponent.ts" is
@@ -302,7 +302,7 @@ Scenario: Dynamically import in div inside function - real example
     export const B_unused = 3;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import in div inside function - real example - with comment on the import from, and with path
   Given file "myPath/MyDynamicComponent.ts" is
@@ -327,7 +327,7 @@ Scenario: Dynamically import in div inside function - real example - with commen
     export const B_unused = 3;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "myPath/MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "myPath/MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import in div inside function - real example - with import that is buried inside a 'Promise.all'
   Given file "myPath/MyDynamicComponent.ts" is
@@ -353,7 +353,7 @@ Scenario: Dynamically import in div inside function - real example - with import
     export const B_unused = 3;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "myPath/MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "myPath/MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import in div inside function - real example - onClick
   Given file "./MyDynamicComponent.ts" is
@@ -367,7 +367,7 @@ Scenario: Dynamically import in div inside function - real example - onClick
     return (
     <div
     onClick={() =>
-        import("./MyDynamicComponent").then(m => m.MyDynamicMember)
+    import("./MyDynamicComponent").then(m => m.MyDynamicMember)
     }
     />
     );
@@ -375,7 +375,7 @@ Scenario: Dynamically import in div inside function - real example - onClick
     export const B_unused = 3;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] } }
 
 Scenario: Dynamically import in div inside function - real example - onClick with braces around parameter
   Given file "./MyDynamicComponent.ts" is
@@ -387,14 +387,14 @@ Scenario: Dynamically import in div inside function - real example - onClick wit
     """
     function foo() {
     return (
-<div
+    <div
     onClick={() =>
-        import("./MyDynamicComponent").then((m) => m.MyDynamicMember)
+    import("./MyDynamicComponent").then((m) => m.MyDynamicMember)
     }
-/>
+    />
     );
     }
     export const B_unused = 3;
     """
   When analyzing "tsconfig.json"
-  Then the result is { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] }
+  Then the result is { "unusedExports": { "MyDynamicComponent.ts": ["A_unused"], "b.tsx": ["B_unused"] } }

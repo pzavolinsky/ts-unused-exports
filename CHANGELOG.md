@@ -2,8 +2,30 @@
 
 ### Changed
 
+- BREAKING CHANGE: The default export (API entry point) has been changed to be compatible with esm module (should also work with cjs)
+- BREAKING CHANGE:  The results (API) structure has been changed:
+  - OLD:
+  ```ts
+  const result = {
+  "filePath1": { /* ... */ },
+  "filePath2": { /* ... */ },
+  /* ... */
+  unusedFiles: { /* ... */ },
+};
+```
+  - NEW:
+  ```ts
+  const result = {
+  unusedExports: {
+      "filePath1": { /* ... */ },
+      "filePath2": { /* ... */ },
+      /* ... */
+  },
+  unusedFiles: [ "filePath1", "filePath2", /*"..."*/ ]
+};
+  ```
 - fix: The scope of --ignoreTestFiles has been reduced, to make it less likely to exclude non-test files
-- breaking change: The default export (API entry point) has been changed to be compatible with esm module (should also work with cjs)
+- (internal) built using Node v20.13.1
 
 ## [10.1.0] - 24 May 2024
 

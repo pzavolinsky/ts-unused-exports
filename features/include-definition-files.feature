@@ -3,12 +3,12 @@ Feature: include definition files
 Scenario: Include definition files
   Given file "exports.d.ts" is export const unused = 1;
   When analyzing "tsconfig.json"
-  Then the result is { "exports.d.ts": ["unused"] }
+  Then the result is { "unusedExports": { "exports.d.ts": ["unused"] } }
 
 Scenario: Do NOT include definition files
   Given file "exports.d.ts" is export const unused = 1;
   When analyzing "tsconfig.json" with files ["--excludeDeclarationFiles"]
-  Then the result is {}
+  Then the result is { "unusedExports": {} }
 
 Scenario: Include definition files from sub-folder, without error
   Given file "x/a.d.ts" is
@@ -22,7 +22,7 @@ Scenario: Include definition files from sub-folder, without error
     export const a: A = 0
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["a"], "x/a.d.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["a"], "x/a.d.ts": ["A_unused"] } }
 
 Scenario: Do NOT include definition files from sub-folder, without error
   Given file "x/a.d.ts" is
@@ -36,7 +36,7 @@ Scenario: Do NOT include definition files from sub-folder, without error
     export const a: A = 0
     """
   When analyzing "tsconfig.json" with files ["--excludeDeclarationFiles"]
-  Then the result is { "b.ts": ["a"] }
+  Then the result is { "unusedExports": { "b.ts": ["a"] } }
 
 Scenario: Include definition files indirectly, from sub-folder, without error
   Given file "x/a.d.ts" is
@@ -57,7 +57,7 @@ Scenario: Include definition files indirectly, from sub-folder, without error
     export type C_unused = 1
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.d.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.d.ts": ["A_unused"] } }
 
 Scenario: Include parts of definition files indirectly, from sub-folder, without error
   Given file "x/a.d.ts" is
@@ -77,4 +77,4 @@ Scenario: Include parts of definition files indirectly, from sub-folder, without
     export type C_unused = 1
     """
   When analyzing "tsconfig.json"
-  Then the result is { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.d.ts": ["A_unused"] }
+  Then the result is { "unusedExports": { "b.ts": ["B_unused"], "c.ts": ["C_unused"], "x/a.d.ts": ["A_unused"] } }

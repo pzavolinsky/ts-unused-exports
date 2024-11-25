@@ -33,12 +33,12 @@ Background:
 
 Scenario: Not skipping
   When analyzing "tsconfig.json"
-  Then the result is { "a.ts": ["IAInput", "TypeAResult", "UnusedColorA", "a"], "b/index.ts": ["IBInput", "TypeBResult", "b"] }
+  Then the result is { "unusedExports": { "a.ts": ["IAInput", "TypeAResult", "UnusedColorA", "a"], "b/index.ts": ["IBInput", "TypeBResult", "b"] } }
 
 Scenario: Skipping
   When analyzing "tsconfig.json" with files ["--allowUnusedTypes"]
-  Then the result is { "a.ts": ["UnusedColorA", "a"], "b/index.ts": ["b"] }
+  Then the result is { "unusedExports": { "a.ts": ["UnusedColorA", "a"], "b/index.ts": ["b"] } }
 
 Scenario: Skipping
   When analyzing "tsconfig.json" with files ["--allowUnusedEnums"]
-  Then the result is { "a.ts": ["IAInput", "TypeAResult", "a"], "b/index.ts": ["IBInput", "TypeBResult", "b"] }
+  Then the result is { "unusedExports": { "a.ts": ["IAInput", "TypeAResult", "a"], "b/index.ts": ["IBInput", "TypeBResult", "b"] } }

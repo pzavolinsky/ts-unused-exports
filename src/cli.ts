@@ -35,7 +35,7 @@ const showMessages = (
 
   if (options?.showLineNumber) {
     files.forEach((path) => {
-      analysis[path].forEach((unusedExport) => {
+      analysis.unusedExports[path].forEach((unusedExport) => {
         showMessage(
           `${path}${getLocationInFile(
             unusedExport.location,
@@ -47,7 +47,7 @@ const showMessages = (
     files.forEach((path) =>
       showMessage(
         `${path}: ${chalk.bold.yellow(
-          analysis[path].map((r) => r.exportName).join(', '),
+          analysis.unusedExports[path].map((r) => r.exportName).join(', '),
         )}`,
       ),
     );
@@ -79,7 +79,7 @@ export const runCli = (
       tsFiles.length ? tsFiles : undefined,
     );
 
-    const files = Object.keys(analysis);
+    const files = Object.keys(analysis.unusedExports);
 
     const options = extractOptionsFromFiles(tsFiles).options;
 
@@ -95,7 +95,7 @@ export const runCli = (
       return exitWith(Math.min(MAX_ALLOWED_EXIT_CODE, files.length));
     } else if (options?.exitWithUnusedTypesCount) {
       const totalIssues = files
-        .map((f) => analysis[f].length)
+        .map((f) => analysis.unusedExports[f].length)
         .reduce((previous, current) => previous + current, 0);
 
       return exitWith(Math.min(MAX_ALLOWED_EXIT_CODE, totalIssues));
