@@ -1,4 +1,4 @@
-import analyzeTsConfig from "ts-unused-exports";
+import { analyzeTsConfig } from "ts-unused-exports";
 
 try {
   // need to navigate to reach the function:

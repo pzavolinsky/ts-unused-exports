@@ -88,7 +88,7 @@ For an example see `./example/library-usage-via-TypeScript/`.
 From JavaScript - depending on your environment, you may need to navigate to reach the analyzeTsConfig() function.
 
 ```js
-import analyzeTsConfig from "ts-unused-exports";
+import { analyzeTsConfig } from "ts-unused-exports";
 const result = analyzeTsConfig.default('path/to/tsconfig.json');
 ```
 
